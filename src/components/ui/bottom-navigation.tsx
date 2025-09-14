@@ -20,7 +20,7 @@ export const BottomNavigation = () => {
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-nav-background backdrop-blur-md border-t border-nav-border">
       <div className="flex items-center justify-around px-2 py-2">
         {navigationItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + "/");
           const Icon = item.icon;
           
           return (

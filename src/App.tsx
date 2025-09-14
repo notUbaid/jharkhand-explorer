@@ -13,6 +13,15 @@ import Transport from "./pages/Transport";
 import Stays from "./pages/Stays";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import DestinationDetail from "./pages/DestinationDetail";
+import RestaurantDetail from "./pages/RestaurantDetail";
+import PackageDetail from "./pages/PackageDetail";
+import PackageCompare from "./pages/PackageCompare";
+import ProductDetail from "./pages/ProductDetail";
+import ExperienceDetail from "./pages/ExperienceDetail";
+import EventDetail from "./pages/EventDetail";
+import StayDetail from "./pages/StayDetail";
+import StayCompare from "./pages/StayCompare";
 
 const queryClient = new QueryClient();
 
@@ -26,11 +35,26 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/destinations" element={<Destinations />} />
+            <Route path="/destinations/:id" element={<DestinationDetail />} />
+            <Route path="/restaurants/:id" element={<RestaurantDetail />} />
+
             <Route path="/packages" element={<Packages />} />
+            <Route path="/packages/:id" element={<PackageDetail />} />
+            <Route path="/packages/compare" element={<PackageCompare />} />
+
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/experiences/:id" element={<ExperienceDetail />} />
+
             <Route path="/events" element={<Events />} />
+            <Route path="/events/:id" element={<EventDetail />} />
+
             <Route path="/transport" element={<Transport />} />
+
             <Route path="/stays" element={<Stays />} />
+            <Route path="/stays/:id" element={<StayDetail />} />
+            <Route path="/stays/compare" element={<StayCompare />} />
+
             <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
