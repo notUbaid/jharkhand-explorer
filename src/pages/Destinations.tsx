@@ -134,16 +134,16 @@ export default function Destinations() {
         />
       </div>
 
-      <div className="px-6 -mt-2 relative z-10">
+      <div className="px-6 mt-6 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="spots" className="font-medium">Tourist Spots</TabsTrigger>
             <TabsTrigger value="food" className="font-medium">Food & Dining</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="spots" className="space-y-4">
+          <TabsContent value="spots" className="space-y-6">
             {/* Filters */}
-            <div className="section-spacing space-y-4">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="section-title">Categories</h3>
                 <Button
@@ -181,7 +181,7 @@ export default function Destinations() {
             </div>
 
             {/* Destinations List */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-6">
               {destinations.map((destination) => (
                 <LuxuryCard 
                   key={destination.id}
@@ -240,9 +240,9 @@ export default function Destinations() {
             </div>
           </TabsContent>
 
-          <TabsContent value="food" className="space-y-4">
+          <TabsContent value="food" className="space-y-6">
             {/* Food Filters */}
-            <div className="section-spacing space-y-4">
+            <div className="space-y-4">
               <h3 className="section-title">Filters</h3>
               <div className="flex flex-wrap gap-2">
                 {foodFilters.map((filter) => (
@@ -259,7 +259,7 @@ export default function Destinations() {
             </div>
 
             {/* Restaurants List */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-6">
               {restaurants.map((restaurant) => (
                 <LuxuryCard 
                   key={restaurant.id}
