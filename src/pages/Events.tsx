@@ -123,8 +123,8 @@ export default function Events() {
 
       <div className="px-6 -mt-2 relative z-10">
         {/* Category Filters */}
-        <div className="space-y-3 mb-6">
-          <h3 className="font-medium text-foreground">Categories</h3>
+        <div className="section-spacing space-y-4 mb-6">
+          <h3 className="section-title">Categories</h3>
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
               <Button

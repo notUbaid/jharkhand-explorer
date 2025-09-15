@@ -133,48 +133,57 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
+    @apply bg-background text-foreground font-inter antialiased;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-playfair;
+  }
+
+  /* Safe area for mobile devices */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
   }
 }
 
 @layer components {
   /* Premium Card Component */
   .luxury-card {
-    @apply bg-card border border-border rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1;
-    background: var(--gradient-card);
-    box-shadow: var(--shadow-md);
+    @apply bg-card border border-border rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02];
+    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary)/0.3));
+    box-shadow: 0 4px 20px hsl(var(--primary) / 0.08);
   }
   
   .luxury-card:hover {
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 40px hsl(var(--primary) / 0.12);
   }
   
   /* Premium Button Variants */
   .btn-emerald {
-    @apply bg-primary text-primary-foreground hover:bg-primary-light transition-all duration-300;
-    background: var(--gradient-emerald);
-    box-shadow: var(--shadow-md);
+    @apply bg-primary text-primary-foreground hover:bg-primary-light transition-all duration-300 rounded-xl;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    box-shadow: 0 4px 16px hsl(var(--primary) / 0.3);
   }
   
   .btn-gold {
-    @apply bg-accent text-accent-foreground hover:bg-accent-light transition-all duration-300;
-    background: var(--gradient-gold);
-    box-shadow: var(--shadow-gold);
+    @apply bg-accent text-accent-foreground hover:bg-accent-light transition-all duration-300 rounded-xl;
+    background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)));
+    box-shadow: 0 4px 16px hsl(var(--accent) / 0.3);
   }
   
   /* Hero Section */
   .hero-gradient {
-    background: var(--gradient-hero);
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 50%, hsl(var(--accent) / 0.1) 100%);
   }
   
   /* Premium Input */
   .luxury-input {
     @apply bg-input border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.05);
   }
   
   /* Navigation Pills */
@@ -184,7 +193,32 @@ All colors MUST be HSL.
   
   .nav-pill.active {
     @apply bg-primary text-primary-foreground;
-    background: var(--gradient-emerald);
-    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    box-shadow: 0 4px 16px hsl(var(--primary) / 0.3);
+  }
+
+  /* Section Spacing */
+  .section-spacing {
+    @apply pt-8 pb-4;
+  }
+
+  /* Improved Overlays */
+  .menu-overlay {
+    @apply bg-popover/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl;
+    z-index: 9999;
+  }
+
+  /* Typography Improvements */
+  .section-title {
+    @apply text-lg font-playfair font-semibold text-foreground mb-6;
+  }
+
+  /* Grid Spacing */
+  .card-grid {
+    @apply grid gap-4;
+  }
+
+  .card-grid-2 {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
   }
 }

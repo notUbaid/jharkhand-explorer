@@ -175,14 +175,14 @@ export default function Packages() {
         </div>
 
         {/* Packages Grid */}
-        <div className="space-y-4">
+        <div className="card-grid-2">
           {packages.map((pkg) => (
             <LuxuryCard 
               key={pkg.id}
               className="p-0 overflow-hidden"
             >
               <div className="relative">
-                <div className="h-40 bg-muted">
+                <div className="h-48 bg-muted">
                   <img 
                     src={pkg.image} 
                     alt={pkg.title}
@@ -274,8 +274,8 @@ export default function Packages() {
                       View Details
                     </Button>
                     <Button 
+                      variant="premium"
                       size="sm"
-                      className="bg-primary hover:bg-primary-light"
                     >
                       Book Now
                     </Button>

@@ -136,16 +136,16 @@ export default function Destinations() {
 
       <div className="px-6 -mt-2 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="spots" className="font-medium">Tourist Spots</TabsTrigger>
             <TabsTrigger value="food" className="font-medium">Food & Dining</TabsTrigger>
           </TabsList>
 
           <TabsContent value="spots" className="space-y-4">
             {/* Filters */}
-            <div className="space-y-3">
+            <div className="section-spacing space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-medium text-foreground">Categories</h3>
+                <h3 className="section-title">Categories</h3>
                 <Button
                   variant="outline"
                   size="sm"
@@ -242,8 +242,8 @@ export default function Destinations() {
 
           <TabsContent value="food" className="space-y-4">
             {/* Food Filters */}
-            <div className="space-y-3">
-              <h3 className="font-medium text-foreground">Filters</h3>
+            <div className="section-spacing space-y-4">
+              <h3 className="section-title">Filters</h3>
               <div className="flex flex-wrap gap-2">
                 {foodFilters.map((filter) => (
                   <Button

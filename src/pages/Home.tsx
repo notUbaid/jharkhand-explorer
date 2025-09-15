@@ -128,8 +128,8 @@ export default function Home() {
         </LuxuryCard>
 
         {/* Quick Access */}
-        <div className="mb-6">
-          <h2 className="text-lg font-playfair font-semibold mb-4 text-foreground">
+        <div className="section-spacing mb-6">
+          <h2 className="section-title">
             Quick Access
           </h2>
           <div className="grid grid-cols-3 gap-3">
@@ -162,7 +162,7 @@ export default function Home() {
               <Sparkles className="text-accent" size={24} />
             </div>
             <div className="flex-1">
-              <Badge className="mb-2 bg-accent/10 text-accent border-accent/20">
+              <Badge variant="secondary" className="mb-2 bg-accent/10 text-accent border-accent/20">
                 Festival Spotlight
               </Badge>
               <h3 className="font-playfair font-semibold text-foreground mb-1">

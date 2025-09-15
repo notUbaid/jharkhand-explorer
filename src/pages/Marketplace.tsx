@@ -139,15 +139,15 @@ export default function Marketplace() {
 
       <div className="px-6 -mt-2 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="products" className="font-medium">Products</TabsTrigger>
-            <TabsTrigger value="experiences" className="font-medium">Experiences & Workshops</TabsTrigger>
+            <TabsTrigger value="experiences" className="font-medium text-center">Experiences</TabsTrigger>
           </TabsList>
 
           <TabsContent value="products" className="space-y-4">
             {/* Product Categories */}
-            <div className="space-y-3">
-              <h3 className="font-medium text-foreground">Categories</h3>
+            <div className="section-spacing space-y-4">
+              <h3 className="section-title">Categories</h3>
               <div className="flex flex-wrap gap-2">
                 {productCategories.map((category) => (
                   <Button
