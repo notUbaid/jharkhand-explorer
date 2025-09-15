@@ -137,16 +137,16 @@ export default function Marketplace() {
         />
       </div>
 
-      <div className="px-6 -mt-2 relative z-10">
+      <div className="px-6 mt-6 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="products" className="font-medium">Products</TabsTrigger>
             <TabsTrigger value="experiences" className="font-medium text-center">Experiences</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="products" className="space-y-4">
+          <TabsContent value="products" className="space-y-6">
             {/* Product Categories */}
-            <div className="section-spacing space-y-4">
+            <div className="space-y-4">
               <h3 className="section-title">Categories</h3>
               <div className="flex flex-wrap gap-2">
                 {productCategories.map((category) => (
@@ -164,7 +164,7 @@ export default function Marketplace() {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 mt-6">
               {products.map((product) => (
                 <LuxuryCard 
                   key={product.id}
@@ -261,9 +261,9 @@ export default function Marketplace() {
             </LuxuryCard>
           </TabsContent>
 
-          <TabsContent value="experiences" className="space-y-4">
+          <TabsContent value="experiences" className="space-y-6">
             {/* Experiences List */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-6">
               {experiences.map((experience) => (
                 <LuxuryCard 
                   key={experience.id}

@@ -160,9 +160,9 @@ export default function Stays() {
         />
       </div>
 
-      <div className="px-6 -mt-2 relative z-10">
+      <div className="px-6 mt-6 relative z-10">
         {/* Type Filters */}
-        <div className="space-y-3 mb-6">
+        <div className="space-y-4 mb-6">
           <div className="flex items-center justify-between">
             <h3 className="font-medium text-foreground">Accommodation Type</h3>
             {comparing.length > 0 && (
@@ -195,7 +195,7 @@ export default function Stays() {
         </div>
 
         {/* Stays List */}
-        <div className="space-y-4">
+        <div className="space-y-4 mt-6">
           {stays.map((stay) => (
             <LuxuryCard 
               key={stay.id}

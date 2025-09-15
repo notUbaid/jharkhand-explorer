@@ -121,9 +121,9 @@ export default function Events() {
         />
       </div>
 
-      <div className="px-6 -mt-2 relative z-10">
+      <div className="px-6 mt-6 relative z-10">
         {/* Category Filters */}
-        <div className="section-spacing space-y-4 mb-6">
+        <div className="space-y-4 mb-6">
           <h3 className="section-title">Categories</h3>
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
@@ -142,7 +142,7 @@ export default function Events() {
         </div>
 
         {/* Events List */}
-        <div className="space-y-4">
+        <div className="space-y-4 mt-6">
           {events.map((event) => (
             <LuxuryCard 
               key={event.id}

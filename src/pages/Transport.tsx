@@ -165,16 +165,16 @@ export default function Transport() {
         />
       </div>
 
-      <div className="px-6 -mt-2 relative z-10">
+      <div className="px-6 mt-6 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted">
             <TabsTrigger value="long-distance" className="font-medium">Long Distance</TabsTrigger>
             <TabsTrigger value="rentals" className="font-medium">Rentals</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="long-distance" className="space-y-4">
+          <TabsContent value="long-distance" className="space-y-6">
             {/* Mode Tabs */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <h3 className="font-medium text-foreground">Travel Mode</h3>
               <div className="flex space-x-2">
                 {["train", "bus", "flight"].map((mode) => (
@@ -187,7 +187,7 @@ export default function Transport() {
             </div>
 
             {/* Long Distance Options */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-6">
               {longDistanceOptions.map((option) => (
                 <LuxuryCard key={option.id} className="p-4">
                   <div className="flex items-center justify-between mb-3">
@@ -234,9 +234,9 @@ export default function Transport() {
             </div>
           </TabsContent>
 
-          <TabsContent value="rentals" className="space-y-4">
+          <TabsContent value="rentals" className="space-y-6">
             {/* Vehicle Type Filters */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <h3 className="font-medium text-foreground">Vehicle Type</h3>
               <div className="flex flex-wrap gap-2">
                 {vehicleTypes.map((type) => (
@@ -254,7 +254,7 @@ export default function Transport() {
             </div>
 
             {/* Rental Vehicles */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-6">
               {rentalVehicles.map((vehicle) => (
                 <LuxuryCard key={vehicle.id} className="p-0 overflow-hidden">
                   <div className="flex">
