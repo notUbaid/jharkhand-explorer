@@ -1,20 +1,23 @@
 import { Home, MapPin, Package, ShoppingBag, Calendar, Car, Building, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocation, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-const navigationItems = [
-  { path: "/", icon: Home, label: "Home" },
-  { path: "/destinations", icon: MapPin, label: "Destinations" },
-  { path: "/packages", icon: Package, label: "Packages" },
-  { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
-  { path: "/events", icon: Calendar, label: "Events" },
-  { path: "/transport", icon: Car, label: "Transport" },
-  { path: "/stays", icon: Building, label: "Stays" },
-  { path: "/profile", icon: User, label: "Profile" },
+const getNavigationItems = (t: any) => [
+  { path: "/", icon: Home, label: t("navigation.home") },
+  { path: "/destinations", icon: MapPin, label: t("navigation.destinations") },
+  { path: "/packages", icon: Package, label: t("navigation.packages") },
+  { path: "/marketplace", icon: ShoppingBag, label: t("navigation.marketplace") },
+  { path: "/events", icon: Calendar, label: t("navigation.events") },
+  { path: "/transport", icon: Car, label: t("navigation.transport") },
+  { path: "/stays", icon: Building, label: t("navigation.stays") },
+  { path: "/profile", icon: User, label: t("navigation.profile") },
 ];
 
 export const BottomNavigation = () => {
   const location = useLocation();
+  const { t } = useTranslation();
+  const navigationItems = getNavigationItems(t);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 menu-overlay border-t">

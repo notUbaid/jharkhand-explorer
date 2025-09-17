@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import { 
   Clock, 
   IndianRupee, 
@@ -19,84 +21,36 @@ import {
   Utensils
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-const packages = [
-  {
-    id: 1,
-    title: "Tribal Culture Explorer",
-    duration: "5 Days / 4 Nights",
-    price: "₹25,000",
-    category: "Cultural",
-    rating: 4.8,
-    image: "/placeholder.svg",
-    highlights: ["Santhal Village Visit", "Tribal Dance Performance", "Handicraft Workshop"],
-    difficulty: "Easy",
-  },
-  {
-    id: 2,
-    title: "Wildlife & Nature Retreat",
-    duration: "4 Days / 3 Nights", 
-    price: "₹18,000",
-    category: "Nature",
-    rating: 4.6,
-    image: "/placeholder.svg",
-    highlights: ["Betla National Park", "Netarhat Hill Station", "Bird Watching"],
-    difficulty: "Moderate",
-  },
-  {
-    id: 3,
-    title: "Spiritual Jharkhand Journey",
-    duration: "3 Days / 2 Nights",
-    price: "₹12,000", 
-    category: "Religious",
-    rating: 4.7,
-    image: "/placeholder.svg",
-    highlights: ["Baidyanath Temple", "Jagannath Temple", "Meditation Sessions"],
-    difficulty: "Easy",
-  },
-  {
-    id: 4,
-    title: "Adventure Seeker's Paradise",
-    duration: "6 Days / 5 Nights",
-    price: "₹35,000",
-    category: "Adventure", 
-    rating: 4.5,
-    image: "/placeholder.svg",
-    highlights: ["Rock Climbing", "River Rafting", "Jungle Trekking"],
-    difficulty: "Challenging",
-  },
-  {
-    id: 5,
-    title: "Heritage & History Trail",
-    duration: "4 Days / 3 Nights",
-    price: "₹20,000",
-    category: "Historic",
-    rating: 4.4,
-    image: "/placeholder.svg",
-    highlights: ["Palamu Fort", "Archaeological Sites", "Museum Tours"],
-    difficulty: "Easy",
-  },
-  {
-    id: 6,
-    title: "Wellness & Ayurveda Retreat",
-    duration: "7 Days / 6 Nights",
-    price: "₹45,000",
-    category: "Wellness",
-    rating: 4.9,
-    image: "/placeholder.svg",
-    highlights: ["Ayurvedic Treatments", "Yoga Sessions", "Herbal Garden Tours"],
-    difficulty: "Easy",
-  },
-];
+import { packages } from "@/data/packages";
+import { Package } from "@/types/Package";
+import { usePackageComparison } from "@/contexts/PackageComparisonContext";
+import { PackageSelectionModal } from "@/components/PackageSelectionModal";
+import { PackageComparison } from "@/components/PackageComparison";
 
 export default function Packages() {
+  const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
+  const [selectedDuration, setSelectedDuration] = useState("All");
+  const [sortBy, setSortBy] = useState("popularity");
   const [favorites, setFavorites] = useState<number[]>([]);
   const [comparing, setComparing] = useState<number[]>([]);
+  const [showSelectionModal, setShowSelectionModal] = useState(false);
+  const [selectedPackageForComparison, setSelectedPackageForComparison] = useState<Package | null>(null);
   const navigate = useNavigate();
+  const { setLeftPackage, setRightPackage, setOpenComparisonModal } = usePackageComparison();
 
-  const categories = ["All", "Cultural", "Nature", "Religious", "Adventure", "Historic", "Wellness"];
+  const categories = ["All", "Nature", "Adventure", "Cultural", "Religious", "Heritage", "Comprehensive", "Premium", "Mining", "Backpacking"];
+  const priceRanges = ["All", "Under ₹10K", "₹10K-20K", "₹20K-30K", "Above ₹30K"];
+  const durations = ["All", "1-3 Days", "4-6 Days", "7+ Days"];
+  const sortOptions = [
+    { value: "popularity", label: "Most Popular" },
+    { value: "price-low", label: "Price: Low to High" },
+    { value: "price-high", label: "Price: High to Low" },
+    { value: "duration", label: "Duration" },
+    { value: "rating", label: "Rating" }
+  ];
 
   const toggleFavorite = (id: number) => {
     setFavorites(prev => 
@@ -118,75 +72,187 @@ export default function Packages() {
     });
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Easy": return "bg-success/10 text-success";
-      case "Moderate": return "bg-accent/10 text-accent";
-      case "Challenging": return "bg-destructive/10 text-destructive";
-      default: return "bg-muted/10 text-muted-foreground";
-    }
+  const handleComparePackage = (pkg: Package) => {
+    setSelectedPackageForComparison(pkg);
+    setLeftPackage(pkg);
+    setShowSelectionModal(true);
   };
 
+  const handlePackageSelect = (selectedPackage: Package) => {
+    setRightPackage(selectedPackage);
+    setOpenComparisonModal(true);
+  };
+
+
+  const filteredPackages = packages.filter(pkg => {
+    const matchesSearch = pkg.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+                         pkg.description.toLowerCase().includes(searchValue.toLowerCase()) ||
+                         pkg.highlights.some(h => h.toLowerCase().includes(searchValue.toLowerCase()));
+    const matchesCategory = selectedCategory === "All" || pkg.category === selectedCategory;
+    
+    // Price range filtering
+    const price = parseInt(pkg.price.replace(/[₹,]/g, ''));
+    let matchesPrice = true;
+    if (selectedPriceRange === "Under ₹10K") matchesPrice = price < 10000;
+    else if (selectedPriceRange === "₹10K-20K") matchesPrice = price >= 10000 && price <= 20000;
+    else if (selectedPriceRange === "₹20K-30K") matchesPrice = price >= 20000 && price <= 30000;
+    else if (selectedPriceRange === "Above ₹30K") matchesPrice = price > 30000;
+    
+    // Duration filtering
+    const durationDays = parseInt(pkg.duration.split(' ')[0]);
+    let matchesDuration = true;
+    if (selectedDuration === "1-3 Days") matchesDuration = durationDays >= 1 && durationDays <= 3;
+    else if (selectedDuration === "4-6 Days") matchesDuration = durationDays >= 4 && durationDays <= 6;
+    else if (selectedDuration === "7+ Days") matchesDuration = durationDays >= 7;
+    
+    return matchesSearch && matchesCategory && matchesPrice && matchesDuration;
+  });
+
+  // Sorting logic
+  const sortedPackages = [...filteredPackages].sort((a, b) => {
+    switch (sortBy) {
+      case "price-low":
+        return parseInt(a.price.replace(/[₹,]/g, '')) - parseInt(b.price.replace(/[₹,]/g, ''));
+      case "price-high":
+        return parseInt(b.price.replace(/[₹,]/g, '')) - parseInt(a.price.replace(/[₹,]/g, ''));
+      case "duration":
+        return parseInt(a.duration.split(' ')[0]) - parseInt(b.duration.split(' ')[0]);
+      case "rating":
+        return b.rating - a.rating;
+      default: // popularity
+        return b.rating - a.rating; // Using rating as popularity proxy
+    }
+  });
+
   return (
-    <div className="pb-20 min-h-screen bg-background">
+    <div className="pb-24 min-h-screen bg-background">
       {/* Header */}
       <div className="bg-primary text-primary-foreground px-6 pt-12 pb-6">
-        <h1 className="text-2xl font-playfair font-bold text-center mb-4">
-          Travel Packages
-        </h1>
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex-1">
+            <h1 className="text-2xl font-playfair font-bold text-center mb-4">
+              {t("packages.title")}
+            </h1>
+          </div>
+          <LanguageToggle />
+        </div>
         <SearchBar 
           value={searchValue}
           onChange={setSearchValue}
-          placeholder="Search packages by destination, theme..."
+          placeholder={t("packages.searchPlaceholder")}
         />
       </div>
 
       <div className="px-6 mt-6 relative z-10">
-        {/* Category Filters */}
-        <div className="space-y-4 mb-6">
+        {/* Enhanced Filters */}
+        <div className="space-y-6 mb-8">
+          {/* Sort and Results Header */}
           <div className="flex items-center justify-between">
-            <h3 className="font-medium text-foreground">Categories</h3>
-            {comparing.length > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('/packages/compare', { state: { packages: comparing } })}
-                className="text-primary border-primary"
+            <div className="flex items-center gap-4">
+              <h3 className="font-semibold text-foreground">
+                {sortedPackages.length} Package{sortedPackages.length !== 1 ? 's' : ''} Found
+              </h3>
+              {(selectedCategory !== "All" || selectedPriceRange !== "All" || selectedDuration !== "All" || searchValue) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedCategory("All");
+                    setSelectedPriceRange("All");
+                    setSelectedDuration("All");
+                    setSearchValue("");
+                  }}
+                  className="text-xs"
+                >
+                  Clear Filters
+                </Button>
+              )}
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Sort by:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-3 py-1 text-sm border rounded-md bg-background"
               >
-                <GitCompare size={14} className="mr-1" />
-                Compare ({comparing.length})
-              </Button>
-            )}
+                {sortOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(category)}
-                className="text-xs"
-              >
-                {category}
-              </Button>
-            ))}
+
+          {/* Category Filters */}
+          <div className="space-y-3">
+            <h4 className="font-medium text-foreground text-sm">Categories</h4>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                  className="text-xs"
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Price Range Filters */}
+          <div className="space-y-3">
+            <h4 className="font-medium text-foreground text-sm">Price Range</h4>
+            <div className="flex flex-wrap gap-2">
+              {priceRanges.map((range) => (
+                <Button
+                  key={range}
+                  variant={selectedPriceRange === range ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedPriceRange(range)}
+                  className="text-xs"
+                >
+                  {range}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Duration Filters */}
+          <div className="space-y-3">
+            <h4 className="font-medium text-foreground text-sm">Duration</h4>
+            <div className="flex flex-wrap gap-2">
+              {durations.map((duration) => (
+                <Button
+                  key={duration}
+                  variant={selectedDuration === duration ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedDuration(duration)}
+                  className="text-xs"
+                >
+                  {duration}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Packages Grid */}
         <div className="card-grid-2">
-          {packages.map((pkg) => (
+          {sortedPackages.map((pkg) => (
             <LuxuryCard 
               key={pkg.id}
               className="p-0 overflow-hidden"
             >
               <div className="relative">
-                <div className="h-48 bg-muted">
+                <div className="aspect-[3/2] bg-muted">
                   <img 
                     src={pkg.image} 
                     alt={pkg.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain object-center"
                   />
                 </div>
                 
@@ -203,33 +269,30 @@ export default function Packages() {
                     <Heart size={14} className={favorites.includes(pkg.id) ? 'fill-current' : ''} />
                   </button>
                   <button
-                    onClick={() => toggleCompare(pkg.id)}
-                    className={`p-2 rounded-full backdrop-blur-sm transition-all ${
-                      comparing.includes(pkg.id) 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'bg-white/20 text-white hover:bg-white/30'
-                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleComparePackage(pkg);
+                    }}
+                    className="p-2 rounded-full backdrop-blur-sm transition-all bg-white/20 text-white hover:bg-white/30"
                   >
                     <GitCompare size={14} />
                   </button>
                 </div>
 
-                <Badge 
-                  className={`absolute top-3 left-3 ${getDifficultyColor(pkg.difficulty)}`}
-                >
-                  {pkg.difficulty}
-                </Badge>
               </div>
 
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h3 className="font-playfair font-semibold text-foreground mb-1">
+                    <h3 className="font-semibold text-foreground mb-1 font-inter">
                       {pkg.title}
                     </h3>
                     <div className="flex items-center text-sm text-muted-foreground mb-2">
                       <Clock size={12} className="mr-1" />
                       {pkg.duration}
+                      <span className="mx-2">•</span>
+                      <Users size={12} className="mr-1" />
+                      {pkg.groupSize}
                     </div>
                   </div>
                   <div className="text-right">
@@ -253,7 +316,7 @@ export default function Packages() {
                     ))}
                     {pkg.highlights.length > 2 && (
                       <Badge variant="secondary" className="text-xs bg-muted">
-                        +{pkg.highlights.length - 2} more
+                        +{pkg.highlights.length - 2} {t("common.more")}
                       </Badge>
                     )}
                   </div>
@@ -263,7 +326,7 @@ export default function Packages() {
                   <div className="flex items-center">
                     <IndianRupee size={16} className="text-accent" />
                     <span className="font-bold text-lg text-accent">{pkg.price}</span>
-                    <span className="text-sm text-muted-foreground ml-1">per person</span>
+                    <span className="text-sm text-muted-foreground ml-1">{t("common.perPerson")}</span>
                   </div>
                   <div className="flex space-x-2">
                     <Button 
@@ -271,13 +334,13 @@ export default function Packages() {
                       size="sm"
                       onClick={() => navigate(`/packages/${pkg.id}`)}
                     >
-                      View Details
+                      {t("common.viewDetails")}
                     </Button>
                     <Button 
-                      variant="premium"
-                      size="sm"
+                      size="sm" 
+                      className="bg-primary hover:bg-primary-light"
                     >
-                      Book Now
+                      {t("common.bookNow")}
                     </Button>
                   </div>
                 </div>
@@ -286,36 +349,23 @@ export default function Packages() {
           ))}
         </div>
 
-        {/* Quick Stats */}
-        <LuxuryCard className="mt-6 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
-          <div className="text-center">
-            <h3 className="font-playfair font-semibold text-foreground mb-2">
-              Discover More
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              15+ curated packages covering all of Jharkhand's hidden gems
-            </p>
-            <div className="grid grid-cols-4 gap-4 text-center">
-              <div>
-                <Calendar className="mx-auto text-primary mb-1" size={20} />
-                <p className="text-xs text-muted-foreground">Flexible Dates</p>
-              </div>
-              <div>
-                <Users className="mx-auto text-primary mb-1" size={20} />
-                <p className="text-xs text-muted-foreground">Group Discounts</p>
-              </div>
-              <div>
-                <Car className="mx-auto text-primary mb-1" size={20} />
-                <p className="text-xs text-muted-foreground">Transport Included</p>
-              </div>
-              <div>
-                <Building className="mx-auto text-primary mb-1" size={20} />
-                <p className="text-xs text-muted-foreground">Premium Stays</p>
-              </div>
-            </div>
+        {filteredPackages.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">No packages found matching your criteria.</p>
           </div>
-        </LuxuryCard>
+        )}
       </div>
+
+      {/* Package Selection Modal */}
+      <PackageSelectionModal
+        isOpen={showSelectionModal}
+        onClose={() => setShowSelectionModal(false)}
+        onSelect={handlePackageSelect}
+        excludeId={selectedPackageForComparison?.id}
+      />
+
+      {/* Package Comparison Modal */}
+      <PackageComparison />
     </div>
   );
 }

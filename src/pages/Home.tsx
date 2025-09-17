@@ -1,54 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { SearchBar } from "@/components/ui/search-bar";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { 
   Package, 
   Calendar, 
   ShoppingBag, 
   Car, 
   Building, 
-  Shield,
+  MapPin,
   ArrowRight,
   Sparkles,
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
 import heroImage from "@/assets/jharkhand-hero.jpg";
+import logoImage from "@/assets/Logo.jpg";
+import topDestinationsImage from "@/assets/home/Top Destinations.png";
+import culturalHeritageImage from "@/assets/home/Cultural Heritage.png";
+import naturalWondersImage from "@/assets/home/Natural Wonders.png";
 import { useNavigate } from "react-router-dom";
 
-const quickAccessItems = [
-  { icon: Package, label: "Packages", path: "/packages", color: "emerald" },
-  { icon: Calendar, label: "Events", path: "/events", color: "gold" },
-  { icon: ShoppingBag, label: "Marketplace", path: "/marketplace", color: "emerald" },
-  { icon: Car, label: "Rentals", path: "/transport", color: "gold" },
-  { icon: Building, label: "Hotels", path: "/stays", color: "emerald" },
-  { icon: Shield, label: "SOS Hub", path: "/profile", color: "gold" },
+const getQuickAccessItems = (t: any) => [
+  { icon: MapPin, label: t("navigation.destinations"), path: "/destinations", color: "emerald" },
+  { icon: Package, label: t("navigation.packages"), path: "/packages", color: "gold" },
+  { icon: Calendar, label: t("navigation.events"), path: "/events", color: "emerald" },
+  { icon: ShoppingBag, label: t("navigation.marketplace"), path: "/marketplace", color: "gold" },
+  { icon: Car, label: t("navigation.transport"), path: "/transport", color: "emerald" },
+  { icon: Building, label: t("navigation.stays"), path: "/stays", color: "gold" },
 ];
 
-const highlights = [
+const getHighlights = (t: any) => [
   {
-    title: "Top Destinations",
-    subtitle: "Discover hidden gems",
-    image: heroImage,
+    title: t("home.highlights.topDestinations"),
+    subtitle: t("home.highlights.topDestinationsSubtitle"),
+    image: topDestinationsImage,
   },
   {
-    title: "Cultural Heritage",
-    subtitle: "Rich tribal traditions",
-    image: heroImage,
+    title: t("home.highlights.culturalHeritage"),
+    subtitle: t("home.highlights.culturalHeritageSubtitle"),
+    image: culturalHeritageImage,
   },
   {
-    title: "Natural Wonders",
-    subtitle: "Pristine landscapes",
-    image: heroImage,
+    title: t("home.highlights.naturalWonders"),
+    subtitle: t("home.highlights.naturalWondersSubtitle"),
+    image: naturalWondersImage,
   },
 ];
 
 export default function Home() {
+  const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState("");
   const [currentHighlight, setCurrentHighlight] = useState(0);
   const navigate = useNavigate();
+
+  const quickAccessItems = getQuickAccessItems(t);
+  const highlights = getHighlights(t);
 
   const nextHighlight = () => {
     setCurrentHighlight((prev) => (prev + 1) % highlights.length);
@@ -58,18 +69,44 @@ export default function Home() {
     setCurrentHighlight((prev) => (prev - 1 + highlights.length) % highlights.length);
   };
 
+  // Auto-transition every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHighlight((prev) => (prev + 1) % highlights.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [highlights.length]);
+
   return (
-    <div className="pb-20 min-h-screen bg-background">
+    <div className="pb-24 min-h-screen bg-background">
       {/* Header */}
       <div className="relative bg-primary text-primary-foreground px-6 pt-12 pb-8">
         <div className="absolute inset-0 hero-gradient opacity-90" />
         <div className="relative z-10">
-          <h1 className="text-2xl font-playfair font-bold text-center mb-2">
-            Discover Jharkhand
-          </h1>
-          <p className="text-center text-primary-foreground/80 mb-6">
-            Premium tourism experiences await
-          </p>
+          {/* Logo and Controls */}
+          <div className="flex justify-between items-start mb-8">
+            <div className="flex-1"></div>
+            <div className="flex gap-2">
+              <DarkModeToggle />
+              <LanguageToggle />
+            </div>
+          </div>
+          
+          {/* Main Branding */}
+          <div className="text-center mb-8">
+            <img 
+              src={logoImage} 
+              alt="Explore Jharkhand Logo" 
+              className="w-20 h-20 mx-auto mb-6 rounded-full object-cover shadow-lg"
+            />
+            <h1 className="text-4xl md:text-5xl font-playfair font-bold mb-4 text-white drop-shadow-lg">
+              {t("home.title")}
+            </h1>
+            <p className="text-xl md:text-2xl text-primary-foreground/90 font-medium drop-shadow-md">
+              {t("home.subtitle")}
+            </p>
+          </div>
           
           {/* Search Bar */}
           <SearchBar 
@@ -87,14 +124,14 @@ export default function Home() {
             <img 
               src={highlights[currentHighlight].image} 
               alt={highlights[currentHighlight].title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-all duration-1000 ease-in-out"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-black/17" />
             <div className="absolute bottom-4 left-4 right-4">
-              <h3 className="text-white font-playfair text-xl font-bold mb-1">
+              <h3 className="text-white font-playfair text-xl font-bold mb-1 drop-shadow-lg transition-all duration-1000 ease-in-out">
                 {highlights[currentHighlight].title}
               </h3>
-              <p className="text-white/80 text-sm">
+              <p className="text-white/90 text-sm drop-shadow-md transition-all duration-1000 ease-in-out">
                 {highlights[currentHighlight].subtitle}
               </p>
             </div>
@@ -130,7 +167,7 @@ export default function Home() {
         {/* Quick Access */}
         <div className="section-spacing mb-6">
           <h2 className="section-title">
-            Quick Access
+            {t("home.quickAccess")}
           </h2>
           <div className="grid grid-cols-3 gap-3">
             {quickAccessItems.map((item, index) => {
@@ -163,13 +200,13 @@ export default function Home() {
             </div>
             <div className="flex-1">
               <Badge variant="secondary" className="mb-2 bg-accent/10 text-accent border-accent/20">
-                Festival Spotlight
+                {t("home.festivalSpotlight")}
               </Badge>
               <h3 className="font-playfair font-semibold text-foreground mb-1">
-                Sarhul Festival 2024
+                {t("home.sarhulFestival2024")}
               </h3>
               <p className="text-sm text-muted-foreground mb-3">
-                Experience the vibrant celebration of spring with traditional Santhal rituals and cultural performances.
+                {t("home.sarhulDescription")}
               </p>
               <Button 
                 variant="outline" 
@@ -177,7 +214,7 @@ export default function Home() {
                 onClick={() => navigate('/events')}
                 className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
               >
-                View More <ArrowRight size={14} className="ml-1" />
+                {t("common.viewMore")} <ArrowRight size={14} className="ml-1" />
               </Button>
             </div>
           </div>
@@ -191,10 +228,10 @@ export default function Home() {
             </div>
             <div>
               <h3 className="font-playfair font-semibold text-primary mb-2">
-                Jharkhand Fact of the Day
+                {t("home.factOfTheDay")}
               </h3>
               <p className="text-sm text-foreground">
-                Jharkhand is home to over 30 tribal communities, making it one of India's most culturally diverse states. The state's name literally means "land of forests."
+                {t("home.factContent")}
               </p>
             </div>
           </div>

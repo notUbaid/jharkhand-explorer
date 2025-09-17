@@ -1,73 +1,88 @@
-# Welcome to your Lovable project
+# Discover Jharkhand - Premium Tourism Experience
 
-## Project info
+## About
 
-**URL**: https://lovable.dev/projects/04abe838-6bb1-4c73-8c33-0ec20f75e742
+Discover Jharkhand is a comprehensive tourism platform showcasing the hidden gems and cultural richness of Jharkhand, India. Explore destinations, authentic food, cultural experiences, luxury stays, and adventure activities across this beautiful state.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- 🌍 **Bilingual Support**: Available in English and Hindi
+- 🗺️ **25+ Destinations**: From nature spots to historic sites and religious places
+- 🏨 **Accommodation**: Hotels, resorts, and homestays
+- 🍽️ **Food & Dining**: Authentic tribal cuisine and local restaurants
+- 🎭 **Cultural Experiences**: Festivals, events, and traditional activities
+- 🚗 **Transport**: Car rentals and transportation options
+- 📱 **Mobile-First**: Responsive design for all devices
 
-**Use Lovable**
+## Technologies Used
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/04abe838-6bb1-4c73-8c33-0ec20f75e742) and start prompting.
+- **Frontend**: React 18 with TypeScript
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **Routing**: React Router DOM
+- **Internationalization**: react-i18next
+- **Build Tool**: Vite
+- **Icons**: Lucide React
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js (v16 or higher)
+- npm or yarn
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd jharkhand-explorer
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. Install dependencies:
+```bash
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Open your browser and visit `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Available Scripts
 
-**Use GitHub Codespaces**
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Project Structure
 
-## What technologies are used for this project?
+```
+src/
+├── components/          # Reusable UI components
+│   └── ui/             # shadcn/ui components
+├── pages/              # Page components
+├── locales/            # Translation files (en.json, hi.json)
+├── i18n/               # Internationalization configuration
+├── hooks/               # Custom React hooks
+├── lib/                 # Utility functions
+└── assets/              # Static assets
+```
 
-This project is built with:
+## Contributing
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/04abe838-6bb1-4c73-8c33-0ec20f75e742) and click on Share -> Publish.
+This project is licensed under the MIT License.
 
-## Can I connect a custom domain to my Lovable project?
+## Contact
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+For questions or support, please contact us at support@discoverjharkhand.com

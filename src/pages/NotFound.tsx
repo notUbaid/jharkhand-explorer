@@ -13,7 +13,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6">
+    <div className="min-h-screen bg-background flex items-center justify-center px-6 pb-24">
       <LuxuryCard className="text-center max-w-md w-full">
         <div className="py-8">
           <div className="w-20 h-20 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">

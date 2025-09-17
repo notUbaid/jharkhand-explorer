@@ -1,0 +1,238 @@
+{
+  "common": {
+    "search": "Search",
+    "viewMore": "View More",
+    "bookNow": "Book Now",
+    "viewDetails": "View Details",
+    "compare": "Compare",
+    "favorites": "Favorites",
+    "share": "Share",
+    "contact": "Contact",
+    "rating": "Rating",
+    "price": "Price",
+    "duration": "Duration",
+    "location": "Location",
+    "category": "Category",
+    "difficulty": "Difficulty",
+    "timings": "Timings",
+    "entryFee": "Entry Fee",
+    "perPerson": "per person",
+    "free": "Free",
+    "hours": "hours",
+    "days": "Days",
+    "nights": "Nights",
+    "easy": "Easy",
+    "moderate": "Moderate",
+    "challenging": "Challenging",
+    "all": "All",
+    "veg": "Veg",
+    "nonVeg": "Non-Veg",
+    "budgetFriendly": "Budget-Friendly",
+    "hiddenGem": "Hidden Gem",
+    "more": "more",
+    "flexibleDates": "Flexible Dates",
+    "groupDiscounts": "Group Discounts",
+    "transportIncluded": "Transport Included",
+    "premiumStays": "Premium Stays"
+  },
+  "navigation": {
+    "home": "Home",
+    "destinations": "Destinations",
+    "packages": "Packages",
+    "marketplace": "Marketplace",
+    "events": "Events",
+    "transport": "Transport",
+    "stays": "Stays",
+    "profile": "Profile"
+  },
+  "home": {
+    "title": "Explore Jharkhand",
+    "subtitle": "Premium Tourism Experiences",
+    "quickAccess": "Quick Access",
+    "festivalSpotlight": "Festival Spotlight",
+    "sarhulFestival2024": "Sarhul Festival 2024",
+    "sarhulDescription": "Experience the vibrant celebration of spring with traditional Santhal rituals and cultural performances.",
+    "factOfTheDay": "Jharkhand Fact of the Day",
+    "factContent": "Jharkhand is home to over 30 tribal communities, making it one of India's most culturally diverse states. The state's name literally means \"land of forests.\"",
+    "highlights": {
+      "topDestinations": "Top Destinations",
+      "topDestinationsSubtitle": "Discover hidden gems",
+      "culturalHeritage": "Cultural Heritage",
+      "culturalHeritageSubtitle": "Rich tribal traditions",
+      "naturalWonders": "Natural Wonders",
+      "naturalWondersSubtitle": "Pristine landscapes"
+    }
+  },
+  "destinations": {
+    "title": "Explore Destinations",
+    "searchPlaceholder": "Search destinations, restaurants...",
+    "touristSpots": "Tourist Spots",
+    "foodDining": "Food & Dining",
+    "categories": "Categories",
+    "sortByLocation": "Sort by Location",
+    "locationOn": "Location On",
+    "filters": "Filters",
+    "spots": {
+      "nature": "Nature",
+      "historic": "Historic",
+      "religious": "Religious",
+      "cultural": "Cultural",
+      "adventure": "Adventure",
+      "mining": "Mining"
+    },
+    "food": {
+      "traditional": "Traditional",
+      "multiCuisine": "Multi-cuisine",
+      "cuisine": "Cuisine",
+      "priceRange": "Price Range"
+    },
+    "places": {
+      "betlaNationalPark": {
+        "name": "Betla National Park",
+        "location": "Palamu District",
+        "description": "One of the finest wildlife reserves in Eastern India"
+      },
+      "jagannathTemple": {
+        "name": "Jagannath Temple",
+        "location": "Ranchi",
+        "description": "Beautiful replica of the famous Puri Jagannath Temple"
+      },
+      "netarhatSunsetPoint": {
+        "name": "Netarhat Sunset Point",
+        "location": "Latehar District",
+        "description": "Mesmerizing sunset views from the Queen of Chotanagpur"
+      },
+      "tribalThaliHouse": {
+        "name": "Tribal Thali House",
+        "location": "Ranchi",
+        "description": "Authentic tribal cuisine with organic ingredients",
+        "cuisine": "Tribal, Vegetarian"
+      },
+      "forestRestaurant": {
+        "name": "Forest Restaurant",
+        "location": "Jamshedpur",
+        "description": "Eco-friendly dining experience in natural surroundings",
+        "cuisine": "Indian, Continental"
+      }
+    }
+  },
+  "packages": {
+    "title": "Travel Packages",
+    "searchPlaceholder": "Search packages by destination, theme...",
+    "categories": "Categories",
+    "cultural": "Cultural",
+    "nature": "Nature",
+    "religious": "Religious",
+    "adventure": "Adventure",
+    "historic": "Historic",
+    "wellness": "Wellness",
+    "discoverMore": "Discover More",
+    "discoverMoreDescription": "15+ curated packages covering all of Jharkhand's hidden gems",
+    "packages": {
+      "tribalCultureExplorer": {
+        "title": "Tribal Culture Explorer",
+        "duration": "5 Days / 4 Nights",
+        "highlights": ["Santhal Village Visit", "Tribal Dance Performance", "Handicraft Workshop"]
+      },
+      "wildlifeNatureRetreat": {
+        "title": "Wildlife & Nature Retreat",
+        "duration": "4 Days / 3 Nights",
+        "highlights": ["Betla National Park", "Netarhat Hill Station", "Bird Watching"]
+      },
+      "spiritualJharkhandJourney": {
+        "title": "Spiritual Jharkhand Journey",
+        "duration": "3 Days / 2 Nights",
+        "highlights": ["Baidyanath Temple", "Jagannath Temple", "Meditation Sessions"]
+      },
+      "adventureSeekersParadise": {
+        "title": "Adventure Seeker's Paradise",
+        "duration": "6 Days / 5 Nights",
+        "highlights": ["Rock Climbing", "River Rafting", "Jungle Trekking"]
+      },
+      "heritageHistoryTrail": {
+        "title": "Heritage & History Trail",
+        "duration": "4 Days / 3 Nights",
+        "highlights": ["Palamu Fort", "Archaeological Sites", "Museum Tours"]
+      },
+      "wellnessAyurvedaRetreat": {
+        "title": "Wellness & Ayurveda Retreat",
+        "duration": "7 Days / 6 Nights",
+        "highlights": ["Ayurvedic Treatments", "Yoga Sessions", "Herbal Garden Tours"]
+      }
+    }
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "searchPlaceholder": "Search products, experiences...",
+    "products": "Products",
+    "experiences": "Experiences",
+    "categories": "Categories",
+    "handicrafts": "Handicrafts",
+    "textiles": "Textiles",
+    "jewelry": "Jewelry",
+    "artwork": "Artwork",
+    "cultural": "Cultural",
+    "adventure": "Adventure",
+    "wellness": "Wellness",
+    "cooking": "Cooking"
+  },
+  "events": {
+    "title": "Events",
+    "searchPlaceholder": "Search events...",
+    "upcoming": "Upcoming",
+    "ongoing": "Ongoing",
+    "past": "Past",
+    "categories": "Categories",
+    "festivals": "Festivals",
+    "cultural": "Cultural",
+    "adventure": "Adventure",
+    "religious": "Religious",
+    "music": "Music",
+    "dance": "Dance",
+    "sports": "Sports"
+  },
+  "transport": {
+    "title": "Transport",
+    "searchPlaceholder": "Search transport options...",
+    "rentals": "Rentals",
+    "public": "Public Transport",
+    "categories": "Categories",
+    "car": "Car",
+    "bike": "Bike",
+    "bus": "Bus",
+    "taxi": "Taxi",
+    "auto": "Auto Rickshaw"
+  },
+  "stays": {
+    "title": "Stays",
+    "searchPlaceholder": "Search hotels, resorts...",
+    "hotels": "Hotels",
+    "resorts": "Resorts",
+    "homestays": "Homestays",
+    "categories": "Categories",
+    "luxury": "Luxury",
+    "budget": "Budget",
+    "ecoFriendly": "Eco-Friendly",
+    "heritage": "Heritage",
+    "tribal": "Tribal"
+  },
+  "profile": {
+    "title": "Profile",
+    "myBookings": "My Bookings",
+    "myFavorites": "My Favorites",
+    "myReviews": "My Reviews",
+    "settings": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "help": "Help",
+    "about": "About",
+    "logout": "Logout",
+    "personal": "Personal"
+  },
+  "language": {
+    "english": "English",
+    "hindi": "हिन्दी",
+    "selectLanguage": "Select Language"
+  }
+}
+

@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BottomNavigation } from "@/components/ui/bottom-navigation";
+import { DarkModeProvider } from "@/contexts/DarkModeContext";
+import { PackageComparisonProvider } from "@/contexts/PackageComparisonContext";
 import Home from "./pages/Home";
 import Destinations from "./pages/Destinations";
 import Packages from "./pages/Packages";
@@ -27,41 +29,45 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <div className="relative">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/destinations" element={<Destinations />} />
-            <Route path="/destinations/:id" element={<DestinationDetail />} />
-            <Route path="/restaurants/:id" element={<RestaurantDetail />} />
+    <DarkModeProvider>
+      <PackageComparisonProvider>
+        <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <div className="relative">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/destinations" element={<Destinations />} />
+              <Route path="/destinations/:id" element={<DestinationDetail />} />
+              <Route path="/restaurants/:id" element={<RestaurantDetail />} />
 
-            <Route path="/packages" element={<Packages />} />
-            <Route path="/packages/:id" element={<PackageDetail />} />
-            <Route path="/packages/compare" element={<PackageCompare />} />
+              <Route path="/packages" element={<Packages />} />
+              <Route path="/packages/:id" element={<PackageDetail />} />
+              <Route path="/packages/compare" element={<PackageCompare />} />
 
-            <Route path="/marketplace" element={<Marketplace />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/experiences/:id" element={<ExperienceDetail />} />
+              <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/products/:id" element={<ProductDetail />} />
+              <Route path="/experiences/:id" element={<ExperienceDetail />} />
 
-            <Route path="/events" element={<Events />} />
-            <Route path="/events/:id" element={<EventDetail />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/events/:id" element={<EventDetail />} />
 
-            <Route path="/transport" element={<Transport />} />
+              <Route path="/transport" element={<Transport />} />
 
-            <Route path="/stays" element={<Stays />} />
-            <Route path="/stays/:id" element={<StayDetail />} />
-            <Route path="/stays/compare" element={<StayCompare />} />
+              <Route path="/stays" element={<Stays />} />
+              <Route path="/stays/:id" element={<StayDetail />} />
+              <Route path="/stays/compare" element={<StayCompare />} />
 
-            <Route path="/profile" element={<Profile />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <BottomNavigation />
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <BottomNavigation />
+          </div>
+        </BrowserRouter>
+        </TooltipProvider>
+      </PackageComparisonProvider>
+    </DarkModeProvider>
   </QueryClientProvider>
 );
 

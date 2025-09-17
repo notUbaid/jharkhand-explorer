@@ -14,7 +14,7 @@ export default function PackageCompare() {
   }, []);
 
   return (
-    <div className="pb-20 min-h-screen bg-background">
+    <div className="pb-24 min-h-screen bg-background">
       <header className="bg-primary text-primary-foreground px-6 pt-12 pb-4">
         <div className="flex items-center gap-3 mb-3">
           <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>

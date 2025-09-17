@@ -1,120 +1,231 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Clock, IndianRupee, Star, ArrowLeft, Share2, GitCompare } from "lucide-react";
+import { Clock, IndianRupee, Star, ArrowLeft, Share2, GitCompare, Users, MapPin, Calendar, Building, Utensils } from "lucide-react";
+import { getPackageById } from "@/data/packages";
+import { Package } from "@/types/Package";
+import { usePackageComparison } from "@/contexts/PackageComparisonContext";
+import { PackageSelectionModal } from "@/components/PackageSelectionModal";
+import { PackageComparison } from "@/components/PackageComparison";
 
 export default function PackageDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [packageData, setPackageData] = useState(getPackageById(id || "1"));
+  const [showSelectionModal, setShowSelectionModal] = useState(false);
+  const { setLeftPackage, setRightPackage, isComparing, setOpenComparisonModal } = usePackageComparison();
 
   useEffect(() => {
-    document.title = `Package Details #${id} • Discover Jharkhand`;
+    const pkg = getPackageById(id || "1");
+    setPackageData(pkg);
+    document.title = `${pkg.title} • Discover Jharkhand`;
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, [id]);
 
+  const handleComparePackage = () => {
+    if (packageData) {
+      setLeftPackage(packageData);
+      setShowSelectionModal(true);
+    }
+  };
+
+  const handlePackageSelect = (selectedPackage: Package) => {
+    setRightPackage(selectedPackage);
+    setOpenComparisonModal(true);
+  };
+
+
   return (
-    <div className="pb-20 min-h-screen bg-background">
+    <div className="pb-24 min-h-screen bg-background">
       <header className="bg-primary text-primary-foreground px-6 pt-12 pb-4">
         <div className="flex items-center gap-3 mb-3">
           <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft size={14} className="mr-1" /> Back
           </Button>
-          <Badge variant="secondary">Cultural</Badge>
+          <Badge variant="secondary">{packageData.category}</Badge>
         </div>
-        <h1 className="text-2xl font-playfair font-bold">Package Details #{id}</h1>
-        <p className="text-primary-foreground/80 text-sm mt-1">Curated itinerary with highlights</p>
+        <h1 className="text-2xl font-playfair font-bold">{packageData.title}</h1>
+        <p className="text-primary-foreground/80 text-sm mt-1">{packageData.type}</p>
       </header>
 
-      <main className="px-6 -mt-4 space-y-4">
-        <LuxuryCard className="p-0 overflow-hidden">
-          <div className="h-44 bg-muted" />
-          <div className="p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Clock size={14} className="mr-1" /> 5 Days / 4 Nights
-              </div>
-              <div className="flex items-center">
-                <Star className="text-accent fill-accent" size={14} />
-                <span className="text-sm font-medium ml-1">4.8</span>
-              </div>
-              <div className="flex items-center">
-                <IndianRupee size={16} className="text-accent" />
-                <span className="font-bold text-accent">₹25,000</span>
+      <main className="px-6 space-y-6 pt-6">
+        {/* Package Info */}
+        <div className="bg-muted/30 rounded-lg p-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div className="flex items-center">
+              <Clock size={16} className="mr-2 text-primary" />
+              <div>
+                <div className="text-muted-foreground text-xs">Duration</div>
+                <div className="font-semibold">{packageData.duration}</div>
               </div>
             </div>
-
-            <section>
-              <h2 className="font-medium text-foreground mb-1">About</h2>
-              <p className="text-sm text-muted-foreground">Immerse in Jharkhand's tribal culture with village visits, performances, and workshops. Placeholder description.</p>
-            </section>
-
-            <section>
-              <h3 className="font-medium text-foreground mb-2">Highlights</h3>
-              <div className="flex flex-wrap gap-2 text-xs">
-                {['Village Visit', 'Dance Performance', 'Handicraft Workshop'].map((h) => (
-                  <Badge key={h} variant="secondary" className="bg-primary/10 text-primary">{h}</Badge>
-                ))}
+            <div className="flex items-center">
+              <Users size={16} className="mr-2 text-primary" />
+              <div>
+                <div className="text-muted-foreground text-xs">Group Size</div>
+                <div className="font-semibold">{packageData.groupSize}</div>
               </div>
-            </section>
-
-            <section>
-              <h3 className="font-medium text-foreground mb-2">Itinerary</h3>
-              <Accordion type="single" collapsible>
-                {[1,2,3,4,5].map((day) => (
-                  <AccordionItem key={day} value={`day-${day}`}>
-                    <AccordionTrigger>Day {day}</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="h-28 bg-muted rounded-md mb-2" />
-                      <p className="text-sm text-muted-foreground">Planned activities and sightseeing for day {day}. Placeholder content.</p>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </section>
-
-            <section>
-              <h3 className="font-medium text-foreground mb-2">Inclusions / Exclusions</h3>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <LuxuryCard>
-                  <h4 className="font-medium mb-1">Inclusions</h4>
-                  <ul className="list-disc ml-4 text-muted-foreground">
-                    <li>Stay & Breakfast</li>
-                    <li>Local Transport</li>
-                    <li>Guide</li>
-                  </ul>
-                </LuxuryCard>
-                <LuxuryCard>
-                  <h4 className="font-medium mb-1">Exclusions</h4>
-                  <ul className="list-disc ml-4 text-muted-foreground">
-                    <li>Flights</li>
-                    <li>Personal Expenses</li>
-                    <li>Optional Activities</li>
-                  </ul>
-                </LuxuryCard>
+            </div>
+            <div className="flex items-center">
+              <Calendar size={16} className="mr-2 text-primary" />
+              <div>
+                <div className="text-muted-foreground text-xs">Best Time</div>
+                <div className="font-semibold">{packageData.bestTime}</div>
               </div>
-            </section>
-
-            <section>
-              <h3 className="font-medium text-foreground mb-2">Accessibility</h3>
-              <div className="flex flex-wrap gap-2 text-xs">
-                <Badge variant="outline">Wheelchair Access</Badge>
-                <Badge variant="outline">Senior Friendly</Badge>
-                <Badge variant="outline">Female Guide Available</Badge>
-              </div>
-            </section>
-
-            <div className="flex gap-2">
-              <Button className="bg-primary hover:bg-primary-light">Book Now</Button>
-              <Button variant="outline" onClick={() => navigate('/packages/compare') }>
-                <GitCompare size={14} className="mr-1" /> Compare
-              </Button>
-              <Button variant="outline"><Share2 size={14} className="mr-1" /> Share</Button>
             </div>
           </div>
-        </LuxuryCard>
+          
+          <div className="mt-4 pt-4 border-t border-muted">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Star className="text-accent fill-accent" size={16} />
+                <span className="text-lg font-semibold ml-2">{packageData.rating}</span>
+                <span className="text-muted-foreground ml-1">rating</span>
+              </div>
+              <div className="text-right">
+                <div className="flex items-center">
+                  <IndianRupee size={20} className="text-accent" />
+                  <span className="text-2xl font-bold text-accent">{packageData.price}</span>
+                </div>
+                <div className="text-sm text-muted-foreground">per person</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* About Section */}
+        <section>
+          <h2 className="font-medium text-foreground mb-2">About</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">{packageData.description}</p>
+        </section>
+
+        {/* Highlights Section */}
+        <section>
+          <h3 className="font-medium text-foreground mb-2">Highlights</h3>
+          <div className="flex flex-wrap gap-2 text-xs">
+            {packageData.highlights.map((highlight, index) => (
+              <Badge key={index} variant="secondary" className="bg-primary/10 text-primary">
+                {highlight}
+              </Badge>
+            ))}
+          </div>
+        </section>
+
+        {/* Itinerary Section */}
+        <section>
+          <h3 className="font-medium text-foreground mb-2">Itinerary</h3>
+          <Accordion type="single" collapsible>
+            {packageData.itinerary.map((day) => (
+              <AccordionItem key={day.day} value={`day-${day.day}`}>
+                <AccordionTrigger>{day.title}</AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">{day.title}</h4>
+                    <ul className="list-disc ml-4 space-y-1">
+                      {day.activities.map((activity, index) => (
+                        <li key={index} className="text-sm text-muted-foreground">{activity}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </section>
+
+        {/* Accommodation Section */}
+        <section>
+          <h3 className="font-medium text-foreground mb-2">Accommodation</h3>
+          <div className="space-y-2">
+            {packageData.accommodation.map((acc, index) => (
+              <div key={index} className="flex items-start gap-2 p-3 bg-muted rounded-lg">
+                <Building size={14} className="mt-0.5 text-muted-foreground" />
+                <span className="text-sm">{acc}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Meals Section */}
+        <section>
+          <h3 className="font-medium text-foreground mb-2">Meals</h3>
+          <div className="space-y-2">
+            {packageData.meals.map((meal, index) => (
+              <div key={index} className="flex items-start gap-2 p-3 bg-muted rounded-lg">
+                <Utensils size={14} className="mt-0.5 text-muted-foreground" />
+                <span className="text-sm">{meal}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Transport Section */}
+        <section>
+          <h3 className="font-medium text-foreground mb-2">Transport</h3>
+          <div className="p-3 bg-muted rounded-lg">
+            <span className="text-sm">{packageData.transport}</span>
+          </div>
+        </section>
+
+        {/* Inclusions/Exclusions Section */}
+        <section>
+          <h3 className="font-medium text-foreground mb-2">Inclusions / Exclusions</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <div className="p-3 bg-muted rounded-lg">
+              <h4 className="font-medium mb-2 text-success">Inclusions</h4>
+              <ul className="list-disc ml-4 text-muted-foreground space-y-1">
+                {packageData.inclusions.map((inclusion, index) => (
+                  <li key={index}>{inclusion}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="p-3 bg-muted rounded-lg">
+              <h4 className="font-medium mb-2 text-destructive">Exclusions</h4>
+              <ul className="list-disc ml-4 text-muted-foreground space-y-1">
+                {packageData.exclusions.map((exclusion, index) => (
+                  <li key={index}>{exclusion}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Travel Tips Section */}
+        <section>
+          <h3 className="font-medium text-foreground mb-2">Travel Tips</h3>
+          <div className="space-y-2">
+            {packageData.travelTips.map((tip, index) => (
+              <div key={index} className="flex items-start gap-2 p-3 bg-muted rounded-lg">
+                <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0" />
+                <span className="text-sm text-muted-foreground">{tip}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-2 pb-4">
+          <Button className="bg-primary hover:bg-primary-light">Book Now</Button>
+          <Button variant="outline" onClick={handleComparePackage}>
+            <GitCompare size={14} className="mr-1" /> Compare Package
+          </Button>
+          <Button variant="outline"><Share2 size={14} className="mr-1" /> Share</Button>
+        </div>
       </main>
+
+      {/* Package Selection Modal */}
+      <PackageSelectionModal
+        isOpen={showSelectionModal}
+        onClose={() => setShowSelectionModal(false)}
+        onSelect={handlePackageSelect}
+        excludeId={packageData?.id}
+      />
+
+      {/* Package Comparison Modal */}
+      <PackageComparison />
     </div>
   );
 }

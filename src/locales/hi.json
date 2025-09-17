@@ -1,0 +1,238 @@
+{
+  "common": {
+    "search": "खोजें",
+    "viewMore": "और देखें",
+    "bookNow": "अभी बुक करें",
+    "viewDetails": "विवरण देखें",
+    "compare": "तुलना करें",
+    "favorites": "पसंदीदा",
+    "share": "साझा करें",
+    "contact": "संपर्क",
+    "rating": "रेटिंग",
+    "price": "मूल्य",
+    "duration": "अवधि",
+    "location": "स्थान",
+    "category": "श्रेणी",
+    "difficulty": "कठिनाई",
+    "timings": "समय",
+    "entryFee": "प्रवेश शुल्क",
+    "perPerson": "प्रति व्यक्ति",
+    "free": "मुफ्त",
+    "hours": "घंटे",
+    "days": "दिन",
+    "nights": "रातें",
+    "easy": "आसान",
+    "moderate": "मध्यम",
+    "challenging": "चुनौतीपूर्ण",
+    "all": "सभी",
+    "veg": "शाकाहारी",
+    "nonVeg": "मांसाहारी",
+    "budgetFriendly": "बजट अनुकूल",
+    "hiddenGem": "छुपा हुआ रत्न",
+    "more": "और",
+    "flexibleDates": "लचीली तिथियां",
+    "groupDiscounts": "समूह छूट",
+    "transportIncluded": "परिवहन शामिल",
+    "premiumStays": "प्रीमियम रहने की जगह"
+  },
+  "navigation": {
+    "home": "होम",
+    "destinations": "गंतव्य",
+    "packages": "पैकेज",
+    "marketplace": "बाजार",
+    "events": "कार्यक्रम",
+    "transport": "परिवहन",
+    "stays": "रहने की जगह",
+    "profile": "प्रोफाइल"
+  },
+  "home": {
+    "title": "झारखंड की खोज करें",
+    "subtitle": "प्रीमियम पर्यटन अनुभव प्रतीक्षा में हैं",
+    "quickAccess": "त्वरित पहुंच",
+    "festivalSpotlight": "त्योहार स्पॉटलाइट",
+    "sarhulFestival2024": "सरहुल त्योहार 2024",
+    "sarhulDescription": "पारंपरिक संथाल अनुष्ठानों और सांस्कृतिक प्रदर्शनों के साथ वसंत के जीवंत उत्सव का अनुभव करें।",
+    "factOfTheDay": "झारखंड का दिन का तथ्य",
+    "factContent": "झारखंड 30 से अधिक आदिवासी समुदायों का घर है, जो इसे भारत के सबसे सांस्कृतिक रूप से विविध राज्यों में से एक बनाता है। राज्य का नाम शाब्दिक रूप से \"जंगलों की भूमि\" का अर्थ है।",
+    "highlights": {
+      "topDestinations": "शीर्ष गंतव्य",
+      "topDestinationsSubtitle": "छुपे हुए रत्नों की खोज करें",
+      "culturalHeritage": "सांस्कृतिक विरासत",
+      "culturalHeritageSubtitle": "समृद्ध आदिवासी परंपराएं",
+      "naturalWonders": "प्राकृतिक चमत्कार",
+      "naturalWondersSubtitle": "प्राचीन परिदृश्य"
+    }
+  },
+  "destinations": {
+    "title": "गंतव्यों का अन्वेषण करें",
+    "searchPlaceholder": "गंतव्य, रेस्तरां खोजें...",
+    "touristSpots": "पर्यटन स्थल",
+    "foodDining": "भोजन और डाइनिंग",
+    "categories": "श्रेणियां",
+    "sortByLocation": "स्थान के अनुसार क्रमबद्ध करें",
+    "locationOn": "स्थान चालू",
+    "filters": "फिल्टर",
+    "spots": {
+      "nature": "प्रकृति",
+      "historic": "ऐतिहासिक",
+      "religious": "धार्मिक",
+      "cultural": "सांस्कृतिक",
+      "adventure": "रोमांच",
+      "mining": "खनन"
+    },
+    "food": {
+      "traditional": "पारंपरिक",
+      "multiCuisine": "बहु-व्यंजन",
+      "cuisine": "व्यंजन",
+      "priceRange": "मूल्य सीमा"
+    },
+    "places": {
+      "betlaNationalPark": {
+        "name": "बेतला राष्ट्रीय उद्यान",
+        "location": "पलामू जिला",
+        "description": "पूर्वी भारत के सबसे बेहतरीन वन्यजीव अभयारण्यों में से एक"
+      },
+      "jagannathTemple": {
+        "name": "जगन्नाथ मंदिर",
+        "location": "रांची",
+        "description": "प्रसिद्ध पुरी जगन्नाथ मंदिर की सुंदर प्रतिकृति"
+      },
+      "netarhatSunsetPoint": {
+        "name": "नेतरहाट सनसेट पॉइंट",
+        "location": "लातेहार जिला",
+        "description": "छोटानागपुर की रानी से मनमोहक सूर्यास्त के दृश्य"
+      },
+      "tribalThaliHouse": {
+        "name": "आदिवासी थाली हाउस",
+        "location": "रांची",
+        "description": "कार्बनिक सामग्री के साथ प्रामाणिक आदिवासी व्यंजन",
+        "cuisine": "आदिवासी, शाकाहारी"
+      },
+      "forestRestaurant": {
+        "name": "वन रेस्तरां",
+        "location": "जमशेदपुर",
+        "description": "प्राकृतिक परिवेश में पर्यावरण अनुकूल डाइनिंग अनुभव",
+        "cuisine": "भारतीय, कॉन्टिनेंटल"
+      }
+    }
+  },
+  "packages": {
+    "title": "यात्रा पैकेज",
+    "searchPlaceholder": "गंतव्य, थीम के अनुसार पैकेज खोजें...",
+    "categories": "श्रेणियां",
+    "cultural": "सांस्कृतिक",
+    "nature": "प्रकृति",
+    "religious": "धार्मिक",
+    "adventure": "रोमांच",
+    "historic": "ऐतिहासिक",
+    "wellness": "कल्याण",
+    "discoverMore": "और खोजें",
+    "discoverMoreDescription": "झारखंड के सभी छुपे हुए रत्नों को कवर करने वाले 15+ क्यूरेटेड पैकेज",
+    "packages": {
+      "tribalCultureExplorer": {
+        "title": "आदिवासी संस्कृति एक्सप्लोरर",
+        "duration": "5 दिन / 4 रातें",
+        "highlights": ["संथाल गांव का दौरा", "आदिवासी नृत्य प्रदर्शन", "हस्तशिल्प कार्यशाला"]
+      },
+      "wildlifeNatureRetreat": {
+        "title": "वन्यजीव और प्रकृति रिट्रीट",
+        "duration": "4 दिन / 3 रातें",
+        "highlights": ["बेतला राष्ट्रीय उद्यान", "नेतरहाट हिल स्टेशन", "पक्षी देखना"]
+      },
+      "spiritualJharkhandJourney": {
+        "title": "आध्यात्मिक झारखंड यात्रा",
+        "duration": "3 दिन / 2 रातें",
+        "highlights": ["बैद्यनाथ मंदिर", "जगन्नाथ मंदिर", "ध्यान सत्र"]
+      },
+      "adventureSeekersParadise": {
+        "title": "रोमांच चाहने वालों का स्वर्ग",
+        "duration": "6 दिन / 5 रातें",
+        "highlights": ["रॉक क्लाइम्बिंग", "रिवर राफ्टिंग", "जंगल ट्रेकिंग"]
+      },
+      "heritageHistoryTrail": {
+        "title": "विरासत और इतिहास ट्रेल",
+        "duration": "4 दिन / 3 रातें",
+        "highlights": ["पलामू किला", "पुरातात्विक स्थल", "संग्रहालय दौरे"]
+      },
+      "wellnessAyurvedaRetreat": {
+        "title": "कल्याण और आयुर्वेद रिट्रीट",
+        "duration": "7 दिन / 6 रातें",
+        "highlights": ["आयुर्वेदिक उपचार", "योग सत्र", "जड़ी बूटी बगीचा दौरे"]
+      }
+    }
+  },
+  "marketplace": {
+    "title": "बाजार",
+    "searchPlaceholder": "उत्पाद, अनुभव खोजें...",
+    "products": "उत्पाद",
+    "experiences": "अनुभव",
+    "categories": "श्रेणियां",
+    "handicrafts": "हस्तशिल्प",
+    "textiles": "कपड़े",
+    "jewelry": "गहने",
+    "artwork": "कलाकृति",
+    "cultural": "सांस्कृतिक",
+    "adventure": "रोमांच",
+    "wellness": "कल्याण",
+    "cooking": "खाना पकाना"
+  },
+  "events": {
+    "title": "कार्यक्रम",
+    "searchPlaceholder": "कार्यक्रम खोजें...",
+    "upcoming": "आगामी",
+    "ongoing": "चल रहे",
+    "past": "पिछले",
+    "categories": "श्रेणियां",
+    "festivals": "त्योहार",
+    "cultural": "सांस्कृतिक",
+    "adventure": "रोमांच",
+    "religious": "धार्मिक",
+    "music": "संगीत",
+    "dance": "नृत्य",
+    "sports": "खेल"
+  },
+  "transport": {
+    "title": "परिवहन",
+    "searchPlaceholder": "परिवहन विकल्प खोजें...",
+    "rentals": "किराया",
+    "public": "सार्वजनिक परिवहन",
+    "categories": "श्रेणियां",
+    "car": "कार",
+    "bike": "बाइक",
+    "bus": "बस",
+    "taxi": "टैक्सी",
+    "auto": "ऑटो रिक्शा"
+  },
+  "stays": {
+    "title": "रहने की जगह",
+    "searchPlaceholder": "होटल, रिसॉर्ट खोजें...",
+    "hotels": "होटल",
+    "resorts": "रिसॉर्ट",
+    "homestays": "होमस्टे",
+    "categories": "श्रेणियां",
+    "luxury": "लक्जरी",
+    "budget": "बजट",
+    "ecoFriendly": "पर्यावरण अनुकूल",
+    "heritage": "विरासत",
+    "tribal": "आदिवासी"
+  },
+  "profile": {
+    "title": "प्रोफाइल",
+    "myBookings": "मेरी बुकिंग",
+    "myFavorites": "मेरे पसंदीदा",
+    "myReviews": "मेरी समीक्षाएं",
+    "settings": "सेटिंग्स",
+    "language": "भाषा",
+    "notifications": "सूचनाएं",
+    "help": "सहायता",
+    "about": "के बारे में",
+    "logout": "लॉग आउट",
+    "personal": "व्यक्तिगत"
+  },
+  "language": {
+    "english": "English",
+    "hindi": "हिन्दी",
+    "selectLanguage": "भाषा चुनें"
+  }
+}
+

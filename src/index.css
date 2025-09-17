@@ -137,7 +137,16 @@ All colors MUST be HSL.
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair;
+    @apply font-semibold;
+  }
+
+  /* Fix for ampersand character in Playfair font */
+  .font-playfair {
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .font-playfair .ampersand-fix {
+    font-family: 'Inter', sans-serif;
   }
 
   /* Safe area for mobile devices */
@@ -147,6 +156,21 @@ All colors MUST be HSL.
 
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
+  }
+
+  /* Dark mode image adjustments */
+  .dark img {
+    filter: brightness(0.9) contrast(1.1);
+  }
+
+  /* Dark mode placeholder improvements */
+  .dark .bg-muted {
+    background-color: hsl(var(--muted));
+  }
+
+  /* Dark mode text improvements */
+  .dark .text-muted-foreground {
+    color: hsl(var(--muted-foreground));
   }
 }
 
@@ -221,4 +245,73 @@ All colors MUST be HSL.
   .card-grid-2 {
     @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
   }
+
+  /* Image Transition Animations */
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+  }
+
+  @keyframes slideIn {
+    0% {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes gentlePulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  /* Smooth image transitions */
+  .image-transition {
+    transition: all 2s ease-in-out;
+  }
+
+  .image-transition:hover {
+    transform: scale(1.05);
+  }
+
+  /* Crossfade animation for destination images */
+  .crossfade-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .crossfade-image {
+    transition: opacity 1.5s ease-in-out;
+  }
+
+  .crossfade-image.fade-out {
+    opacity: 0;
+  }
+
+  .crossfade-image.fade-in {
+    opacity: 1;
+  }
+}
+
+/* Hide scrollbars for horizontal image slideshow */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

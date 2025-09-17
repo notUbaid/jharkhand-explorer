@@ -1,9 +1,13 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Switch } from "@/components/ui/switch";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { useDarkMode } from "@/contexts/DarkModeContext";
 import { 
   User, 
   Heart, 
@@ -26,9 +30,9 @@ import {
 } from "lucide-react";
 
 const userProfile = {
-  name: "Priya Sharma",
-  email: "priya.sharma@email.com",
-  phone: "+91 98765 43210",
+  name: "Ubaid Khan",
+  email: "me.khanubaid@gmail.com",
+  phone: "+91 9624444730",
   avatar: "/placeholder.svg",
   joinDate: "Member since Jan 2024",
   language: "English",
@@ -73,39 +77,50 @@ const trustedContacts = [
 ];
 
 export default function Profile() {
+  const { t, i18n } = useTranslation();
+  const { isDarkMode } = useDarkMode();
   const [activeTab, setActiveTab] = useState("personal");
-  const [darkMode, setDarkMode] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [voiceAssist, setVoiceAssist] = useState(false);
   const [fontSize, setFontSize] = useState("medium");
-  const [selectedLanguage, setSelectedLanguage] = useState("English");
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language === "hi" ? "Hindi" : "English");
 
-  const languages = ["English", "Hindi", "Bengali", "Santhal"];
+  const languages = ["English", "Hindi"];
   const fontSizes = ["Small", "Medium", "Large"];
 
+  const handleLanguageChange = (language: string) => {
+    setSelectedLanguage(language);
+    // Change the i18n language
+    const languageCode = language === "English" ? "en" : "hi";
+    i18n.changeLanguage(languageCode);
+  };
+
   return (
-    <div className="pb-20 min-h-screen bg-background">
+    <div className="pb-24 min-h-screen bg-background">
       {/* Header */}
       <div className="bg-primary text-primary-foreground px-6 pt-12 pb-6">
-        <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 bg-primary-foreground/20 rounded-full flex items-center justify-center">
-            <User size={32} className="text-primary-foreground" />
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center space-x-4">
+            <div className="w-16 h-16 bg-primary-foreground/20 rounded-full flex items-center justify-center">
+              <User size={32} className="text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-xl font-playfair font-bold">{userProfile.name}</h1>
+              <p className="text-primary-foreground/80 text-sm">{userProfile.joinDate}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-playfair font-bold">{userProfile.name}</h1>
-            <p className="text-primary-foreground/80 text-sm">{userProfile.joinDate}</p>
-          </div>
+          <LanguageToggle />
         </div>
       </div>
 
       <div className="px-6 -mt-2 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-6 bg-muted text-xs">
-            <TabsTrigger value="personal">Personal</TabsTrigger>
-            <TabsTrigger value="favorites">Favorites</TabsTrigger>
-            <TabsTrigger value="bookings">Bookings</TabsTrigger>
-            <TabsTrigger value="contributions">Contributions</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="personal">{t("profile.personal")}</TabsTrigger>
+            <TabsTrigger value="favorites">{t("profile.myFavorites")}</TabsTrigger>
+            <TabsTrigger value="bookings">{t("profile.myBookings")}</TabsTrigger>
+            <TabsTrigger value="contributions">{t("profile.myReviews")}</TabsTrigger>
+            <TabsTrigger value="settings">{t("profile.settings")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="personal" className="space-y-4">
@@ -247,7 +262,7 @@ export default function Profile() {
             <LuxuryCard>
               <div className="flex items-center mb-4">
                 <Globe className="text-primary mr-2" size={20} />
-                <h3 className="font-playfair font-semibold text-foreground">Language</h3>
+                <h3 className="font-playfair font-semibold text-foreground">{t("profile.language")}</h3>
               </div>
               <div className="flex flex-wrap gap-2">
                 {languages.map((lang) => (
@@ -255,7 +270,7 @@ export default function Profile() {
                     key={lang}
                     variant={selectedLanguage === lang ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setSelectedLanguage(lang)}
+                    onClick={() => handleLanguageChange(lang)}
                     className="text-xs"
                   >
                     {lang}
@@ -321,7 +336,7 @@ export default function Profile() {
                   <span className="font-medium text-foreground">Dark Mode</span>
                   <Moon className="text-primary ml-2" size={16} />
                 </div>
-                <Switch checked={darkMode} onCheckedChange={setDarkMode} />
+                <DarkModeToggle />
               </div>
             </LuxuryCard>
 
