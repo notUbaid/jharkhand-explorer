@@ -40,6 +40,55 @@ const categoryIcons = {
   Mining: Pickaxe,
 };
 
+// Coordinates for destinations (approximate)
+const destinationCoordinates: Record<string, {lat: number, lng: number}> = {
+  "Betla National Park": { lat: 23.8856, lng: 84.1924 },
+  "Netarhat": { lat: 23.4973, lng: 84.2623 },
+  "Patratu Valley": { lat: 23.5747, lng: 85.2732 },
+  "Hundru Falls": { lat: 23.4510, lng: 85.6675 },
+  "Lodh Falls": { lat: 23.4000, lng: 85.3000 },
+  "Topchanchi Lake": { lat: 23.8000, lng: 86.2000 },
+  "Maithon Dam": { lat: 23.7667, lng: 86.7833 },
+  "Usri Falls": { lat: 24.1833, lng: 86.3167 },
+  "Palamu Fort": { lat: 23.8833, lng: 84.1833 },
+  "Rock Garden (Ranchi)": { lat: 23.3441, lng: 85.3096 },
+  "Jubilee Park": { lat: 22.8046, lng: 86.2029 },
+  "Baba Baidyanath Temple": { lat: 24.4833, lng: 86.7000 },
+  "Parasnath Hills / Shikharji": { lat: 23.9500, lng: 86.1167 },
+  "Rajrappa Temple (Chhinnamastika Temple)": { lat: 23.6333, lng: 85.7167 },
+  "Trikut Hills": { lat: 24.4833, lng: 86.7000 },
+  "Dassam Falls": { lat: 23.3833, lng: 85.3167 },
+  "Jonha Falls (Gautamdhara)": { lat: 23.3500, lng: 85.3000 },
+  "Jharia Coalfields": { lat: 23.7500, lng: 86.4167 },
+  "North Urimari Coal Mines": { lat: 23.8000, lng: 86.4000 },
+  "Chutupalu Valley": { lat: 23.5000, lng: 85.2000 },
+  "Tagore Hill": { lat: 23.3441, lng: 85.3096 },
+  "Dimna Lake": { lat: 22.8046, lng: 86.2029 },
+  // Additional cities and locations
+  "Jagannath Temple": { lat: 23.3441, lng: 85.3096 },
+  "Ranchi": { lat: 23.3441, lng: 85.3096 },
+  "Jamshedpur": { lat: 22.8046, lng: 86.2029 },
+  "Bokaro": { lat: 23.6693, lng: 86.1511 },
+  "Dhanbad": { lat: 23.7957, lng: 86.4304 },
+  "Giridih": { lat: 24.1833, lng: 86.3167 },
+  "Dumka": { lat: 24.2667, lng: 87.2500 },
+  "Pakur": { lat: 24.6333, lng: 87.8500 },
+  "Godda": { lat: 24.8167, lng: 87.2167 },
+  "Sahebganj": { lat: 25.2500, lng: 87.6500 },
+  "Chatra": { lat: 24.2167, lng: 84.8667 },
+  "Koderma": { lat: 24.4667, lng: 85.5167 },
+  "Latehar": { lat: 23.7500, lng: 84.5000 },
+  "Lohardaga": { lat: 23.4333, lng: 84.6833 },
+  "Palamu": { lat: 23.8833, lng: 84.1833 },
+  "Ramgarh": { lat: 23.6333, lng: 85.5167 },
+  "Simdega": { lat: 22.6167, lng: 84.5167 },
+  "West Singhbhum": { lat: 22.2500, lng: 85.3833 },
+  "East Singhbhum": { lat: 22.8046, lng: 86.2029 },
+  "Seraikela Kharsawan": { lat: 22.7167, lng: 85.9333 },
+  "Khunti": { lat: 23.0833, lng: 85.2833 },
+  "Gumla": { lat: 23.0500, lng: 84.5500 }
+};
+
 
 const restaurants = [
   {
@@ -319,11 +368,79 @@ export default function Destinations() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFoodFilter, setSelectedFoodFilter] = useState("All");
   const [sortByLocation, setSortByLocation] = useState(false);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [imageIndices, setImageIndices] = useState<Record<number, number>>({});
   const [isTransitioning, setIsTransitioning] = useState<Record<number, boolean>>({});
   const [restaurantImageIndices, setRestaurantImageIndices] = useState<Record<string, number>>({});
   const [restaurantIsTransitioning, setRestaurantIsTransitioning] = useState<Record<string, boolean>>({});
   const navigate = useNavigate();
+
+  // Location detection function
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by this browser.");
+      return;
+    }
+
+    setIsGettingLocation(true);
+    setLocationError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        setIsGettingLocation(false);
+      },
+      (error) => {
+        let errorMessage = "Unable to retrieve your location.";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Location access denied by user.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information is unavailable.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Location request timed out.";
+            break;
+        }
+        setLocationError(errorMessage);
+        setIsGettingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000
+      }
+    );
+  };
+
+  // Calculate distance between two coordinates using Haversine formula
+  const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  // Format distance for display
+  const formatDistance = (distance: number): string => {
+    if (distance < 1) {
+      return `${Math.round(distance * 1000)}m`;
+    } else if (distance < 10) {
+      return `${distance.toFixed(1)}km`;
+    } else {
+      return `${Math.round(distance)}km`;
+    }
+  };
 
   // Handle URL parameter changes to update active tab
   useEffect(() => {
@@ -405,8 +522,25 @@ export default function Destinations() {
   });
 
   // Sort destinations by location if enabled
-  const sortedDestinations = sortByLocation 
-    ? [...filteredDestinations].sort((a, b) => a.location.localeCompare(b.location))
+  const sortedDestinations = sortByLocation && userLocation
+    ? [...filteredDestinations].sort((a, b) => {
+        const coordsA = destinationCoordinates[a.name];
+        const coordsB = destinationCoordinates[b.name];
+        
+        // If both have coordinates, sort by distance
+        if (coordsA && coordsB) {
+          const distanceA = calculateDistance(userLocation.lat, userLocation.lng, coordsA.lat, coordsA.lng);
+          const distanceB = calculateDistance(userLocation.lat, userLocation.lng, coordsB.lat, coordsB.lng);
+          return distanceA - distanceB;
+        }
+        
+        // If only one has coordinates, prioritize it
+        if (coordsA && !coordsB) return -1;
+        if (!coordsA && coordsB) return 1;
+        
+        // If neither has coordinates, maintain original order
+        return 0;
+      })
     : filteredDestinations;
 
   // Filter restaurants based on selected food filter
@@ -478,11 +612,18 @@ export default function Destinations() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setSortByLocation(!sortByLocation)}
+                  onClick={() => {
+                    if (!sortByLocation) {
+                      getCurrentLocation();
+                    }
+                    setSortByLocation(!sortByLocation);
+                  }}
+                  disabled={isGettingLocation}
                   className={sortByLocation ? "bg-primary text-primary-foreground" : ""}
                 >
                   <MapPin size={14} className="mr-1" />
-                  {sortByLocation ? t("destinations.locationOn") : t("destinations.sortByLocation")}
+                  {isGettingLocation ? "Getting Location..." : 
+                   sortByLocation ? t("destinations.locationOn") : t("destinations.sortByLocation")}
                 </Button>
               </div>
               
@@ -508,6 +649,16 @@ export default function Destinations() {
                 ))}
               </div>
             </div>
+
+            {/* Location Error Display */}
+            {locationError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                <div className="flex items-center">
+                  <MapPin size={16} className="text-red-500 mr-2" />
+                  <p className="text-sm text-red-700">{locationError}</p>
+                </div>
+              </div>
+            )}
 
             {/* Results Count */}
             <div className="flex items-center justify-between">
@@ -595,6 +746,16 @@ export default function Destinations() {
                         <p className="text-sm text-muted-foreground flex items-center">
                           <MapPin size={12} className="mr-1" />
                           {destination.location}
+                          {sortByLocation && userLocation && destinationCoordinates[destination.name] && (
+                            <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                              {formatDistance(calculateDistance(
+                                userLocation.lat, 
+                                userLocation.lng, 
+                                destinationCoordinates[destination.name].lat, 
+                                destinationCoordinates[destination.name].lng
+                              ))}
+                            </span>
+                          )}
                         </p>
                       </div>
                       <Badge variant="outline" className="text-xs">

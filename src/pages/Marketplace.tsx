@@ -376,18 +376,351 @@ const experiences = [
   }
 ];
 
+const tourGuides = [
+  {
+    id: 1,
+    name: "Rajesh Kumar Singh",
+    specialization: "Historical & Cultural Tours",
+    locations: ["Ranchi", "Deoghar", "Baidyanath Temple", "Maluti Temples", "Hazaribagh", "Dumka"],
+    price: "₹2,500",
+    rating: 4.9,
+    experience: "8 years",
+    languages: ["Hindi", "English", "Santhali"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Expert in Jharkhand's rich historical heritage, specializing in temple architecture and tribal history.",
+    specialties: ["Temple Tours", "Historical Sites", "Cultural Heritage", "Photography"],
+    availability: "Available",
+    nextAvailable: "Tomorrow 9:00 AM",
+    totalTours: 450,
+    responseTime: "Within 2 hours"
+  },
+  {
+    id: 2,
+    name: "Priya Devi",
+    specialization: "Wildlife & Nature",
+    locations: ["Betla National Park", "Hazaribagh Wildlife Sanctuary", "Netarhat", "Palamu Tiger Reserve", "Dassam Falls"],
+    price: "₹3,000",
+    rating: 4.8,
+    experience: "6 years",
+    languages: ["Hindi", "English", "Bengali"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Wildlife enthusiast and nature photographer with deep knowledge of Jharkhand's forests and wildlife.",
+    specialties: ["Wildlife Safaris", "Bird Watching", "Nature Photography", "Forest Trails"],
+    availability: "Available",
+    nextAvailable: "Today 2:00 PM",
+    totalTours: 320,
+    responseTime: "Within 1 hour"
+  },
+  {
+    id: 3,
+    name: "Amit Kumar Munda",
+    specialization: "Tribal Culture & Traditions",
+    locations: ["Khunti", "Simdega", "Gumla", "West Singhbhum", "Seraikela", "Dumka"],
+    price: "₹2,000",
+    rating: 4.9,
+    experience: "10 years",
+    languages: ["Hindi", "Munda", "Ho", "English"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Native tribal guide with authentic knowledge of Munda, Santhal, and Ho cultures and traditions.",
+    specialties: ["Tribal Villages", "Cultural Experiences", "Traditional Crafts", "Folk Music"],
+    availability: "Available",
+    nextAvailable: "This Weekend",
+    totalTours: 580,
+    responseTime: "Within 3 hours"
+  },
+  {
+    id: 4,
+    name: "Dr. Sunita Sharma",
+    specialization: "Adventure & Trekking",
+    locations: ["Netarhat", "Patratu Valley", "Hazaribagh Hills", "Dassam Falls", "Betla National Park"],
+    price: "₹3,500",
+    rating: 4.7,
+    experience: "5 years",
+    languages: ["Hindi", "English"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Certified adventure guide specializing in trekking, rock climbing, and waterfall expeditions.",
+    specialties: ["Trekking", "Rock Climbing", "Waterfall Tours", "Adventure Sports"],
+    availability: "Available",
+    nextAvailable: "Monday 6:00 AM",
+    totalTours: 280,
+    responseTime: "Within 4 hours"
+  },
+  {
+    id: 5,
+    name: "Vikram Singh",
+    specialization: "Religious & Spiritual Tours",
+    locations: ["Deoghar", "Baidyanath Temple", "Rajrappa", "Basukinath", "Ranchi", "Hazaribagh"],
+    price: "₹2,200",
+    rating: 4.8,
+    experience: "7 years",
+    languages: ["Hindi", "Sanskrit", "English"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Spiritual guide with deep knowledge of Hindu temples, rituals, and religious significance.",
+    specialties: ["Temple Tours", "Spiritual Experiences", "Religious Rituals", "Pilgrimage Tours"],
+    availability: "Available",
+    nextAvailable: "Today 5:00 AM",
+    totalTours: 420,
+    responseTime: "Within 1 hour"
+  },
+  {
+    id: 6,
+    name: "Meera Kumari",
+    specialization: "Art & Handicrafts",
+    locations: ["Hazaribagh", "Dumka", "Seraikela", "Khunti", "Ranchi", "Jamshedpur"],
+    price: "₹1,800",
+    rating: 4.6,
+    experience: "4 years",
+    languages: ["Hindi", "English", "Santhali"],
+    verified: false,
+    image: "/placeholder.svg",
+    description: "Art enthusiast specializing in traditional handicrafts, Sohrai paintings, and tribal art forms.",
+    specialties: ["Art Workshops", "Handicraft Tours", "Cultural Art", "Traditional Crafts"],
+    availability: "Available",
+    nextAvailable: "Wednesday 10:00 AM",
+    totalTours: 150,
+    responseTime: "Within 6 hours"
+  },
+  {
+    id: 7,
+    name: "Ravi Kumar",
+    specialization: "Food & Culinary Tours",
+    locations: ["Ranchi", "Jamshedpur", "Dhanbad", "Deoghar", "Hazaribagh", "Dumka"],
+    price: "₹2,800",
+    rating: 4.9,
+    experience: "6 years",
+    languages: ["Hindi", "English", "Bengali"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Food expert and chef specializing in Jharkhand's traditional cuisine and street food culture.",
+    specialties: ["Food Tours", "Cooking Classes", "Street Food", "Traditional Cuisine"],
+    availability: "Available",
+    nextAvailable: "Friday 7:00 PM",
+    totalTours: 380,
+    responseTime: "Within 2 hours"
+  },
+  {
+    id: 8,
+    name: "Sushila Devi",
+    specialization: "Family & Solo Travel",
+    locations: ["Ranchi", "Jamshedpur", "Deoghar", "Hazaribagh", "Netarhat", "Dumka"],
+    price: "₹2,500",
+    rating: 4.8,
+    experience: "5 years",
+    languages: ["Hindi", "English"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Female guide specializing in safe travel experiences for women, families, and solo travelers.",
+    specialties: ["Solo Travel", "Women's Safety", "Group Tours", "Cultural Experiences"],
+    availability: "Available",
+    nextAvailable: "Tomorrow 8:00 AM",
+    totalTours: 290,
+    responseTime: "Within 1 hour"
+  },
+  {
+    id: 9,
+    name: "Arjun Singh",
+    specialization: "Photography & Instagram Tours",
+    locations: ["Netarhat", "Patratu Valley", "Dassam Falls", "Hazaribagh", "Betla National Park"],
+    price: "₹3,200",
+    rating: 4.7,
+    experience: "4 years",
+    languages: ["Hindi", "English"],
+    verified: false,
+    image: "/placeholder.svg",
+    description: "Professional photographer and social media expert specializing in Instagram-worthy locations.",
+    specialties: ["Photography", "Instagram Tours", "Scenic Spots", "Social Media"],
+    availability: "Available",
+    nextAvailable: "Sunday 5:00 AM",
+    totalTours: 180,
+    responseTime: "Within 5 hours"
+  },
+  {
+    id: 10,
+    name: "Lakshmi Devi",
+    specialization: "Family & Solo Travel",
+    locations: ["Ranchi", "Jamshedpur", "Deoghar", "Hazaribagh", "Dumka", "Khunti"],
+    price: "₹2,000",
+    rating: 4.9,
+    experience: "8 years",
+    languages: ["Hindi", "English", "Bengali"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Family-friendly guide specializing in tours suitable for children and elderly travelers.",
+    specialties: ["Family Tours", "Kids Activities", "Elderly Care", "Educational Tours"],
+    availability: "Available",
+    nextAvailable: "Saturday 9:00 AM",
+    totalTours: 520,
+    responseTime: "Within 2 hours"
+  },
+  {
+    id: 11,
+    name: "Babulal Murmu",
+    specialization: "Tribal Culture & Traditions",
+    locations: ["Seraikela", "Khunti", "Simdega", "Dumka", "Gumla", "West Singhbhum"],
+    price: "₹2,300",
+    rating: 4.8,
+    experience: "12 years",
+    languages: ["Hindi", "Santhali", "Munda", "English"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Traditional musician and dance expert specializing in Chhau dance and tribal music.",
+    specialties: ["Chhau Dance", "Tribal Music", "Cultural Performances", "Music Workshops"],
+    availability: "Available",
+    nextAvailable: "Thursday 4:00 PM",
+    totalTours: 650,
+    responseTime: "Within 3 hours"
+  },
+  {
+    id: 12,
+    name: "Dr. Anjali Dutta",
+    specialization: "Historical & Cultural Tours",
+    locations: ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Hazaribagh", "Deoghar"],
+    price: "₹3,000",
+    rating: 4.7,
+    experience: "9 years",
+    languages: ["Hindi", "English", "Bengali"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Academic guide specializing in educational tours and historical site visits.",
+    specialties: ["Educational Tours", "Historical Sites", "Student Tours", "Academic Visits"],
+    availability: "Available",
+    nextAvailable: "Next Monday",
+    totalTours: 340,
+    responseTime: "Within 4 hours"
+  },
+  {
+    id: 13,
+    name: "Kiran Tudu",
+    specialization: "Art & Handicrafts",
+    locations: ["Ranchi", "Jamshedpur", "Dhanbad", "Deoghar", "Hazaribagh", "Dumka"],
+    price: "₹1,500",
+    rating: 4.6,
+    experience: "3 years",
+    languages: ["Hindi", "English", "Santhali"],
+    verified: false,
+    image: "/placeholder.svg",
+    description: "Local market expert specializing in traditional shopping and handicraft purchases.",
+    specialties: ["Market Tours", "Shopping", "Handicrafts", "Local Products"],
+    availability: "Available",
+    nextAvailable: "Today 3:00 PM",
+    totalTours: 120,
+    responseTime: "Within 8 hours"
+  },
+  {
+    id: 14,
+    name: "Naresh Kumar",
+    specialization: "Adventure & Trekking",
+    locations: ["Jamshedpur", "Dhanbad", "Bokaro", "Ranchi", "Netarhat", "Patratu Valley"],
+    price: "₹4,000",
+    rating: 4.8,
+    experience: "6 years",
+    languages: ["Hindi", "English"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Industrial expert specializing in corporate tours and business visits to Jharkhand's industries.",
+    specialties: ["Industrial Tours", "Corporate Visits", "Business Tours", "Factory Visits"],
+    availability: "Available",
+    nextAvailable: "Tuesday 10:00 AM",
+    totalTours: 220,
+    responseTime: "Within 2 hours"
+  },
+  {
+    id: 15,
+    name: "Rita Kumari",
+    specialization: "Religious & Spiritual Tours",
+    locations: ["Netarhat", "Hazaribagh", "Ranchi", "Deoghar", "Baidyanath Temple", "Rajrappa"],
+    price: "₹2,700",
+    rating: 4.9,
+    experience: "7 years",
+    languages: ["Hindi", "English", "Sanskrit"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Wellness expert specializing in yoga, meditation, and spiritual wellness tours.",
+    specialties: ["Yoga Tours", "Meditation", "Wellness", "Spiritual Healing"],
+    availability: "Available",
+    nextAvailable: "Tomorrow 6:00 AM",
+    totalTours: 380,
+    responseTime: "Within 1 hour"
+  },
+  {
+    id: 16,
+    name: "Suresh Kumar",
+    specialization: "Wildlife & Nature",
+    locations: ["Betla National Park", "Hazaribagh Wildlife Sanctuary", "Netarhat", "Palamu Tiger Reserve", "Dassam Falls"],
+    price: "₹2,800",
+    rating: 4.7,
+    experience: "5 years",
+    languages: ["Hindi", "English", "Bengali"],
+    verified: true,
+    image: "/placeholder.svg",
+    description: "Wildlife photographer and nature guide with expertise in bird watching and forest trails.",
+    specialties: ["Bird Watching", "Wildlife Photography", "Nature Trails", "Forest Safaris"],
+    availability: "Available",
+    nextAvailable: "Today 4:00 PM",
+    totalTours: 280,
+    responseTime: "Within 3 hours"
+  },
+  {
+    id: 17,
+    name: "Poonam Devi",
+    specialization: "Food & Culinary Tours",
+    locations: ["Ranchi", "Jamshedpur", "Dhanbad", "Deoghar", "Hazaribagh", "Dumka"],
+    price: "₹2,200",
+    rating: 4.8,
+    experience: "4 years",
+    languages: ["Hindi", "English", "Bengali"],
+    verified: false,
+    image: "/placeholder.svg",
+    description: "Local food expert specializing in traditional Jharkhand cuisine and street food experiences.",
+    specialties: ["Street Food", "Traditional Cuisine", "Cooking Classes", "Food Markets"],
+    availability: "Available",
+    nextAvailable: "Wednesday 6:00 PM",
+    totalTours: 180,
+    responseTime: "Within 4 hours"
+  },
+  {
+    id: 18,
+    name: "Manoj Singh",
+    specialization: "Photography & Instagram Tours",
+    locations: ["Netarhat", "Patratu Valley", "Dassam Falls", "Hazaribagh", "Betla National Park"],
+    price: "₹3,000",
+    rating: 4.6,
+    experience: "3 years",
+    languages: ["Hindi", "English"],
+    verified: false,
+    image: "/placeholder.svg",
+    description: "Professional photographer specializing in landscape and wildlife photography tours.",
+    specialties: ["Landscape Photography", "Wildlife Photography", "Instagram Tours", "Scenic Spots"],
+    availability: "Available",
+    nextAvailable: "Friday 5:00 AM",
+    totalTours: 150,
+    responseTime: "Within 6 hours"
+  }
+];
+
 export default function Marketplace() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("products");
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedSpecialization, setSelectedSpecialization] = useState("All");
   const [favorites, setFavorites] = useState<number[]>([]);
   const [cart, setCart] = useState<number[]>([]);
   const navigate = useNavigate();
 
   const productCategories = ["All", "Handicrafts", "Food Items", "Clothing/Textiles", "Souvenirs"];
+  const tourGuideSpecializations = [
+    "All", "Historical & Cultural Tours", "Wildlife & Nature", "Tribal Culture & Traditions",
+    "Adventure & Trekking", "Religious & Spiritual Tours", "Art & Handicrafts", "Food & Culinary Tours",
+    "Family & Solo Travel", "Photography & Instagram Tours"
+  ];
 
-  const toggleFavorite = (id: number, type: 'product' | 'experience') => {
+  const toggleFavorite = (id: number, type: 'product' | 'experience' | 'tourguide') => {
     const key = `${type}-${id}`;
     setFavorites(prev => 
       prev.includes(id) 
@@ -421,9 +754,10 @@ export default function Marketplace() {
 
       <div className="px-6 mt-6 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="products" className="font-medium">{t("marketplace.products")}</TabsTrigger>
             <TabsTrigger value="experiences" className="font-medium text-center">{t("marketplace.experiences")}</TabsTrigger>
+            <TabsTrigger value="tourguides" className="font-medium text-center">Tour Guides</TabsTrigger>
           </TabsList>
 
           <TabsContent value="products" className="space-y-6">
@@ -648,6 +982,160 @@ export default function Marketplace() {
                 </p>
                 <Button variant="outline" className="text-accent border-accent">
                   List Your Workshop
+                </Button>
+              </div>
+            </LuxuryCard>
+          </TabsContent>
+
+          <TabsContent value="tourguides" className="space-y-6">
+            {/* Tour Guide Specializations */}
+            <div className="space-y-4">
+              <h3 className="section-title">Specializations</h3>
+              <div className="flex flex-wrap gap-2">
+                {tourGuideSpecializations.map((specialization) => (
+                  <Button
+                    key={specialization}
+                    variant={selectedSpecialization === specialization ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedSpecialization(specialization)}
+                    className="text-xs"
+                  >
+                    {specialization}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tour Guides Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+              {tourGuides
+                .filter(guide => 
+                  selectedSpecialization === "All" || guide.specialization === selectedSpecialization
+                )
+                .filter(guide => 
+                  searchValue === "" || 
+                  guide.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+                  guide.specialization.toLowerCase().includes(searchValue.toLowerCase()) ||
+                  guide.locations.some(location => location.toLowerCase().includes(searchValue.toLowerCase()))
+                )
+                .map((guide) => (
+                <LuxuryCard 
+                  key={guide.id}
+                  className="p-0 overflow-hidden"
+                  onClick={() => navigate(`/tourguides/${guide.id}`)}
+                >
+                  <div className="relative">
+                    <div className="aspect-[4/3] bg-muted">
+                      <img 
+                        src={guide.image} 
+                        alt={guide.name}
+                        className="w-full h-full object-contain object-center"
+                      />
+                    </div>
+                    
+                    {guide.verified && (
+                      <div className="absolute top-2 left-2">
+                        <Badge variant="default" className="bg-green-500 text-white text-xs">
+                          ✓ Verified
+                        </Badge>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(guide.id, 'tourguide');
+                      }}
+                      className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full"
+                    >
+                      <Heart 
+                        size={14} 
+                        className={favorites.includes(guide.id) ? 'text-accent fill-accent' : 'text-muted-foreground'} 
+                      />
+                    </button>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h3 className="font-inter font-semibold text-foreground mb-1 text-sm">
+                          {guide.name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          {guide.specialization}
+                        </p>
+                        <div className="flex items-center text-xs text-muted-foreground mb-1">
+                          <MapPin size={10} className="mr-1" />
+                          {guide.locations.slice(0, 2).join(", ")}
+                          {guide.locations.length > 2 && "..."}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-4 mb-2 text-xs text-muted-foreground">
+                      <div className="flex items-center">
+                        <Clock size={8} className="mr-1" />
+                        {guide.experience}
+                      </div>
+                      <div className="flex items-center">
+                        <Users size={8} className="mr-1" />
+                        {guide.totalTours} tours
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        <div className="flex items-center mr-3">
+                          <Star className="text-accent fill-accent" size={10} />
+                          <span className="text-xs font-medium ml-1">{guide.rating}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <IndianRupee size={12} className="text-accent" />
+                          <span className="font-bold text-accent text-sm">{guide.price}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-xs text-muted-foreground">
+                        Languages: {guide.languages.join(", ")}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="text-right">
+                        <p className="text-xs text-muted-foreground mb-1">Next available:</p>
+                        <p className="text-xs font-medium text-primary">{guide.nextAvailable}</p>
+                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Handle booking
+                        }}
+                        className="text-xs px-2 py-1 h-7"
+                      >
+                        Book Now
+                      </Button>
+                    </div>
+                  </div>
+                </LuxuryCard>
+              ))}
+            </div>
+
+            {/* Become a Tour Guide Button */}
+            <LuxuryCard className="mt-6 text-center bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
+              <div className="py-4">
+                <Plus className="mx-auto text-primary mb-2" size={24} />
+                <h3 className="font-playfair font-semibold text-foreground mb-1">
+                  Become a Tour Guide
+                </h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Share your knowledge and earn money by guiding tourists
+                </p>
+                <Button variant="outline" className="text-primary border-primary">
+                  Register as Guide
                 </Button>
               </div>
             </LuxuryCard>

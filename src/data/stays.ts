@@ -299,3 +299,4 @@ export const getStayById = (id: string | number): Stay | undefined => {
   return stays.find(stay => stay.id === Number(id));
 };
 
+

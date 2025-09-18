@@ -1,0 +1,2302 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { LuxuryCard } from "@/components/ui/luxury-card";
+import { SearchBar } from "@/components/ui/search-bar";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { TransportOption, TrainOption, BusOption, FlightOption, City } from "@/types/Transport";
+import { getAllTransportRoutes } from "@/data/transportData";
+import { 
+  Train,
+  Bus,
+  Plane,
+  Car,
+  Bike,
+  Zap,
+  MapPin,
+  Clock,
+  IndianRupee,
+  Users,
+  Fuel,
+  Battery,
+  Accessibility,
+  ArrowRight,
+  Calendar
+} from "lucide-react";
+
+// Get comprehensive transport data
+const { cities, trainRoutes, busRoutes, flightRoutes } = getAllTransportRoutes();
+
+// Combined routes for easy access
+const longDistanceOptions: TransportOption[] = [...trainRoutes, ...busRoutes, ...flightRoutes];
+  {
+    id: 2,
+    mode: "train",
+    from: "Ranchi",
+    to: "Kolkata",
+    trainNumber: "12019",
+    trainName: "Ranchi Shatabdi Express",
+    operator: "Indian Railways",
+    duration: "7h 15m",
+    distance: "420 km",
+    departure: "06:00",
+    arrival: "13:15",
+    classes: [
+      { class: "CC", price: "₹900", availability: "Available" },
+      { class: "EC", price: "₹1,200", availability: "Available" }
+    ],
+    amenities: ["WiFi", "Catering", "Newspaper", "Water Bottle", "Magazine"],
+    days: ["Tue", "Thu", "Sat"],
+    route: "Ranchi → Bokaro → Dhanbad → Asansol → Kolkata",
+    features: ["Day Journey", "Fast Service", "Business Class"],
+    stops: 4,
+    meals: "Breakfast + Lunch",
+    cancellation: "Free cancellation up to 12h before departure"
+  },
+  {
+    id: 3,
+    mode: "train",
+    from: "Ranchi",
+    to: "Patna",
+    trainNumber: "18625",
+    trainName: "Ranchi Patna Intercity Express",
+    operator: "Indian Railways",
+    duration: "7h 45m",
+    distance: "350 km",
+    departure: "08:30",
+    arrival: "16:15",
+    classes: [
+      { class: "CC", price: "₹650", availability: "Available" },
+      { class: "SL", price: "₹280", availability: "Available" }
+    ],
+    amenities: ["Catering", "Water Bottle", "Fan"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Patna",
+    features: ["Regional Service", "Frequent Stops", "Local Cuisine"],
+    stops: 8,
+    meals: "Lunch",
+    cancellation: "Free cancellation up to 6h before departure"
+  },
+  {
+    id: 4,
+    mode: "train",
+    from: "Ranchi",
+    to: "Varanasi",
+    trainNumber: "18626",
+    trainName: "Jnaneshwari Express",
+    operator: "Indian Railways",
+    duration: "10h 20m",
+    distance: "480 km",
+    departure: "20:15",
+    arrival: "06:35+1",
+    classes: [
+      { class: "2AC", price: "₹1,200", availability: "Available" },
+      { class: "3AC", price: "₹800", availability: "WL-8" },
+      { class: "SL", price: "₹350", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points", "Water Bottle"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Varanasi",
+    features: ["Overnight Journey", "Religious Route", "Comfortable"],
+    stops: 6,
+    meals: "Dinner + Breakfast",
+    cancellation: "Free cancellation up to 12h before departure"
+  },
+  {
+    id: 5,
+    mode: "train",
+    from: "Ranchi",
+    to: "Ahmedabad",
+    trainNumber: "12833",
+    trainName: "Ranchi Ahmedabad Express",
+    operator: "Indian Railways",
+    duration: "20h 45m",
+    distance: "1,450 km",
+    departure: "14:20",
+    arrival: "11:05+1",
+    classes: [
+      { class: "2AC", price: "₹2,100", availability: "Available" },
+      { class: "3AC", price: "₹1,400", availability: "Available" },
+      { class: "SL", price: "₹550", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points", "WiFi", "Newspaper"],
+    days: ["Mon", "Wed", "Fri"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Ahmedabad",
+    features: ["Long Distance", "Multi-state", "Business Route"],
+    stops: 12,
+    meals: "Lunch + Dinner + Breakfast",
+    cancellation: "Free cancellation up to 24h before departure"
+  },
+  {
+    id: 6,
+    mode: "train",
+    from: "Ranchi",
+    to: "Surat",
+    trainNumber: "12835",
+    trainName: "Ranchi Surat Express",
+    operator: "Indian Railways",
+    duration: "22h 30m",
+    distance: "1,520 km",
+    departure: "12:45",
+    arrival: "11:15+1",
+    classes: [
+      { class: "2AC", price: "₹2,200", availability: "Available" },
+      { class: "3AC", price: "₹1,500", availability: "Available" },
+      { class: "SL", price: "₹600", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points", "WiFi"],
+    days: ["Tue", "Thu", "Sat"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Surat",
+    features: ["Industrial Route", "Long Journey", "Comfortable"],
+    stops: 14,
+    meals: "Lunch + Dinner + Breakfast",
+    cancellation: "Free cancellation up to 24h before departure"
+  },
+  // From Jamshedpur
+  {
+    id: 7,
+    mode: "train",
+    from: "Jamshedpur",
+    to: "Kolkata",
+    trainNumber: "12813",
+    trainName: "Tata Howrah Express",
+    operator: "Indian Railways",
+    duration: "4h 30m",
+    distance: "280 km",
+    departure: "07:00",
+    arrival: "11:30",
+    classes: [
+      { class: "CC", price: "₹450", availability: "Available" },
+      { class: "SL", price: "₹180", availability: "Available" }
+    ],
+    amenities: ["Catering", "Water Bottle", "Fan"],
+    days: ["Daily"],
+    route: "Jamshedpur → Tatanagar → Kharagpur → Howrah",
+    features: ["Industrial Route", "Fast Service", "Business Class"],
+    stops: 3,
+    meals: "Breakfast",
+    cancellation: "Free cancellation up to 6h before departure"
+  },
+  {
+    id: 8,
+    mode: "train",
+    from: "Jamshedpur",
+    to: "Delhi",
+    trainNumber: "12811",
+    trainName: "Tata Delhi Express",
+    operator: "Indian Railways",
+    duration: "18h 15m",
+    distance: "1,350 km",
+    departure: "16:45",
+    arrival: "11:00+1",
+    classes: [
+      { class: "2AC", price: "₹2,500", availability: "Available" },
+      { class: "3AC", price: "₹1,700", availability: "Available" },
+      { class: "SL", price: "₹650", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points", "WiFi"],
+    days: ["Daily"],
+    route: "Jamshedpur → Tatanagar → Dhanbad → Gaya → Mughalsarai → Delhi",
+    features: ["Premium Service", "Overnight", "Business Route"],
+    stops: 8,
+    meals: "Dinner + Breakfast",
+    cancellation: "Free cancellation up to 24h before departure"
+  },
+  // From Dhanbad
+  {
+    id: 9,
+    mode: "train",
+    from: "Dhanbad",
+    to: "Kolkata",
+    trainNumber: "12301",
+    trainName: "Dhanbad Howrah Express",
+    operator: "Indian Railways",
+    duration: "3h 45m",
+    distance: "200 km",
+    departure: "08:30",
+    arrival: "12:15",
+    classes: [
+      { class: "CC", price: "₹350", availability: "Available" },
+      { class: "SL", price: "₹140", availability: "Available" }
+    ],
+    amenities: ["Catering", "Water Bottle"],
+    days: ["Daily"],
+    route: "Dhanbad → Asansol → Bardhaman → Howrah",
+    features: ["Short Journey", "Frequent Service", "Regional"],
+    stops: 3,
+    meals: "Snacks",
+    cancellation: "Free cancellation up to 4h before departure"
+  },
+  {
+    id: 10,
+    mode: "train",
+    from: "Dhanbad",
+    to: "Delhi",
+    trainNumber: "12302",
+    trainName: "Dhanbad Delhi Express",
+    operator: "Indian Railways",
+    duration: "16h 30m",
+    distance: "1,100 km",
+    departure: "18:00",
+    arrival: "10:30+1",
+    classes: [
+      { class: "2AC", price: "₹2,200", availability: "Available" },
+      { class: "3AC", price: "₹1,500", availability: "Available" },
+      { class: "SL", price: "₹580", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points"],
+    days: ["Daily"],
+    route: "Dhanbad → Gaya → Mughalsarai → Delhi",
+    features: ["Overnight Journey", "Direct Route", "Comfortable"],
+    stops: 5,
+    meals: "Dinner + Breakfast",
+    cancellation: "Free cancellation up to 24h before departure"
+  },
+  // Additional Routes
+  {
+    id: 11,
+    mode: "train",
+    from: "Ranchi",
+    to: "Mumbai",
+    trainNumber: "12833",
+    trainName: "Ranchi Mumbai Express",
+    operator: "Indian Railways",
+    duration: "24h 15m",
+    distance: "1,800 km",
+    departure: "10:30",
+    arrival: "10:45+1",
+    classes: [
+      { class: "2AC", price: "₹2,800", availability: "Available" },
+      { class: "3AC", price: "₹1,900", availability: "WL-12" },
+      { class: "SL", price: "₹750", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points", "WiFi", "Newspaper"],
+    days: ["Mon", "Wed", "Fri"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Mumbai",
+    features: ["Long Distance", "Metro Connection", "Business Route"],
+    stops: 16,
+    meals: "Lunch + Dinner + Breakfast",
+    cancellation: "Free cancellation up to 24h before departure"
+  },
+  {
+    id: 12,
+    mode: "train",
+    from: "Ranchi",
+    to: "Bangalore",
+    trainNumber: "12835",
+    trainName: "Ranchi Bangalore Express",
+    operator: "Indian Railways",
+    duration: "26h 30m",
+    distance: "1,950 km",
+    departure: "08:15",
+    arrival: "10:45+1",
+    classes: [
+      { class: "2AC", price: "₹3,200", availability: "Available" },
+      { class: "3AC", price: "₹2,100", availability: "Available" },
+      { class: "SL", price: "₹850", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points", "WiFi"],
+    days: ["Tue", "Thu", "Sat"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Bangalore",
+    features: ["Tech Hub Route", "Long Journey", "Premium Service"],
+    stops: 18,
+    meals: "Lunch + Dinner + Breakfast",
+    cancellation: "Free cancellation up to 24h before departure"
+  },
+  {
+    id: 13,
+    mode: "train",
+    from: "Ranchi",
+    to: "Chennai",
+    trainNumber: "12837",
+    trainName: "Ranchi Chennai Express",
+    operator: "Indian Railways",
+    duration: "28h 15m",
+    distance: "2,100 km",
+    departure: "06:30",
+    arrival: "10:45+1",
+    classes: [
+      { class: "2AC", price: "₹3,500", availability: "Available" },
+      { class: "3AC", price: "₹2,300", availability: "Available" },
+      { class: "SL", price: "₹950", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points", "WiFi", "Newspaper"],
+    days: ["Mon", "Wed", "Fri"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Chennai",
+    features: ["Metro Connection", "Long Distance", "Business Route"],
+    stops: 20,
+    meals: "Lunch + Dinner + Breakfast",
+    cancellation: "Free cancellation up to 24h before departure"
+  },
+  {
+    id: 14,
+    mode: "train",
+    from: "Ranchi",
+    to: "Hyderabad",
+    trainNumber: "12839",
+    trainName: "Ranchi Hyderabad Express",
+    operator: "Indian Railways",
+    duration: "25h 45m",
+    distance: "1,850 km",
+    departure: "14:20",
+    arrival: "16:05+1",
+    classes: [
+      { class: "2AC", price: "₹3,000", availability: "Available" },
+      { class: "3AC", price: "₹2,000", availability: "Available" },
+      { class: "SL", price: "₹800", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points", "WiFi"],
+    days: ["Tue", "Thu", "Sat"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Hyderabad",
+    features: ["Tech Hub", "Long Journey", "Comfortable"],
+    stops: 17,
+    meals: "Lunch + Dinner + Breakfast",
+    cancellation: "Free cancellation up to 24h before departure"
+  },
+  {
+    id: 15,
+    mode: "train",
+    from: "Ranchi",
+    to: "Pune",
+    trainNumber: "12841",
+    trainName: "Ranchi Pune Express",
+    operator: "Indian Railways",
+    duration: "25h 30m",
+    distance: "1,750 km",
+    departure: "12:45",
+    arrival: "14:15+1",
+    classes: [
+      { class: "2AC", price: "₹2,900", availability: "Available" },
+      { class: "3AC", price: "₹1,950", availability: "Available" },
+      { class: "SL", price: "₹780", availability: "Available" }
+    ],
+    amenities: ["Bedding", "Catering", "Charging Points", "WiFi"],
+    days: ["Mon", "Wed", "Fri"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Pune",
+    features: ["Educational Hub", "Long Distance", "Premium Service"],
+    stops: 16,
+    meals: "Lunch + Dinner + Breakfast",
+    cancellation: "Free cancellation up to 24h before departure"
+  }
+];
+
+const busRoutes: BusOption[] = [
+  // Jharkhand Internal Routes
+  {
+    id: 1,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Netarhat",
+    operator: "Jharkhand Tourism",
+    busType: "Volvo AC",
+    duration: "5h 15m",
+    distance: "160 km",
+    departure: "06:00",
+    arrival: "11:15",
+    price: "₹500",
+    amenities: ["AC", "WiFi", "Water Bottle", "Blanket", "Reclining Seats"],
+    days: ["Daily"],
+    route: "Ranchi → Khunti → Torpa → Netarhat",
+    features: ["Hill Station Route", "Scenic Views", "Comfortable Seats"],
+    stops: 3,
+    luggage: "15kg per person",
+    cancellation: "Free cancellation up to 2h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Netarhat Bus Stand"
+  },
+  {
+    id: 2,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Jamshedpur",
+    operator: "Jharkhand State Transport",
+    busType: "AC Coach",
+    duration: "4h 30m",
+    distance: "140 km",
+    departure: "07:30",
+    arrival: "12:00",
+    price: "₹450",
+    amenities: ["AC", "Water Bottle", "Reclining Seats"],
+    days: ["Daily"],
+    route: "Ranchi → Khunti → Chaibasa → Jamshedpur",
+    features: ["Industrial Route", "Frequent Service", "Comfortable"],
+    stops: 4,
+    luggage: "20kg per person",
+    cancellation: "Free cancellation up to 2h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Jamshedpur Bus Stand"
+  },
+  {
+    id: 3,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Dhanbad",
+    operator: "Jharkhand State Transport",
+    busType: "AC Sleeper",
+    duration: "6h 00m",
+    distance: "180 km",
+    departure: "22:00",
+    arrival: "04:00+1",
+    price: "₹550",
+    amenities: ["AC", "Sleeper Berth", "Blanket", "Water Bottle", "Pillow"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad",
+    features: ["Overnight Journey", "Sleeper Comfort", "Direct Route"],
+    stops: 2,
+    luggage: "25kg per person",
+    cancellation: "Free cancellation up to 4h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Dhanbad Bus Stand"
+  },
+  {
+    id: 4,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Deoghar",
+    operator: "Jharkhand Tourism",
+    busType: "Tourist Bus",
+    duration: "7h 30m",
+    distance: "220 km",
+    departure: "08:00",
+    arrival: "15:30",
+    price: "₹600",
+    amenities: ["AC", "WiFi", "Water Bottle", "Guide", "Reclining Seats"],
+    days: ["Daily"],
+    route: "Ranchi → Hazaribagh → Giridih → Deoghar",
+    features: ["Religious Route", "Tourist Guide", "Temple Visits"],
+    stops: 5,
+    luggage: "20kg per person",
+    cancellation: "Free cancellation up to 3h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Deoghar Bus Stand"
+  },
+  {
+    id: 5,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Hazaribagh",
+    operator: "Jharkhand State Transport",
+    busType: "AC Coach",
+    duration: "3h 45m",
+    distance: "120 km",
+    departure: "09:00",
+    arrival: "12:45",
+    price: "₹350",
+    amenities: ["AC", "Water Bottle", "Reclining Seats"],
+    days: ["Daily"],
+    route: "Ranchi → Ramgarh → Hazaribagh",
+    features: ["Hill Station Route", "Frequent Service", "Scenic"],
+    stops: 3,
+    luggage: "15kg per person",
+    cancellation: "Free cancellation up to 2h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Hazaribagh Bus Stand"
+  },
+  // Inter-state Routes
+  {
+    id: 6,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Kolkata",
+    operator: "Orange Tours",
+    busType: "Volvo AC Sleeper",
+    duration: "8h 30m",
+    distance: "420 km",
+    departure: "21:00",
+    arrival: "05:30+1",
+    price: "₹1,200",
+    amenities: ["AC", "Sleeper Berth", "WiFi", "Blanket", "Water Bottle", "Pillow"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Asansol → Kolkata",
+    features: ["Premium Service", "Overnight Journey", "City Drop"],
+    stops: 4,
+    luggage: "30kg per person",
+    cancellation: "Free cancellation up to 6h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Kolkata Bus Stand"
+  },
+  {
+    id: 7,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Patna",
+    operator: "Bihar State Transport",
+    busType: "AC Coach",
+    duration: "6h 45m",
+    distance: "350 km",
+    departure: "08:00",
+    arrival: "14:45",
+    price: "₹800",
+    amenities: ["AC", "Water Bottle", "Reclining Seats"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Patna",
+    features: ["Inter-state Route", "Comfortable Journey", "Frequent Service"],
+    stops: 6,
+    luggage: "25kg per person",
+    cancellation: "Free cancellation up to 3h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Patna Bus Stand"
+  },
+  {
+    id: 8,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Varanasi",
+    operator: "UP State Transport",
+    busType: "AC Sleeper",
+    duration: "10h 15m",
+    distance: "480 km",
+    departure: "20:30",
+    arrival: "06:45+1",
+    price: "₹1,000",
+    amenities: ["AC", "Sleeper Berth", "Blanket", "Water Bottle", "Pillow"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Varanasi",
+    features: ["Religious Route", "Overnight Journey", "Comfortable"],
+    stops: 6,
+    luggage: "30kg per person",
+    cancellation: "Free cancellation up to 6h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Varanasi Bus Stand"
+  },
+  {
+    id: 9,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Delhi",
+    operator: "Delhi Transport",
+    busType: "Volvo AC Sleeper",
+    duration: "18h 30m",
+    distance: "1,200 km",
+    departure: "18:00",
+    arrival: "12:30+1",
+    price: "₹2,500",
+    amenities: ["AC", "Sleeper Berth", "WiFi", "Blanket", "Water Bottle", "Meals", "Pillow"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi",
+    features: ["Premium Service", "Long Distance", "Meals Included"],
+    stops: 8,
+    luggage: "40kg per person",
+    cancellation: "Free cancellation up to 12h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Delhi Bus Stand"
+  },
+  {
+    id: 10,
+    mode: "bus",
+    from: "Jamshedpur",
+    to: "Kolkata",
+    operator: "Tata Motors Transport",
+    busType: "AC Coach",
+    duration: "5h 30m",
+    distance: "280 km",
+    departure: "07:00",
+    arrival: "12:30",
+    price: "₹600",
+    amenities: ["AC", "Water Bottle", "Reclining Seats"],
+    days: ["Daily"],
+    route: "Jamshedpur → Tatanagar → Kharagpur → Kolkata",
+    features: ["Industrial Route", "Frequent Service", "Comfortable"],
+    stops: 3,
+    luggage: "20kg per person",
+    cancellation: "Free cancellation up to 2h before departure",
+    boarding: "Jamshedpur Bus Stand",
+    dropoff: "Kolkata Bus Stand"
+  },
+  // Additional Bus Routes
+  {
+    id: 11,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Mumbai",
+    operator: "Maharashtra State Transport",
+    busType: "Volvo AC Sleeper",
+    duration: "22h 00m",
+    distance: "1,600 km",
+    departure: "16:00",
+    arrival: "14:00+1",
+    price: "₹3,200",
+    amenities: ["AC", "Sleeper Berth", "WiFi", "Blanket", "Water Bottle", "Meals", "Pillow"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Mumbai",
+    features: ["Premium Service", "Long Distance", "Meals Included"],
+    stops: 10,
+    luggage: "40kg per person",
+    cancellation: "Free cancellation up to 12h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Mumbai Bus Stand"
+  },
+  {
+    id: 12,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Bangalore",
+    operator: "Karnataka State Transport",
+    busType: "Volvo AC Sleeper",
+    duration: "24h 30m",
+    distance: "1,800 km",
+    departure: "14:30",
+    arrival: "15:00+1",
+    price: "₹3,500",
+    amenities: ["AC", "Sleeper Berth", "WiFi", "Blanket", "Water Bottle", "Meals", "Pillow"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Bangalore",
+    features: ["Tech Hub Route", "Long Distance", "Premium Service"],
+    stops: 12,
+    luggage: "40kg per person",
+    cancellation: "Free cancellation up to 12h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Bangalore Bus Stand"
+  },
+  {
+    id: 13,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Chennai",
+    operator: "Tamil Nadu State Transport",
+    busType: "Volvo AC Sleeper",
+    duration: "26h 15m",
+    distance: "1,950 km",
+    departure: "12:00",
+    arrival: "14:15+1",
+    price: "₹3,800",
+    amenities: ["AC", "Sleeper Berth", "WiFi", "Blanket", "Water Bottle", "Meals", "Pillow"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Chennai",
+    features: ["Metro Connection", "Long Distance", "Premium Service"],
+    stops: 14,
+    luggage: "40kg per person",
+    cancellation: "Free cancellation up to 12h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Chennai Bus Stand"
+  },
+  {
+    id: 14,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Hyderabad",
+    operator: "Telangana State Transport",
+    busType: "Volvo AC Sleeper",
+    duration: "23h 45m",
+    distance: "1,700 km",
+    departure: "15:30",
+    arrival: "15:15+1",
+    price: "₹3,300",
+    amenities: ["AC", "Sleeper Berth", "WiFi", "Blanket", "Water Bottle", "Meals", "Pillow"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Hyderabad",
+    features: ["Tech Hub", "Long Distance", "Comfortable"],
+    stops: 11,
+    luggage: "40kg per person",
+    cancellation: "Free cancellation up to 12h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Hyderabad Bus Stand"
+  },
+  {
+    id: 15,
+    mode: "bus",
+    from: "Ranchi",
+    to: "Pune",
+    operator: "Maharashtra State Transport",
+    busType: "Volvo AC Sleeper",
+    duration: "23h 30m",
+    distance: "1,650 km",
+    departure: "13:45",
+    arrival: "13:15+1",
+    price: "₹3,100",
+    amenities: ["AC", "Sleeper Berth", "WiFi", "Blanket", "Water Bottle", "Meals", "Pillow"],
+    days: ["Daily"],
+    route: "Ranchi → Bokaro → Dhanbad → Gaya → Mughalsarai → Delhi → Pune",
+    features: ["Educational Hub", "Long Distance", "Premium Service"],
+    stops: 10,
+    luggage: "40kg per person",
+    cancellation: "Free cancellation up to 12h before departure",
+    boarding: "Ranchi Bus Stand",
+    dropoff: "Pune Bus Stand"
+  }
+];
+
+const flightRoutes: FlightOption[] = [
+  // From Ranchi (IXR - Birsa Munda Airport)
+  {
+    id: 1,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Delhi",
+    flightNumber: "6E-201",
+    airline: "IndiGo",
+    aircraft: "Airbus A320",
+    duration: "2h 00m",
+    distance: "1,200 km",
+    departure: "06:30",
+    arrival: "08:30",
+    price: "₹4,200",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Early Morning", "Frequent Service", "Business Hub"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Delhi Airport (DEL)",
+    terminal: "T3",
+    gate: "A12"
+  },
+  {
+    id: 2,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Mumbai",
+    flightNumber: "AI-456",
+    airline: "Air India",
+    aircraft: "Boeing 737",
+    duration: "2h 30m",
+    distance: "1,400 km",
+    departure: "14:15",
+    arrival: "16:45",
+    price: "₹5,500",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Afternoon", "Metro Connection", "Business Route"],
+    stops: 0,
+    baggage: "20kg check-in + 8kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Mumbai Airport (BOM)",
+    terminal: "T2",
+    gate: "B8"
+  },
+  {
+    id: 3,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Kolkata",
+    flightNumber: "6E-789",
+    airline: "IndiGo",
+    aircraft: "ATR 72",
+    duration: "1h 15m",
+    distance: "420 km",
+    departure: "11:00",
+    arrival: "12:15",
+    price: "₹3,000",
+    class: "Economy",
+    amenities: ["WiFi", "Snacks", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Short Flight", "Regional Route", "Frequent Service"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 12h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Kolkata Airport (CCU)",
+    terminal: "T1",
+    gate: "C5"
+  },
+  {
+    id: 4,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Bangalore",
+    flightNumber: "SG-123",
+    airline: "SpiceJet",
+    aircraft: "Boeing 737",
+    duration: "2h 45m",
+    distance: "1,600 km",
+    departure: "09:30",
+    arrival: "12:15",
+    price: "₹5,200",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Tech Hub", "Morning Flight", "Business Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Bangalore Airport (BLR)",
+    terminal: "T1",
+    gate: "A15"
+  },
+  {
+    id: 5,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Hyderabad",
+    flightNumber: "6E-456",
+    airline: "IndiGo",
+    aircraft: "Airbus A320",
+    duration: "2h 15m",
+    distance: "1,300 km",
+    departure: "16:45",
+    arrival: "19:00",
+    price: "₹4,700",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Evening Flight", "Tech Hub", "Business Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Hyderabad Airport (HYD)",
+    terminal: "T1",
+    gate: "B12"
+  },
+  {
+    id: 6,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Chennai",
+    flightNumber: "I5-789",
+    airline: "AirAsia",
+    aircraft: "Airbus A320",
+    duration: "2h 40m",
+    distance: "1,500 km",
+    departure: "13:20",
+    arrival: "16:00",
+    price: "₹5,800",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Afternoon", "Metro Connection", "Business Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Chennai Airport (MAA)",
+    terminal: "T1",
+    gate: "C8"
+  },
+  {
+    id: 7,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Ahmedabad",
+    flightNumber: "G8-234",
+    airline: "GoFirst",
+    aircraft: "Airbus A320",
+    duration: "2h 45m",
+    distance: "1,450 km",
+    departure: "10:15",
+    arrival: "13:00",
+    price: "₹5,400",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Morning Flight", "Business Hub", "Industrial Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Ahmedabad Airport (AMD)",
+    terminal: "T1",
+    gate: "A10"
+  },
+  {
+    id: 8,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Surat",
+    flightNumber: "6E-567",
+    airline: "IndiGo",
+    aircraft: "Airbus A320",
+    duration: "3h 10m",
+    distance: "1,520 km",
+    departure: "15:30",
+    arrival: "18:40",
+    price: "₹5,600",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Afternoon", "Industrial Hub", "Business Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Surat Airport (STV)",
+    terminal: "T1",
+    gate: "B6"
+  },
+  // From Deoghar (DGH - Deoghar Airport)
+  {
+    id: 9,
+    mode: "flight",
+    from: "Deoghar",
+    to: "Patna",
+    flightNumber: "SG-345",
+    airline: "SpiceJet",
+    aircraft: "ATR 72",
+    duration: "50m",
+    distance: "200 km",
+    departure: "08:00",
+    arrival: "08:50",
+    price: "₹2,000",
+    class: "Economy",
+    amenities: ["Snacks", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Short Flight", "Regional Route", "Frequent Service"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 12h before departure",
+    boarding: "Deoghar Airport (DGH)",
+    dropoff: "Patna Airport (PAT)",
+    terminal: "T1",
+    gate: "A3"
+  },
+  {
+    id: 10,
+    mode: "flight",
+    from: "Deoghar",
+    to: "Delhi",
+    flightNumber: "6E-678",
+    airline: "IndiGo",
+    aircraft: "ATR 72",
+    duration: "2h 00m",
+    distance: "1,000 km",
+    departure: "12:30",
+    arrival: "14:30",
+    price: "₹4,500",
+    class: "Economy",
+    amenities: ["WiFi", "Snacks", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Afternoon", "Business Hub", "Religious Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Deoghar Airport (DGH)",
+    dropoff: "Delhi Airport (DEL)",
+    terminal: "T3",
+    gate: "A8"
+  },
+  // Additional Flight Routes
+  {
+    id: 11,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Mumbai",
+    flightNumber: "AI-789",
+    airline: "Air India",
+    aircraft: "Boeing 787",
+    duration: "2h 45m",
+    distance: "1,400 km",
+    departure: "18:30",
+    arrival: "21:15",
+    price: "₹6,200",
+    class: "Business",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding", "Lounge Access"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Evening Flight", "Business Class", "Premium Service"],
+    stops: 0,
+    baggage: "35kg check-in + 12kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Mumbai Airport (BOM)",
+    terminal: "T2",
+    gate: "B15"
+  },
+  {
+    id: 12,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Bangalore",
+    flightNumber: "SG-456",
+    airline: "SpiceJet",
+    aircraft: "Boeing 737",
+    duration: "3h 15m",
+    distance: "1,600 km",
+    departure: "19:45",
+    arrival: "23:00",
+    price: "₹5,800",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Evening Flight", "Tech Hub", "Business Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Bangalore Airport (BLR)",
+    terminal: "T1",
+    gate: "A20"
+  },
+  {
+    id: 13,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Chennai",
+    flightNumber: "I5-123",
+    airline: "AirAsia",
+    aircraft: "Airbus A320",
+    duration: "3h 00m",
+    distance: "1,500 km",
+    departure: "20:15",
+    arrival: "23:15",
+    price: "₹6,100",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Evening Flight", "Metro Connection", "Business Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Chennai Airport (MAA)",
+    terminal: "T1",
+    gate: "C12"
+  },
+  {
+    id: 14,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Hyderabad",
+    flightNumber: "6E-890",
+    airline: "IndiGo",
+    aircraft: "Airbus A320",
+    duration: "2h 30m",
+    distance: "1,300 km",
+    departure: "21:00",
+    arrival: "23:30",
+    price: "₹5,200",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Evening Flight", "Tech Hub", "Business Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Hyderabad Airport (HYD)",
+    terminal: "T1",
+    gate: "B18"
+  },
+  {
+    id: 15,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Pune",
+    flightNumber: "G8-567",
+    airline: "GoFirst",
+    aircraft: "Airbus A320",
+    duration: "2h 50m",
+    distance: "1,550 km",
+    departure: "17:30",
+    arrival: "20:20",
+    price: "₹5,900",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Direct",
+    features: ["Evening Flight", "Educational Hub", "Business Route"],
+    stops: 0,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Pune Airport (PNQ)",
+    terminal: "T1",
+    gate: "A14"
+  },
+  // Connecting Flights
+  {
+    id: 16,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Kochi",
+    flightNumber: "6E-234",
+    airline: "IndiGo",
+    aircraft: "Airbus A320",
+    duration: "4h 30m",
+    distance: "2,200 km",
+    departure: "08:00",
+    arrival: "12:30",
+    price: "₹7,500",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Via Bangalore",
+    features: ["Connecting Flight", "Tourist Destination", "Scenic Route"],
+    stops: 1,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Kochi Airport (COK)",
+    terminal: "T1",
+    gate: "A22"
+  },
+  {
+    id: 17,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Goa",
+    flightNumber: "SG-678",
+    airline: "SpiceJet",
+    aircraft: "Boeing 737",
+    duration: "4h 15m",
+    distance: "2,100 km",
+    departure: "09:30",
+    arrival: "13:45",
+    price: "₹8,200",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Via Mumbai",
+    features: ["Connecting Flight", "Beach Destination", "Tourist Route"],
+    stops: 1,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Goa Airport (GOI)",
+    terminal: "T1",
+    gate: "B25"
+  },
+  {
+    id: 18,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Jaipur",
+    flightNumber: "6E-345",
+    airline: "IndiGo",
+    aircraft: "Airbus A320",
+    duration: "3h 45m",
+    distance: "1,800 km",
+    departure: "11:15",
+    arrival: "15:00",
+    price: "₹6,800",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Via Delhi",
+    features: ["Connecting Flight", "Heritage Destination", "Tourist Route"],
+    stops: 1,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Jaipur Airport (JAI)",
+    terminal: "T1",
+    gate: "C18"
+  },
+  {
+    id: 19,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Lucknow",
+    flightNumber: "AI-567",
+    airline: "Air India",
+    aircraft: "Boeing 737",
+    duration: "3h 30m",
+    distance: "1,600 km",
+    departure: "13:45",
+    arrival: "17:15",
+    price: "₹6,500",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Via Delhi",
+    features: ["Connecting Flight", "Capital City", "Business Route"],
+    stops: 1,
+    baggage: "20kg check-in + 8kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Lucknow Airport (LKO)",
+    terminal: "T1",
+    gate: "A25"
+  },
+  {
+    id: 20,
+    mode: "flight",
+    from: "Ranchi",
+    to: "Chandigarh",
+    flightNumber: "SG-789",
+    airline: "SpiceJet",
+    aircraft: "Boeing 737",
+    duration: "4h 00m",
+    distance: "1,700 km",
+    departure: "15:30",
+    arrival: "19:30",
+    price: "₹7,200",
+    class: "Economy",
+    amenities: ["WiFi", "Meals", "Entertainment", "Priority Boarding"],
+    days: ["Daily"],
+    route: "Via Delhi",
+    features: ["Connecting Flight", "Punjab Capital", "Business Route"],
+    stops: 1,
+    baggage: "15kg check-in + 7kg cabin",
+    cancellation: "Free cancellation up to 24h before departure",
+    boarding: "Ranchi Airport (IXR)",
+    dropoff: "Chandigarh Airport (IXC)",
+    terminal: "T1",
+    gate: "B28"
+  }
+];
+
+// Combined routes for easy access
+const longDistanceOptions: TransportOption[] = [...trainRoutes, ...busRoutes, ...flightRoutes];
+
+const rentalVehicles = [
+  // Electric Vehicles - Priority at Top
+  {
+    id: 1,
+    type: "EV",
+    model: "Tata Nexon EV",
+    pricePerDay: "₹2,800",
+    pricePerHour: "₹500",
+    seats: 5,
+    fuelType: "Electric",
+    image: "/src/assets/rentals/Tata Nexon EV.avif",
+    pickupLocation: "EV Hub",
+    available: true,
+    features: ["Zero Emission", "Fast Charging", "Smart Features"],
+    mileage: "312 km/charge",
+    engineCapacity: "Electric",
+    isEco: true,
+  },
+  {
+    id: 2,
+    type: "EV",
+    model: "MG ZS EV",
+    pricePerDay: "₹3,500",
+    pricePerHour: "₹650",
+    seats: 5,
+    fuelType: "Electric",
+    image: "/src/assets/rentals/MG ZS EV.jpg",
+    pickupLocation: "Premium EV Hub",
+    available: true,
+    features: ["Premium EV", "Long Range", "Advanced Tech"],
+    mileage: "419 km/charge",
+    engineCapacity: "Electric",
+    isEco: true,
+  },
+  {
+    id: 3,
+    type: "EV Scooter",
+    model: "OLA S1 EV",
+    pricePerDay: "₹600",
+    pricePerHour: "₹110",
+    seats: 2,
+    fuelType: "Electric",
+    image: "/src/assets/rentals/OLA S1 EV.jpg",
+    pickupLocation: "Eco Hub",
+    available: true,
+    features: ["Zero Emission", "Fast Charging", "Smart Features"],
+    mileage: "181 km/charge",
+    engineCapacity: "Electric",
+    isEco: true,
+  },
+  {
+    id: 4,
+    type: "EV Scooter",
+    model: "Chetak EV",
+    pricePerDay: "₹550",
+    pricePerHour: "₹100",
+    seats: 2,
+    fuelType: "Electric",
+    image: "/src/assets/rentals/Chetak EV.webp",
+    pickupLocation: "Green Zone",
+    available: true,
+    features: ["Silent Operation", "Low Maintenance", "Eco-Friendly"],
+    mileage: "95 km/charge",
+    engineCapacity: "Electric",
+    isEco: true,
+  },
+
+  // Two-Wheelers
+  {
+    id: 5,
+    type: "Scooter",
+    model: "Honda Activa 6G",
+    pricePerDay: "₹450",
+    pricePerHour: "₹80",
+    seats: 2,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Honda Activa 6G.avif",
+    pickupLocation: "Ranchi Railway Station",
+    available: true,
+    features: ["Helmet Included", "Insurance Covered", "Easy to Ride"],
+    mileage: "60 km/l",
+    engineCapacity: "109cc",
+  },
+  {
+    id: 6,
+    type: "Scooter",
+    model: "Suzuki Access 125",
+    pricePerDay: "₹500",
+    pricePerHour: "₹90",
+    seats: 2,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Suzuki Access 125.avif",
+    pickupLocation: "Airport",
+    available: true,
+    features: ["Digital Display", "Mobile Charging", "Storage Space"],
+    mileage: "55 km/l",
+    engineCapacity: "124cc",
+  },
+  {
+    id: 7,
+    type: "Scooter",
+    model: "TVS Jupiter",
+    pricePerDay: "₹420",
+    pricePerHour: "₹75",
+    seats: 2,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/TVS Jupiter.avif",
+    pickupLocation: "City Center",
+    available: true,
+    features: ["Comfortable Ride", "Good Mileage", "Reliable"],
+    mileage: "58 km/l",
+    engineCapacity: "109cc",
+  },
+  {
+    id: 8,
+    type: "Motorcycle",
+    model: "Hero Splendor Plus",
+    pricePerDay: "₹400",
+    pricePerHour: "₹70",
+    seats: 2,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Hero Splendor Plus.avif",
+    pickupLocation: "Budget Hub",
+    available: true,
+    features: ["Excellent Mileage", "Reliable Engine", "Low Cost"],
+    mileage: "70 km/l",
+    engineCapacity: "97cc",
+  },
+  {
+    id: 9,
+    type: "Motorcycle",
+    model: "Bajaj Pulsar 150",
+    pricePerDay: "₹650",
+    pricePerHour: "₹120",
+    seats: 2,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Bajaj Pulsar 150.avif",
+    pickupLocation: "Sports Hub",
+    available: true,
+    features: ["Sporty Design", "Powerful Engine", "Digital Console"],
+    mileage: "45 km/l",
+    engineCapacity: "149cc",
+  },
+  {
+    id: 10,
+    type: "Motorcycle",
+    model: "KTM Duke 200",
+    pricePerDay: "₹800",
+    pricePerHour: "₹150",
+    seats: 2,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/KTM Duke 200.jpg",
+    pickupLocation: "Adventure Zone",
+    available: true,
+    features: ["Racing DNA", "Advanced Suspension", "Premium Build"],
+    mileage: "35 km/l",
+    engineCapacity: "199cc",
+  },
+  {
+    id: 11,
+    type: "Motorcycle",
+    model: "Royal Enfield Classic 350",
+    pricePerDay: "₹900",
+    pricePerHour: "₹170",
+    seats: 2,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Royal Enfield Classic 350.avif",
+    pickupLocation: "Heritage Zone",
+    available: true,
+    features: ["Classic Design", "Thumping Sound", "Comfortable"],
+    mileage: "40 km/l",
+    engineCapacity: "349cc",
+  },
+
+  // Cars - Hatchbacks
+  {
+    id: 12,
+    type: "Car",
+    model: "Maruti Swift",
+    pricePerDay: "₹1,200",
+    pricePerHour: "₹200",
+    seats: 5,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Maruti Swift.avif",
+    pickupLocation: "City Center",
+    available: true,
+    features: ["AC", "Power Steering", "Music System"],
+    mileage: "23 km/l",
+    engineCapacity: "1197cc",
+  },
+  {
+    id: 13,
+    type: "Car",
+    model: "Hyundai i20",
+    pricePerDay: "₹1,400",
+    pricePerHour: "₹250",
+    seats: 5,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Hyundai i20.avif",
+    pickupLocation: "Premium Hub",
+    available: true,
+    features: ["Touchscreen", "Climate Control", "Safety Features"],
+    mileage: "20 km/l",
+    engineCapacity: "1197cc",
+  },
+  {
+    id: 14,
+    type: "Car",
+    model: "Tata Tiago",
+    pricePerDay: "₹1,100",
+    pricePerHour: "₹180",
+    seats: 5,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Tata Tiago.avif",
+    pickupLocation: "Budget Center",
+    available: true,
+    features: ["Good Mileage", "Comfortable", "Value for Money"],
+    mileage: "24 km/l",
+    engineCapacity: "1199cc",
+  },
+
+  // Cars - Sedans
+  {
+    id: 15,
+    type: "Car",
+    model: "Honda City",
+    pricePerDay: "₹2,000",
+    pricePerHour: "₹350",
+    seats: 5,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Honda City.avif",
+    pickupLocation: "Executive Hub",
+    available: true,
+    features: ["Premium Interior", "Sunroof", "Advanced Safety"],
+    mileage: "17 km/l",
+    engineCapacity: "1498cc",
+  },
+  {
+    id: 16,
+    type: "Car",
+    model: "Toyota Camry",
+    pricePerDay: "₹4,500",
+    pricePerHour: "₹800",
+    seats: 5,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Toyota Camry.avif",
+    pickupLocation: "Luxury Hub",
+    available: true,
+    features: ["Luxury Features", "Premium Sound", "Executive Comfort"],
+    mileage: "15 km/l",
+    engineCapacity: "2487cc",
+  },
+  {
+    id: 17,
+    type: "Car",
+    model: "Mercedes-Benz C-Class",
+    pricePerDay: "₹8,000",
+    pricePerHour: "₹1,500",
+    seats: 5,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Mercedes-Benz C-Class.avif",
+    pickupLocation: "Ultra Luxury Hub",
+    available: true,
+    features: ["Luxury Brand", "Premium Features", "Executive Service"],
+    mileage: "12 km/l",
+    engineCapacity: "1991cc",
+  },
+
+  // SUVs
+  {
+    id: 18,
+    type: "SUV",
+    model: "Hyundai Creta",
+    pricePerDay: "₹2,500",
+    pricePerHour: "₹450",
+    seats: 5,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Hyundai Creta.webp",
+    pickupLocation: "SUV Hub",
+    available: true,
+    features: ["High Ground Clearance", "Spacious", "Modern Design"],
+    mileage: "16 km/l",
+    engineCapacity: "1497cc",
+  },
+  {
+    id: 19,
+    type: "SUV",
+    model: "Mahindra XUV700",
+    pricePerDay: "₹3,000",
+    pricePerHour: "₹550",
+    seats: 7,
+    fuelType: "Diesel",
+    image: "/src/assets/rentals/Mahindra XUV700.webp",
+    pickupLocation: "Family Hub",
+    available: true,
+    features: ["7-Seater", "Powerful Engine", "Advanced Tech"],
+    mileage: "14 km/l",
+    engineCapacity: "2179cc",
+  },
+  {
+    id: 20,
+    type: "SUV",
+    model: "BMW X1",
+    pricePerDay: "₹5,500",
+    pricePerHour: "₹1,000",
+    seats: 5,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/BMW X1.avif",
+    pickupLocation: "Premium SUV Hub",
+    available: true,
+    features: ["Luxury SUV", "Premium Brand", "Advanced Features"],
+    mileage: "13 km/l",
+    engineCapacity: "1998cc",
+  },
+
+  // Off-Road Vehicles
+  {
+    id: 21,
+    type: "Off-Road",
+    model: "Mahindra Thar",
+    pricePerDay: "₹3,500",
+    pricePerHour: "₹650",
+    seats: 4,
+    fuelType: "Diesel",
+    image: "/src/assets/rentals/Mahindra Thar.avif",
+    pickupLocation: "Adventure Hub",
+    available: true,
+    features: ["4WD", "Off-road Ready", "Adventure Package"],
+    mileage: "12 km/l",
+    engineCapacity: "2179cc",
+  },
+  {
+    id: 22,
+    type: "Off-Road",
+    model: "Force Gurkha",
+    pricePerDay: "₹2,800",
+    pricePerHour: "₹500",
+    seats: 5,
+    fuelType: "Diesel",
+    image: "/src/assets/rentals/Force Gurkha.avif",
+    pickupLocation: "Rugged Hub",
+    available: true,
+    features: ["Military Grade", "Extreme Terrain", "Robust Build"],
+    mileage: "11 km/l",
+    engineCapacity: "2596cc",
+  },
+
+  // Commercial Vehicles
+  {
+    id: 23,
+    type: "Commercial",
+    model: "Mahindra Bolero",
+    pricePerDay: "₹2,200",
+    pricePerHour: "₹400",
+    seats: 7,
+    fuelType: "Diesel",
+    image: "/src/assets/rentals/Mahindra Bolero.avif",
+    pickupLocation: "Commercial Hub",
+    available: true,
+    features: ["Rugged", "High Capacity", "Reliable"],
+    mileage: "15 km/l",
+    engineCapacity: "2523cc",
+  },
+  {
+    id: 24,
+    type: "Commercial",
+    model: "Maruti Eeco",
+    pricePerDay: "₹1,500",
+    pricePerHour: "₹250",
+    seats: 7,
+    fuelType: "Petrol",
+    image: "/src/assets/rentals/Maruti Eeco.avif",
+    pickupLocation: "Budget Commercial",
+    available: true,
+    features: ["Spacious", "Economical", "Easy to Drive"],
+    mileage: "18 km/l",
+    engineCapacity: "1197cc",
+  },
+  {
+    id: 25,
+    type: "Commercial",
+    model: "Tempo Traveller",
+    pricePerDay: "₹3,500",
+    pricePerHour: "₹600",
+    seats: 12,
+    fuelType: "Diesel",
+    image: "/src/assets/rentals/Tempo Traveller.webp",
+    pickupLocation: "Group Travel Hub",
+    available: true,
+    features: ["12-Seater", "Group Travel", "Comfortable"],
+    mileage: "10 km/l",
+    engineCapacity: "2523cc",
+  },
+  {
+    id: 26,
+    type: "Commercial",
+    model: "Toyota Innova Crysta",
+    pricePerDay: "₹3,200",
+    pricePerHour: "₹550",
+    seats: 7,
+    fuelType: "Diesel",
+    image: "/src/assets/rentals/Toyota Innova Crysta.jpg",
+    pickupLocation: "Family Travel Hub",
+    available: true,
+    features: ["Premium MPV", "Comfortable", "Reliable"],
+    mileage: "13 km/l",
+    engineCapacity: "2393cc",
+  },
+];
+
+const getModeIcon = (mode: string) => {
+  switch (mode) {
+    case "train": return <Train size={20} className="text-primary" />;
+    case "bus": return <Bus size={20} className="text-primary" />;
+    case "flight": return <Plane size={20} className="text-primary" />;
+    default: return <Car size={20} className="text-primary" />;
+  }
+};
+
+const getVehicleIcon = (type: string) => {
+  switch (type) {
+    case "Scooter": return <Bike size={20} className="text-primary" />;
+    case "EV Scooter": return <Zap size={20} className="text-success" />;
+    case "Motorcycle": return <Bike size={20} className="text-primary" />;
+    case "Car": return <Car size={20} className="text-primary" />;
+    case "SUV": return <Car size={20} className="text-primary" />;
+    case "Off-Road": return <Car size={20} className="text-accent" />;
+    case "Commercial": return <Car size={20} className="text-primary" />;
+    case "EV": return <Zap size={20} className="text-success" />;
+    case "Accessibility": return <Accessibility size={20} className="text-accent" />;
+    default: return <Car size={20} className="text-primary" />;
+  }
+};
+
+export default function Transport() {
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState("long-distance");
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedVehicleType, setSelectedVehicleType] = useState("All");
+  const [selectedMode, setSelectedMode] = useState("All");
+  const [selectedFromCity, setSelectedFromCity] = useState("All");
+  const [selectedToCity, setSelectedToCity] = useState("All");
+  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
+  const [selectedDuration, setSelectedDuration] = useState("All");
+  const [sortBy, setSortBy] = useState("price");
+
+  const vehicleTypes = ["All", "Scooter", "EV Scooter", "Motorcycle", "Car", "SUV", "Off-Road", "Commercial", "EV"];
+  const modes = ["All", "train", "bus", "flight"];
+  const priceRanges = ["All", "Under ₹1K", "₹1K-3K", "₹3K-5K", "Above ₹5K"];
+  const durations = ["All", "Under 5h", "5h-10h", "10h-15h", "Above 15h"];
+  const sortOptions = ["price", "duration", "departure", "popularity"];
+
+  // Filter long distance options
+  const filteredLongDistanceOptions = longDistanceOptions.filter(option => {
+    const matchesSearch = option.from.toLowerCase().includes(searchValue.toLowerCase()) ||
+                         option.to.toLowerCase().includes(searchValue.toLowerCase()) ||
+                         (option.mode === "train" ? (option as TrainOption).trainName.toLowerCase().includes(searchValue.toLowerCase()) :
+                          option.mode === "bus" ? (option as BusOption).operator.toLowerCase().includes(searchValue.toLowerCase()) :
+                          option.mode === "flight" ? (option as FlightOption).airline.toLowerCase().includes(searchValue.toLowerCase()) : false);
+    const matchesMode = selectedMode === "All" || option.mode === selectedMode;
+    const matchesFromCity = selectedFromCity === "All" || option.from === selectedFromCity;
+    const matchesToCity = selectedToCity === "All" || option.to === selectedToCity;
+    
+    // Get price based on transport mode
+    let optionPrice = "₹0";
+    if (option.mode === "train") {
+      const trainOption = option as TrainOption;
+      optionPrice = trainOption.classes[0]?.price || "₹0";
+    } else if (option.mode === "bus") {
+      optionPrice = (option as BusOption).price;
+    } else if (option.mode === "flight") {
+      optionPrice = (option as FlightOption).price;
+    }
+    
+    const matchesPriceRange = selectedPriceRange === "All" ||
+      (selectedPriceRange === "Under ₹1K" && parseInt(optionPrice.replace(/[₹,]/g, "")) < 1000) ||
+      (selectedPriceRange === "₹1K-3K" && parseInt(optionPrice.replace(/[₹,]/g, "")) >= 1000 && parseInt(optionPrice.replace(/[₹,]/g, "")) <= 3000) ||
+      (selectedPriceRange === "₹3K-5K" && parseInt(optionPrice.replace(/[₹,]/g, "")) > 3000 && parseInt(optionPrice.replace(/[₹,]/g, "")) <= 5000) ||
+      (selectedPriceRange === "Above ₹5K" && parseInt(optionPrice.replace(/[₹,]/g, "")) > 5000);
+    const matchesDuration = selectedDuration === "All" ||
+      (selectedDuration === "Under 5h" && option.duration.includes("h") && parseInt(option.duration.split("h")[0]) < 5) ||
+      (selectedDuration === "5h-10h" && option.duration.includes("h") && parseInt(option.duration.split("h")[0]) >= 5 && parseInt(option.duration.split("h")[0]) <= 10) ||
+      (selectedDuration === "10h-15h" && option.duration.includes("h") && parseInt(option.duration.split("h")[0]) > 10 && parseInt(option.duration.split("h")[0]) <= 15) ||
+      (selectedDuration === "Above 15h" && option.duration.includes("h") && parseInt(option.duration.split("h")[0]) > 15);
+
+    return matchesSearch && matchesMode && matchesFromCity && matchesToCity && matchesPriceRange && matchesDuration;
+  });
+
+  // Sort options
+  const sortedOptions = [...filteredLongDistanceOptions].sort((a, b) => {
+    // Get price based on transport mode
+    let aPrice = "₹0";
+    let bPrice = "₹0";
+    
+    if (a.mode === "train") {
+      aPrice = (a as TrainOption).classes[0]?.price || "₹0";
+    } else if (a.mode === "bus") {
+      aPrice = (a as BusOption).price;
+    } else if (a.mode === "flight") {
+      aPrice = (a as FlightOption).price;
+    }
+    
+    if (b.mode === "train") {
+      bPrice = (b as TrainOption).classes[0]?.price || "₹0";
+    } else if (b.mode === "bus") {
+      bPrice = (b as BusOption).price;
+    } else if (b.mode === "flight") {
+      bPrice = (b as FlightOption).price;
+    }
+
+    switch (sortBy) {
+      case "price": {
+        return parseInt(aPrice.replace(/[₹,]/g, "")) - parseInt(bPrice.replace(/[₹,]/g, ""));
+      }
+      case "duration": {
+        const aDuration = parseInt(a.duration.split("h")[0]) || 0;
+        const bDuration = parseInt(b.duration.split("h")[0]) || 0;
+        return aDuration - bDuration;
+      }
+      case "departure": {
+        return a.departure.localeCompare(b.departure);
+      }
+      case "popularity": {
+        return Math.random() - 0.5; // Random for demo
+      }
+      default: {
+        return 0;
+      }
+    }
+  });
+
+  // Get unique cities for filters
+  const fromCities = ["All", ...new Set(longDistanceOptions.map(option => option.from))];
+  const toCities = ["All", ...new Set(longDistanceOptions.map(option => option.to))];
+
+  return (
+    <div className="pb-24 min-h-screen bg-background">
+      {/* Header */}
+      <div className="bg-primary text-primary-foreground px-6 pt-12 pb-6">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex-1">
+            <h1 className="text-2xl font-playfair font-bold text-center mb-4">
+              {t("transport.title")}
+            </h1>
+          </div>
+          <LanguageToggle />
+        </div>
+        <SearchBar 
+          value={searchValue}
+          onChange={setSearchValue}
+          placeholder={t("transport.searchPlaceholder")}
+        />
+      </div>
+
+      <div className="px-6 mt-6 relative z-10">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted">
+            <TabsTrigger value="long-distance" className="font-medium">Long Distance</TabsTrigger>
+            <TabsTrigger value="rentals" className="font-medium">Rentals</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="long-distance" className="space-y-6">
+            {/* Advanced Filters */}
+            <div className="space-y-4">
+              <h3 className="font-medium text-foreground">Filters & Search</h3>
+              
+              {/* Mode Filter */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Travel Mode</label>
+                <div className="flex flex-wrap gap-2">
+                  {modes.map((mode) => (
+                    <Button
+                      key={mode}
+                      variant={selectedMode === mode ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedMode(mode)}
+                      className="text-xs"
+                    >
+                      {mode !== "All" && getModeIcon(mode)}
+                          <span className={mode !== "All" ? "ml-2" : ""}>{mode === "All" ? "All Modes" : mode.charAt(0).toUpperCase() + mode.slice(1)}</span>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* City Filters */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">From City</label>
+                  <select
+                    value={selectedFromCity}
+                    onChange={(e) => setSelectedFromCity(e.target.value)}
+                    className="w-full p-2 border rounded-md bg-background text-foreground"
+                  >
+                    {fromCities.map((city) => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">To City</label>
+                  <select
+                    value={selectedToCity}
+                    onChange={(e) => setSelectedToCity(e.target.value)}
+                    className="w-full p-2 border rounded-md bg-background text-foreground"
+                  >
+                    {toCities.map((city) => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Price and Duration Filters */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Price Range</label>
+                  <div className="flex flex-wrap gap-2">
+                    {priceRanges.map((range) => (
+                      <Button
+                        key={range}
+                        variant={selectedPriceRange === range ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedPriceRange(range)}
+                        className="text-xs"
+                      >
+                        {range}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Duration</label>
+                  <div className="flex flex-wrap gap-2">
+                    {durations.map((duration) => (
+                      <Button
+                        key={duration}
+                        variant={selectedDuration === duration ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedDuration(duration)}
+                        className="text-xs"
+                      >
+                        {duration}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Sort Options */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Sort By</label>
+                <div className="flex flex-wrap gap-2">
+                  {sortOptions.map((option) => (
+                    <Button
+                      key={option}
+                      variant={sortBy === option ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSortBy(option)}
+                      className="text-xs"
+                    >
+                      {option.charAt(0).toUpperCase() + option.slice(1)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Results Count */}
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">
+                {sortedOptions.length} routes found
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSelectedMode("All");
+                  setSelectedFromCity("All");
+                  setSelectedToCity("All");
+                  setSelectedPriceRange("All");
+                  setSelectedDuration("All");
+                  setSortBy("price");
+                }}
+              >
+                Clear Filters
+              </Button>
+            </div>
+
+            {/* Long Distance Options */}
+            <div className="space-y-4">
+              {sortedOptions.length > 0 ? (
+                sortedOptions.map((option) => (
+                  <LuxuryCard key={option.id} className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        {getModeIcon(option.mode)}
+                            <div>
+                              <h3 className="font-semibold text-foreground">
+                                {option.mode === "train" ? (option as TrainOption).trainName :
+                                 option.mode === "bus" ? (option as BusOption).operator :
+                                 option.mode === "flight" ? (option as FlightOption).airline : ""}
+                              </h3>
+                              <div className="flex items-center text-sm text-muted-foreground">
+                                <span>{option.from}</span>
+                                <ArrowRight size={12} className="mx-2" />
+                                <span>{option.to}</span>
+                                {option.mode === "train" && (
+                                  <span className="ml-2 text-xs">({(option as TrainOption).trainNumber})</span>
+                                )}
+                                {option.mode === "flight" && (
+                                  <span className="ml-2 text-xs">({(option as FlightOption).flightNumber})</span>
+                                )}
+                              </div>
+                            </div>
+                      </div>
+                      <div className="flex flex-col items-end space-y-1">
+                        {option.mode === "train" && (option as TrainOption).classes[0] && (
+                          <Badge variant="outline">{(option as TrainOption).classes[0].class}</Badge>
+                        )}
+                        {option.mode === "bus" && (
+                          <Badge variant="outline">{(option as BusOption).busType}</Badge>
+                        )}
+                        {option.mode === "flight" && (
+                          <Badge variant="outline">{(option as FlightOption).aircraft}</Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Departure</p>
+                        <p className="font-medium text-foreground">{option.departure}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Duration</p>
+                        <p className="font-medium text-foreground">{option.duration}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Arrival</p>
+                        <p className="font-medium text-foreground">{option.arrival}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Distance</p>
+                        <p className="font-medium text-foreground">{option.distance}</p>
+                      </div>
+                    </div>
+
+                    {/* Amenities */}
+                    {option.amenities && (
+                      <div className="mb-4">
+                        <div className="flex flex-wrap gap-1">
+                          {option.amenities.map((amenity, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {amenity}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Days */}
+                    {option.days && (
+                      <div className="mb-4">
+                        <p className="text-xs text-muted-foreground mb-1">Available Days:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {option.days.map((day, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {day}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Route */}
+                    {option.route && (
+                      <div className="mb-4">
+                        <p className="text-xs text-muted-foreground mb-1">Route:</p>
+                        <p className="text-sm text-foreground">{option.route}</p>
+                      </div>
+                    )}
+
+                    {/* Classes for trains */}
+                    {option.mode === "train" && (option as TrainOption).classes && (
+                      <div className="mb-4">
+                        <p className="text-xs text-muted-foreground mb-2">Available Classes:</p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                          {(option as TrainOption).classes.map((cls, index) => (
+                            <div key={index} className="text-center p-2 bg-muted rounded">
+                              <p className="text-xs font-medium">{cls.class}</p>
+                              <p className="text-xs text-accent">{cls.price}</p>
+                              <p className="text-xs text-muted-foreground">{cls.availability}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Additional Details */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="text-center p-2 bg-muted rounded">
+                        <p className="text-xs text-muted-foreground">Stops</p>
+                        <p className="text-sm font-medium">{option.stops}</p>
+                      </div>
+                      {option.mode === "bus" && (option as BusOption).luggage && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Luggage</p>
+                          <p className="text-sm font-medium">{(option as BusOption).luggage}</p>
+                        </div>
+                      )}
+                      {option.mode === "flight" && (option as FlightOption).baggage && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Baggage</p>
+                          <p className="text-sm font-medium">{(option as FlightOption).baggage}</p>
+                        </div>
+                      )}
+                      {option.mode === "train" && (option as TrainOption).meals && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Meals</p>
+                          <p className="text-sm font-medium">{(option as TrainOption).meals}</p>
+                        </div>
+                      )}
+                      {(option.mode === "bus" || option.mode === "flight") && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Boarding</p>
+                          <p className="text-sm font-medium">
+                            {option.mode === "bus" ? (option as BusOption).boarding : (option as FlightOption).boarding}
+                          </p>
+                        </div>
+                      )}
+                      {(option.mode === "bus" || option.mode === "flight") && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Drop-off</p>
+                          <p className="text-sm font-medium">
+                            {option.mode === "bus" ? (option as BusOption).dropoff : (option as FlightOption).dropoff}
+                          </p>
+                        </div>
+                      )}
+                      {option.mode === "flight" && (option as FlightOption).terminal && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Terminal</p>
+                          <p className="text-sm font-medium">{(option as FlightOption).terminal}</p>
+                        </div>
+                      )}
+                      {option.mode === "flight" && (option as FlightOption).gate && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Gate</p>
+                          <p className="text-sm font-medium">{(option as FlightOption).gate}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Cancellation Policy */}
+                    {option.cancellation && (
+                      <div className="mb-4">
+                        <p className="text-xs text-muted-foreground mb-1">Cancellation Policy:</p>
+                        <p className="text-sm text-foreground">{option.cancellation}</p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <IndianRupee size={16} className="text-accent" />
+                        <span className="font-bold text-lg text-accent">
+                          {option.mode === "train" ? (option as TrainOption).classes[0]?.price || "₹0" :
+                           option.mode === "bus" ? (option as BusOption).price :
+                           option.mode === "flight" ? (option as FlightOption).price : "₹0"}
+                        </span>
+                        <span className="text-sm text-muted-foreground ml-1">
+                          {option.mode === "flight" ? "per person" : "per ticket"}
+                        </span>
+                      </div>
+                      <Button size="sm" className="bg-primary hover:bg-primary-light">
+                        Book Now
+                      </Button>
+                    </div>
+                  </LuxuryCard>
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">No routes found matching your criteria.</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => {
+                      setSelectedMode("All");
+                      setSelectedFromCity("All");
+                      setSelectedToCity("All");
+                      setSelectedPriceRange("All");
+                      setSelectedDuration("All");
+                      setSortBy("price");
+                    }}
+                  >
+                    Clear All Filters
+                  </Button>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="rentals" className="space-y-6">
+            {/* Vehicle Type Filters */}
+            <div className="space-y-4">
+              <h3 className="font-medium text-foreground">Vehicle Type</h3>
+              <div className="flex flex-wrap gap-2">
+                {vehicleTypes.map((type) => (
+                  <Button
+                    key={type}
+                    variant={selectedVehicleType === type ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedVehicleType(type)}
+                    className="text-xs"
+                  >
+                    {type}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Rental Vehicles */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+              {rentalVehicles.map((vehicle) => (
+                <LuxuryCard key={vehicle.id} className="p-0 overflow-hidden">
+                  <div className="relative">
+                    <div className="aspect-[3/2] bg-muted">
+                      <img 
+                        src={vehicle.image} 
+                        alt={vehicle.model}
+                        className="w-full h-full object-contain object-center"
+                      />
+                    </div>
+                    
+                    {vehicle.isEco && (
+                      <Badge className="absolute top-2 left-2 bg-success text-success-foreground text-xs">
+                        🌱 Eco
+                      </Badge>
+                    )}
+                    {!vehicle.available && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <Badge variant="destructive" className="text-xs">Unavailable</Badge>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          {getVehicleIcon(vehicle.type)}
+                          <h3 className="font-semibold text-foreground text-sm">{vehicle.model}</h3>
+                        </div>
+                        <div className="flex items-center text-xs text-muted-foreground mb-1">
+                          <MapPin size={10} className="mr-1" />
+                          {vehicle.pickupLocation}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <div className="flex items-center">
+                            <Users size={8} className="mr-1" />
+                            {vehicle.seats}
+                          </div>
+                          <div className="flex items-center">
+                            {vehicle.fuelType === "Electric" ? (
+                              <Battery size={8} className="mr-1" />
+                            ) : (
+                              <Fuel size={8} className="mr-1" />
+                            )}
+                            {vehicle.fuelType}
+                          </div>
+                          <div className="flex items-center">
+                            <Clock size={8} className="mr-1" />
+                            {vehicle.mileage}
+                          </div>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {vehicle.type}
+                      </Badge>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {vehicle.features.slice(0, 2).map((feature, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs bg-primary/10 text-primary">
+                          {feature}
+                        </Badge>
+                      ))}
+                      {vehicle.features.length > 2 && (
+                        <Badge variant="secondary" className="text-xs bg-muted">
+                          +{vehicle.features.length - 2}
+                        </Badge>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <div className="flex items-center">
+                          <IndianRupee size={14} className="text-accent" />
+                          <span className="font-bold text-base text-accent">{vehicle.pricePerDay}</span>
+                          <span className="text-xs text-muted-foreground ml-1">/day</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          or {vehicle.pricePerHour}/hr
+                        </div>
+                      </div>
+                      <Button 
+                        size="sm" 
+                        disabled={!vehicle.available}
+                        className="bg-primary hover:bg-primary-light text-xs px-3 py-1"
+                      >
+                        {vehicle.available ? "Book" : "Unavailable"}
+                      </Button>
+                    </div>
+                  </div>
+                </LuxuryCard>
+              ))}
+            </div>
+
+            {/* EV Promotion Banner */}
+            <LuxuryCard className="mt-6 bg-gradient-to-r from-success/10 to-primary/10 border-success/20">
+              <div className="text-center py-4">
+                <div className="flex items-center justify-center mb-2">
+                  <Zap className="text-success mr-2" size={24} />
+                  <h3 className="font-playfair font-semibold text-foreground">
+                    Go Green with EV Rentals
+                  </h3>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Choose electric vehicles for a sustainable travel experience
+                </p>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-lg font-bold text-success">Zero</p>
+                    <p className="text-xs text-muted-foreground">Emissions</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-success">20%</p>
+                    <p className="text-xs text-muted-foreground">Discount</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-success">24/7</p>
+                    <p className="text-xs text-muted-foreground">Support</p>
+                  </div>
+                </div>
+              </div>
+            </LuxuryCard>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}

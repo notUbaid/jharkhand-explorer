@@ -50,19 +50,11 @@ export const PackageComparisonProvider: React.FC<PackageComparisonProviderProps>
     }
   }, [leftPackage, rightPackage]);
 
-  // Load comparison state from localStorage on mount
+  // Clear comparison state on mount to prevent auto-opening
   useEffect(() => {
-    const savedLeftId = localStorage.getItem('comparisonLeftPackage');
-    const savedRightId = localStorage.getItem('comparisonRightPackage');
-    
-    if (savedLeftId) {
-      const pkg = getPackageById(JSON.parse(savedLeftId));
-      if (pkg) setLeftPackage(pkg);
-    }
-    if (savedRightId) {
-      const pkg = getPackageById(JSON.parse(savedRightId));
-      if (pkg) setRightPackage(pkg);
-    }
+    // Clear any saved comparison state to prevent auto-opening
+    localStorage.removeItem('comparisonLeftPackage');
+    localStorage.removeItem('comparisonRightPackage');
   }, []);
 
   return (

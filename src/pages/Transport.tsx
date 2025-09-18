@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { TransportOption, TrainOption, BusOption, FlightOption, City } from "@/types/Transport";
+import { getAllTransportRoutes } from "@/data/transportData";
+import { useTransportComparison } from "@/contexts/TransportComparisonContext";
+import { TransportComparisonModal } from "@/components/TransportComparisonModal";
 import { 
   Train,
   Bus,
@@ -21,48 +25,30 @@ import {
   Battery,
   Accessibility,
   ArrowRight,
-  Calendar
+  Calendar,
+  Star,
+  Heart,
+  Filter,
+  SortAsc,
+  SortDesc,
+  Search,
+  X,
+  ChevronDown,
+  ChevronUp,
+  TrendingUp,
+  Clock as ClockIcon,
+  DollarSign,
+  Route,
+  Navigation,
+  Bookmark,
+  History,
+  Settings,
+  List,
+  Grid
 } from "lucide-react";
 
-const longDistanceOptions = [
-  {
-    id: 1,
-    mode: "train",
-    from: "Delhi",
-    to: "Ranchi",
-    operator: "Rajdhani Express",
-    duration: "16h 30m",
-    price: "₹2,100",
-    departure: "5:50 PM",
-    arrival: "10:20 AM",
-    class: "3AC",
-  },
-  {
-    id: 2,
-    mode: "flight",
-    from: "Mumbai",
-    to: "Ranchi",
-    operator: "IndiGo",
-    duration: "2h 15m",
-    price: "₹4,500",
-    departure: "9:25 AM",
-    arrival: "11:40 AM",
-    class: "Economy",
-  },
-  {
-    id: 3,
-    mode: "bus",
-    from: "Kolkata",
-    to: "Jamshedpur",
-    operator: "Volvo Sleeper",
-    duration: "6h 45m",
-    price: "₹800",
-    departure: "11:00 PM",
-    arrival: "5:45 AM",
-    class: "AC Sleeper",
-  },
-];
-
+// Combined routes for easy access (will be updated with state)
+const longDistanceOptions: TransportOption[] = [];
 const rentalVehicles = [
   // Electric Vehicles - Priority at Top
   {
@@ -499,29 +485,307 @@ const getVehicleIcon = (type: string) => {
 
 export default function Transport() {
   const { t } = useTranslation();
+  const { compareItems, addToCompare, removeFromCompare, isInCompare, canAddMore, setOpenCompareModal } = useTransportComparison();
   const [activeTab, setActiveTab] = useState("long-distance");
   const [searchValue, setSearchValue] = useState("");
   const [selectedVehicleType, setSelectedVehicleType] = useState("All");
+  const [selectedFuelType, setSelectedFuelType] = useState("All");
+  const [selectedRentalPriceRange, setSelectedRentalPriceRange] = useState("All");
+  const [selectedMode, setSelectedMode] = useState("All");
+  const [selectedFromCity, setSelectedFromCity] = useState("All");
+  const [selectedToCity, setSelectedToCity] = useState("All");
+  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
+  const [selectedDuration, setSelectedDuration] = useState("All");
+  const [sortBy, setSortBy] = useState("price");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [favorites, setFavorites] = useState<number[]>([]);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  
+  // Pagination and lazy loading states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(20);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasLoadedExtended, setHasLoadedExtended] = useState(false);
+  
+  // Load core data initially
+  const coreData = useMemo(() => getAllTransportRoutes(), []);
+  const [transportData, setTransportData] = useState(coreData);
+
+  // Lazy load extended data when needed
+  const loadExtendedData = useCallback(async () => {
+    if (hasLoadedExtended) return;
+    
+    setIsLoadingMore(true);
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const extendedData = transportData.generateExtendedRoutes();
+      setTransportData(prev => ({
+        ...prev,
+        cities: [...prev.cities, ...transportData.extendedCities],
+        trainRoutes: [...prev.trainRoutes, ...extendedData.trainRoutes],
+        busRoutes: [...prev.busRoutes, ...extendedData.busRoutes],
+        flightRoutes: [...prev.flightRoutes, ...extendedData.flightRoutes]
+      }));
+      setHasLoadedExtended(true);
+    } catch (error) {
+      console.error('Error loading extended data:', error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [hasLoadedExtended, transportData]);
+
+  // Reset all filters
+  const resetFilters = () => {
+    setSelectedMode("All");
+    setSelectedFromCity("All");
+    setSelectedToCity("All");
+    setSelectedPriceRange("All");
+    setSelectedDuration("All");
+    setSortBy("price");
+    setSortOrder("asc");
+    setSearchValue("");
+    setShowAdvancedFilters(false);
+    setCurrentPage(1); // Reset to first page
+  };
+
+  // Reset rental filters
+  const resetRentalFilters = () => {
+    setSelectedVehicleType("All");
+    setSelectedFuelType("All");
+    setSelectedRentalPriceRange("All");
+    setSearchValue("");
+  };
+
+  // Toggle favorite
+  const toggleFavorite = (id: number) => {
+    setFavorites(prev => 
+      prev.includes(id) 
+        ? prev.filter(favId => favId !== id)
+        : [...prev, id]
+    );
+  };
+
+  // Add to recent searches
+  const addToRecentSearches = (search: string) => {
+    if (search && !recentSearches.includes(search)) {
+      setRecentSearches(prev => [search, ...prev.slice(0, 4)]);
+    }
+  };
+
 
   const vehicleTypes = ["All", "Scooter", "EV Scooter", "Motorcycle", "Car", "SUV", "Off-Road", "Commercial", "EV"];
+  const modes = ["All", "train", "bus", "flight"];
+  const priceRanges = ["All", "Under ₹1K", "₹1K-3K", "₹3K-5K", "Above ₹5K"];
+  const durations = ["All", "Under 5h", "5h-10h", "10h-15h", "Above 15h"];
+  const sortOptions = ["price", "duration", "departure", "popularity"];
+
+  // Filter rental vehicles
+  const filteredRentalVehicles = rentalVehicles.filter(vehicle => {
+    const matchesVehicleType = selectedVehicleType === "All" || vehicle.type === selectedVehicleType;
+    const matchesFuelType = selectedFuelType === "All" || vehicle.fuelType === selectedFuelType;
+    const matchesSearch = searchValue === "" || 
+      vehicle.model.toLowerCase().includes(searchValue.toLowerCase()) ||
+      vehicle.type.toLowerCase().includes(searchValue.toLowerCase()) ||
+      vehicle.features.some(feature => feature.toLowerCase().includes(searchValue.toLowerCase()));
+    
+    // Price range filtering for rentals
+    const vehiclePrice = parseInt(vehicle.pricePerDay.replace(/[₹,]/g, "")) || 0;
+    const matchesPriceRange = selectedRentalPriceRange === "All" ||
+      (selectedRentalPriceRange === "Under ₹1K" && vehiclePrice < 1000) ||
+      (selectedRentalPriceRange === "₹1K-3K" && vehiclePrice >= 1000 && vehiclePrice <= 3000) ||
+      (selectedRentalPriceRange === "₹3K-5K" && vehiclePrice > 3000 && vehiclePrice <= 5000) ||
+      (selectedRentalPriceRange === "Above ₹5K" && vehiclePrice > 5000);
+    
+    return matchesVehicleType && matchesFuelType && matchesSearch && matchesPriceRange;
+  });
+
+  // Get current routes from state
+  const currentRoutes = [...transportData.trainRoutes, ...transportData.busRoutes, ...transportData.flightRoutes];
+  
+  // Filter long distance options
+  const filteredLongDistanceOptions = currentRoutes.filter(option => {
+    // Search filter
+    const matchesSearch = searchValue === "" || 
+      option.from.toLowerCase().includes(searchValue.toLowerCase()) ||
+      option.to.toLowerCase().includes(searchValue.toLowerCase()) ||
+      (option.mode === "train" ? (option as TrainOption).trainName.toLowerCase().includes(searchValue.toLowerCase()) :
+       option.mode === "bus" ? (option as BusOption).operator.toLowerCase().includes(searchValue.toLowerCase()) :
+       option.mode === "flight" ? (option as FlightOption).airline.toLowerCase().includes(searchValue.toLowerCase()) : false);
+    
+    // Mode filter
+    const matchesMode = selectedMode === "All" || option.mode === selectedMode;
+    
+    // City filters - exact match required
+    const matchesFromCity = selectedFromCity === "All" || option.from === selectedFromCity;
+    const matchesToCity = selectedToCity === "All" || option.to === selectedToCity;
+    
+    // Price filter
+    let optionPrice = "₹0";
+    if (option.mode === "train") {
+      const trainOption = option as TrainOption;
+      optionPrice = trainOption.classes[0]?.price || "₹0";
+    } else if (option.mode === "bus") {
+      optionPrice = (option as BusOption).price;
+    } else if (option.mode === "flight") {
+      optionPrice = (option as FlightOption).price;
+    }
+    
+    const priceValue = parseInt(optionPrice.replace(/[₹,]/g, "")) || 0;
+    const matchesPriceRange = selectedPriceRange === "All" ||
+      (selectedPriceRange === "Under ₹1K" && priceValue < 1000) ||
+      (selectedPriceRange === "₹1K-3K" && priceValue >= 1000 && priceValue <= 3000) ||
+      (selectedPriceRange === "₹3K-5K" && priceValue > 3000 && priceValue <= 5000) ||
+      (selectedPriceRange === "Above ₹5K" && priceValue > 5000);
+    
+    // Duration filter
+    const durationHours = parseInt(option.duration.split("h")[0]) || 0;
+    const matchesDuration = selectedDuration === "All" ||
+      (selectedDuration === "Under 5h" && durationHours < 5) ||
+      (selectedDuration === "5h-10h" && durationHours >= 5 && durationHours <= 10) ||
+      (selectedDuration === "10h-15h" && durationHours > 10 && durationHours <= 15) ||
+      (selectedDuration === "Above 15h" && durationHours > 15);
+
+
+    return matchesSearch && matchesMode && matchesFromCity && matchesToCity && matchesPriceRange && matchesDuration;
+  });
+
+  // Sort options
+  const sortedOptions = [...filteredLongDistanceOptions].sort((a, b) => {
+    // Get price based on transport mode
+    let aPrice = "₹0";
+    let bPrice = "₹0";
+
+    if (a.mode === "train") {
+      aPrice = (a as TrainOption).classes[0]?.price || "₹0";
+    } else if (a.mode === "bus") {
+      aPrice = (a as BusOption).price;
+    } else if (a.mode === "flight") {
+      aPrice = (a as FlightOption).price;
+    }
+
+    if (b.mode === "train") {
+      bPrice = (b as TrainOption).classes[0]?.price || "₹0";
+    } else if (b.mode === "bus") {
+      bPrice = (b as BusOption).price;
+    } else if (b.mode === "flight") {
+      bPrice = (b as FlightOption).price;
+    }
+
+    let result = 0;
+    switch (sortBy) {
+      case "price": {
+        result = parseInt(aPrice.replace(/[₹,]/g, "")) - parseInt(bPrice.replace(/[₹,]/g, ""));
+        break;
+      }
+      case "duration": {
+        const aDuration = parseInt(a.duration.split("h")[0]) || 0;
+        const bDuration = parseInt(b.duration.split("h")[0]) || 0;
+        result = aDuration - bDuration;
+        break;
+      }
+      case "departure": {
+        result = a.departure.localeCompare(b.departure);
+        break;
+      }
+      case "popularity": {
+        result = Math.random() - 0.5; // Random for demo
+        break;
+      }
+      default: {
+        result = 0;
+        break;
+      }
+    }
+    return sortOrder === "desc" ? -result : result;
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(sortedOptions.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedOptions = sortedOptions.slice(startIndex, endIndex);
+
+  // Get unique cities for filters
+  const fromCities = ["All", ...new Set(currentRoutes.map(option => option.from))];
+  const toCities = ["All", ...new Set(currentRoutes.map(option => option.to))];
+
+  // Filter cities based on selected from city for better UX
+  const filteredToCities = selectedFromCity === "All"
+    ? toCities
+    : ["All", ...new Set(currentRoutes
+        .filter(option => option.from === selectedFromCity)
+        .map(option => option.to))];
+
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedMode, selectedFromCity, selectedToCity, selectedPriceRange, selectedDuration, sortBy, sortOrder, searchValue]);
 
   return (
     <div className="pb-24 min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-primary text-primary-foreground px-6 pt-12 pb-6">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground px-6 pt-12 pb-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
-            <h1 className="text-2xl font-playfair font-bold text-center mb-4">
+            <h1 className="text-3xl font-playfair font-bold text-center mb-2">
               {t("transport.title")}
             </h1>
+            <p className="text-center text-primary-foreground/80 text-sm">
+              Find the perfect way to travel across India
+            </p>
           </div>
-          <LanguageToggle />
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+              className="text-primary-foreground hover:bg-primary-foreground/20"
+            >
+              {viewMode === "grid" ? <List size={16} /> : <Grid size={16} />}
+            </Button>
+            <LanguageToggle />
+          </div>
         </div>
-        <SearchBar 
-          value={searchValue}
-          onChange={setSearchValue}
-          placeholder={t("transport.searchPlaceholder")}
-        />
+        
+        {/* Enhanced Search Bar */}
+        <div className="relative">
+          <SearchBar 
+            value={searchValue}
+            onChange={(value) => {
+              setSearchValue(value);
+              addToRecentSearches(value);
+            }}
+            placeholder="Search destinations, routes, or operators..."
+          />
+          
+          {/* Recent Searches Dropdown */}
+          {recentSearches.length > 0 && searchValue === "" && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-50">
+              <div className="p-2">
+                <p className="text-xs text-muted-foreground mb-2 flex items-center">
+                  <History size={12} className="mr-1" />
+                  Recent Searches
+                </p>
+                {recentSearches.map((search, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSearchValue(search)}
+                    className="w-full text-left px-2 py-1 text-sm hover:bg-muted rounded flex items-center"
+                  >
+                    <Search size={12} className="mr-2 text-muted-foreground" />
+                    {search}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
       </div>
 
       <div className="px-6 mt-6 relative z-10">
@@ -532,71 +796,553 @@ export default function Transport() {
           </TabsList>
 
           <TabsContent value="long-distance" className="space-y-6">
-            {/* Mode Tabs */}
+            {/* Popular Routes */}
             <div className="space-y-4">
-              <h3 className="font-medium text-foreground">Travel Mode</h3>
-              <div className="flex space-x-2">
-                {["train", "bus", "flight"].map((mode) => (
-                  <Button key={mode} variant="outline" size="sm" className="flex items-center">
-                    {getModeIcon(mode)}
-                    <span className="ml-2 capitalize">{mode}s</span>
+              <div className="flex items-center justify-between">
+                <h3 className="font-medium text-foreground flex items-center">
+                  <TrendingUp size={16} className="mr-2" />
+                  Popular Routes
+                </h3>
+                <Badge variant="secondary" className="text-xs">
+                  Most Booked
+                </Badge>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {transportData.popularRoutes.slice(0, 8).map((route, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedFromCity(route.from);
+                      setSelectedToCity(route.to);
+                      setSelectedMode(route.mode);
+                    }}
+                    className="h-auto p-3 flex flex-col items-center text-xs hover:bg-primary/5"
+                  >
+                    <div className="flex items-center gap-1 mb-1">
+                      {getModeIcon(route.mode)}
+                      <span className="font-medium">{route.from}</span>
+                      <ArrowRight size={10} />
+                      <span className="font-medium">{route.to}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Star size={10} className="text-yellow-500" />
+                      <span className="text-muted-foreground">{route.popularity}%</span>
+                    </div>
                   </Button>
                 ))}
               </div>
             </div>
 
+
+            {/* Advanced Filters */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-medium text-foreground">Filters</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                  className="text-xs"
+                >
+                  {showAdvancedFilters ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  {showAdvancedFilters ? "Hide" : "Show"} Filters
+                </Button>
+              </div>
+              
+              {showAdvancedFilters && (
+                <div className="space-y-4 p-4 bg-muted/30 rounded-lg">
+                  {/* Mode Filter */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Travel Mode</label>
+                    <div className="flex flex-wrap gap-2">
+                      {modes.map((mode) => (
+                        <Button
+                          key={mode}
+                          variant={selectedMode === mode ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedMode(mode)}
+                          className="text-xs"
+                        >
+                          {mode !== "All" && getModeIcon(mode)}
+                          <span className={mode !== "All" ? "ml-2" : ""}>{mode === "All" ? "All Modes" : mode.charAt(0).toUpperCase() + mode.slice(1)}</span>
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* City Filters */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-muted-foreground">From City</label>
+                      <select
+                        value={selectedFromCity}
+                        onChange={(e) => {
+                          setSelectedFromCity(e.target.value);
+                          setSelectedToCity("All"); // Reset to city when from city changes
+                        }}
+                        className="w-full p-2 border rounded-md bg-background text-foreground"
+                      >
+                        {fromCities.map((city) => (
+                          <option key={city} value={city}>{city}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-muted-foreground">To City</label>
+                      <select
+                        value={selectedToCity}
+                        onChange={(e) => setSelectedToCity(e.target.value)}
+                        className="w-full p-2 border rounded-md bg-background text-foreground"
+                      >
+                        {filteredToCities.map((city) => (
+                          <option key={city} value={city}>{city}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Price and Duration Filters */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-muted-foreground">Price Range</label>
+                      <div className="flex flex-wrap gap-2">
+                        {priceRanges.map((range) => (
+                          <Button
+                            key={range}
+                            variant={selectedPriceRange === range ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setSelectedPriceRange(range)}
+                            className="text-xs"
+                          >
+                            {range}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-muted-foreground">Duration</label>
+                      <div className="flex flex-wrap gap-2">
+                        {durations.map((duration) => (
+                          <Button
+                            key={duration}
+                            variant={selectedDuration === duration ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setSelectedDuration(duration)}
+                            className="text-xs"
+                          >
+                            {duration}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sort Options */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Sort By</label>
+                    <div className="flex flex-wrap gap-2">
+                      {sortOptions.map((option) => (
+                        <Button
+                          key={option}
+                          variant={sortBy === option ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSortBy(option)}
+                          className="text-xs"
+                        >
+                          {option.charAt(0).toUpperCase() + option.slice(1)}
+                        </Button>
+                      ))}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                        className="text-xs"
+                        title={`Sort ${sortOrder === "asc" ? "Descending" : "Ascending"}`}
+                      >
+                        {sortOrder === "asc" ? <SortAsc size={12} /> : <SortDesc size={12} />}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Results Count */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <p className="text-sm text-muted-foreground">
+                  {sortedOptions.length} routes found
+                </p>
+                {favorites.length > 0 && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Heart size={10} className="mr-1 text-red-500" />
+                    {favorites.length} favorites
+                  </Badge>
+                )}
+                {compareItems.length > 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setOpenCompareModal(true)}
+                    className="text-xs h-6 px-2"
+                  >
+                    <Star size={10} className="mr-1" />
+                    Compare ({compareItems.length})
+                  </Button>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={resetFilters}
+                  className="text-xs"
+                >
+                  <X size={12} className="mr-1" />
+                  Clear Filters
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+                  className="text-xs"
+                >
+                  {viewMode === "grid" ? <List size={12} /> : <Grid size={12} />}
+                  {viewMode === "grid" ? "List" : "Grid"}
+                </Button>
+              </div>
+            </div>
+
             {/* Long Distance Options */}
-            <div className="space-y-4 mt-6">
-              {longDistanceOptions.map((option) => (
-                <LuxuryCard key={option.id} className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-3">
-                      {getModeIcon(option.mode)}
-                      <div>
-                        <h3 className="font-semibold text-foreground">{option.operator}</h3>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <span>{option.from}</span>
-                          <ArrowRight size={12} className="mx-2" />
-                          <span>{option.to}</span>
+            <div className="space-y-4">
+              {paginatedOptions.length > 0 ? (
+                paginatedOptions.map((option) => (
+                  <LuxuryCard key={option.id} className="p-4 hover:shadow-lg transition-shadow">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        {getModeIcon(option.mode)}
+                        <div>
+                          <h3 className="font-semibold text-foreground">
+                            {option.mode === "train" ? (option as TrainOption).trainName :
+                             option.mode === "bus" ? (option as BusOption).operator :
+                             option.mode === "flight" ? (option as FlightOption).airline : ""}
+                          </h3>
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <span>{option.from}</span>
+                            <ArrowRight size={12} className="mx-2" />
+                            <span>{option.to}</span>
+                            {option.mode === "train" && (
+                              <span className="ml-2 text-xs">({(option as TrainOption).trainNumber})</span>
+                            )}
+                            {option.mode === "flight" && (
+                              <span className="ml-2 text-xs">({(option as FlightOption).flightNumber})</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleFavorite(option.id)}
+                          className="p-1 h-auto"
+                        >
+                          <Heart 
+                            size={16} 
+                            className={favorites.includes(option.id) ? "text-red-500 fill-red-500" : "text-muted-foreground"} 
+                          />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            if (isInCompare(option.id)) {
+                              removeFromCompare(option.id);
+                            } else if (canAddMore) {
+                              addToCompare(option);
+                            }
+                          }}
+                          className={`p-1 h-auto ${isInCompare(option.id) ? "text-primary" : "text-muted-foreground"} ${!canAddMore && !isInCompare(option.id) ? "opacity-50 cursor-not-allowed" : ""}`}
+                          disabled={!canAddMore && !isInCompare(option.id)}
+                          title={isInCompare(option.id) ? "Remove from compare" : canAddMore ? "Add to compare" : "Compare limit reached (3 max)"}
+                        >
+                          <Star 
+                            size={16} 
+                            className={isInCompare(option.id) ? "fill-primary" : ""} 
+                          />
+                        </Button>
+                        <div className="flex flex-col items-end space-y-1">
+                          {option.mode === "train" && (option as TrainOption).classes[0] && (
+                            <Badge variant="outline">{(option as TrainOption).classes[0].class}</Badge>
+                          )}
+                          {option.mode === "bus" && (
+                            <Badge variant="outline">{(option as BusOption).busType}</Badge>
+                          )}
+                          {option.mode === "flight" && (
+                            <Badge variant="outline">{(option as FlightOption).aircraft}</Badge>
+                          )}
                         </div>
                       </div>
                     </div>
-                    <Badge variant="outline">{option.class}</Badge>
-                  </div>
 
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <div className="text-center">
-                      <p className="text-xs text-muted-foreground">Departure</p>
-                      <p className="font-medium text-foreground">{option.departure}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Departure</p>
+                        <p className="font-medium text-foreground">{option.departure}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Duration</p>
+                        <p className="font-medium text-foreground">{option.duration}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Arrival</p>
+                        <p className="font-medium text-foreground">{option.arrival}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Distance</p>
+                        <p className="font-medium text-foreground">{option.distance}</p>
+                      </div>
                     </div>
-                    <div className="text-center">
-                      <p className="text-xs text-muted-foreground">Duration</p>
-                      <p className="font-medium text-foreground">{option.duration}</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-xs text-muted-foreground">Arrival</p>
-                      <p className="font-medium text-foreground">{option.arrival}</p>
-                    </div>
-                  </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <IndianRupee size={16} className="text-accent" />
-                      <span className="font-bold text-lg text-accent">{option.price}</span>
+                    {/* Amenities */}
+                    {option.amenities && (
+                      <div className="mb-4">
+                        <div className="flex flex-wrap gap-1">
+                          {option.amenities.map((amenity, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {amenity}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Days */}
+                    {option.days && (
+                      <div className="mb-4">
+                        <p className="text-xs text-muted-foreground mb-1">Available Days:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {option.days.map((day, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {day}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Route */}
+                    {option.route && (
+                      <div className="mb-4">
+                        <p className="text-xs text-muted-foreground mb-1">Route:</p>
+                        <p className="text-sm text-foreground">{option.route}</p>
+                      </div>
+                    )}
+
+                    {/* Classes for trains */}
+                    {option.mode === "train" && (option as TrainOption).classes && (
+                      <div className="mb-4">
+                        <p className="text-xs text-muted-foreground mb-2">Available Classes:</p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                          {(option as TrainOption).classes.map((cls, index) => (
+                            <div key={index} className="text-center p-2 bg-muted rounded">
+                              <p className="text-xs font-medium">{cls.class}</p>
+                              <p className="text-xs text-accent">{cls.price}</p>
+                              <p className="text-xs text-muted-foreground">{cls.availability}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Additional Details */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="text-center p-2 bg-muted rounded">
+                        <p className="text-xs text-muted-foreground">Stops</p>
+                        <p className="text-sm font-medium">{option.stops}</p>
+                      </div>
+                      {option.mode === "bus" && (option as BusOption).luggage && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Luggage</p>
+                          <p className="text-sm font-medium">{(option as BusOption).luggage}</p>
+                        </div>
+                      )}
+                      {option.mode === "flight" && (option as FlightOption).baggage && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Baggage</p>
+                          <p className="text-sm font-medium">{(option as FlightOption).baggage}</p>
+                        </div>
+                      )}
+                      {option.mode === "train" && (option as TrainOption).meals && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Meals</p>
+                          <p className="text-sm font-medium">{(option as TrainOption).meals}</p>
+                        </div>
+                      )}
+                      {(option.mode === "bus" || option.mode === "flight") && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Boarding</p>
+                          <p className="text-sm font-medium">
+                            {option.mode === "bus" ? (option as BusOption).boarding : (option as FlightOption).boarding}
+                          </p>
+                        </div>
+                      )}
+                      {(option.mode === "bus" || option.mode === "flight") && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Drop-off</p>
+                          <p className="text-sm font-medium">
+                            {option.mode === "bus" ? (option as BusOption).dropoff : (option as FlightOption).dropoff}
+                          </p>
+                        </div>
+                      )}
+                      {option.mode === "flight" && (option as FlightOption).terminal && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Terminal</p>
+                          <p className="text-sm font-medium">{(option as FlightOption).terminal}</p>
+                        </div>
+                      )}
+                      {option.mode === "flight" && (option as FlightOption).gate && (
+                        <div className="text-center p-2 bg-muted rounded">
+                          <p className="text-xs text-muted-foreground">Gate</p>
+                          <p className="text-sm font-medium">{(option as FlightOption).gate}</p>
+                        </div>
+                      )}
                     </div>
-                    <Button size="sm" className="bg-primary hover:bg-primary-light">
-                      Book Now
-                    </Button>
-                  </div>
-                </LuxuryCard>
-              ))}
+
+                    {/* Cancellation Policy */}
+                    {option.cancellation && (
+                      <div className="mb-4">
+                        <p className="text-xs text-muted-foreground mb-1">Cancellation Policy:</p>
+                        <p className="text-sm text-foreground">{option.cancellation}</p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <IndianRupee size={16} className="text-accent" />
+                        <span className="font-bold text-lg text-accent">
+                          {option.mode === "train" ? (option as TrainOption).classes[0]?.price || "₹0" :
+                           option.mode === "bus" ? (option as BusOption).price :
+                           option.mode === "flight" ? (option as FlightOption).price : "₹0"}
+                        </span>
+                        <span className="text-sm text-muted-foreground ml-1">
+                          {option.mode === "flight" ? "per person" : "per ticket"}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            // Add to favorites or show details
+                            toggleFavorite(option.id);
+                          }}
+                          className="text-xs"
+                        >
+                          <Bookmark size={12} className="mr-1" />
+                          Save
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="bg-primary hover:bg-primary-light text-xs px-4"
+                        >
+                          Book Now
+                        </Button>
+                      </div>
+                    </div>
+                  </LuxuryCard>
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">No routes found matching your criteria.</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4"
+                    onClick={resetFilters}
+                  >
+                    Clear All Filters
+                  </Button>
+                </div>
+              )}
             </div>
+
+            {/* Pagination Controls */}
+            {sortedOptions.length > itemsPerPage && (
+              <div className="flex items-center justify-between mt-6">
+                <div className="text-sm text-muted-foreground">
+                  Showing {startIndex + 1}-{Math.min(endIndex, sortedOptions.length)} of {sortedOptions.length} routes
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </Button>
+                  <span className="text-sm">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Load More Button for Extended Data */}
+            {!hasLoadedExtended && !isLoadingMore && (
+              <div className="text-center mt-6">
+                <Button
+                  variant="outline"
+                  onClick={loadExtendedData}
+                  className="px-6"
+                >
+                  Load More Cities & Routes
+                </Button>
+              </div>
+            )}
+
+            {/* Loading State */}
+            {isLoadingMore && (
+              <div className="text-center py-4">
+                <div className="inline-flex items-center gap-2 text-muted-foreground">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                  Loading more routes...
+                </div>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="rentals" className="space-y-6">
+            {/* Search Bar for Rentals */}
+            <div className="space-y-4">
+              <h3 className="font-medium text-foreground">Search Vehicles</h3>
+              <SearchBar
+                value={searchValue}
+                onChange={setSearchValue}
+                placeholder="Search by vehicle model, type, or features..."
+                className="w-full"
+              />
+            </div>
+
             {/* Vehicle Type Filters */}
             <div className="space-y-4">
-              <h3 className="font-medium text-foreground">Vehicle Type</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="font-medium text-foreground">Vehicle Type</h3>
+                <Badge variant="secondary" className="text-xs">
+                  {filteredRentalVehicles.length} vehicles available
+                </Badge>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {vehicleTypes.map((type) => (
                   <Button
@@ -606,15 +1352,79 @@ export default function Transport() {
                     onClick={() => setSelectedVehicleType(type)}
                     className="text-xs"
                   >
-                    {type}
+                    {getVehicleIcon(type)}
+                    <span className="ml-1">{type}</span>
                   </Button>
                 ))}
               </div>
             </div>
 
+            {/* Additional Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Fuel Type Filter */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Fuel Type</label>
+                <div className="flex flex-wrap gap-2">
+                  {["All", "Electric", "Petrol", "Diesel"].map((fuel) => (
+                    <Button
+                      key={fuel}
+                      variant={selectedFuelType === fuel ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedFuelType(fuel)}
+                      className="text-xs"
+                    >
+                      {fuel === "Electric" && "⚡"}
+                      {fuel === "Petrol" && "⛽"}
+                      {fuel === "Diesel" && "🛢️"}
+                      <span className={fuel !== "All" ? "ml-1" : ""}>{fuel}</span>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Price Range Filter */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Price Range (per day)</label>
+                <div className="flex flex-wrap gap-2">
+                  {["All", "Under ₹1K", "₹1K-3K", "₹3K-5K", "Above ₹5K"].map((range) => (
+                    <Button
+                      key={range}
+                      variant={selectedRentalPriceRange === range ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedRentalPriceRange(range)}
+                      className="text-xs"
+                    >
+                      {range}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Stats for Rentals */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <p className="text-lg font-bold text-primary">{filteredRentalVehicles.filter(v => v.isEco).length}</p>
+                <p className="text-xs text-muted-foreground">Eco Vehicles</p>
+              </div>
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <p className="text-lg font-bold text-primary">{filteredRentalVehicles.filter(v => v.available).length}</p>
+                <p className="text-xs text-muted-foreground">Available Now</p>
+              </div>
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <p className="text-lg font-bold text-primary">{filteredRentalVehicles.filter(v => v.type.includes("EV")).length}</p>
+                <p className="text-xs text-muted-foreground">Electric</p>
+              </div>
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <p className="text-lg font-bold text-primary">24/7</p>
+                <p className="text-xs text-muted-foreground">Support</p>
+              </div>
+            </div>
+
             {/* Rental Vehicles */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-              {rentalVehicles.map((vehicle) => (
+              {filteredRentalVehicles.length > 0 ? (
+                filteredRentalVehicles.map((vehicle) => (
                 <LuxuryCard key={vehicle.id} className="p-0 overflow-hidden">
                   <div className="relative">
                     <div className="aspect-[3/2] bg-muted">
@@ -706,7 +1516,19 @@ export default function Transport() {
                     </div>
                   </div>
                 </LuxuryCard>
-              ))}
+              ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-muted-foreground mb-4">No vehicles found matching your criteria.</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={resetRentalFilters}
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* EV Promotion Banner */}
@@ -740,6 +1562,9 @@ export default function Transport() {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Transport Comparison Modal */}
+      <TransportComparisonModal />
     </div>
   );
 }
