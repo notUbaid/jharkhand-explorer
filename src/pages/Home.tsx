@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { 
-  Package, 
+  Phone, 
   Calendar, 
   ShoppingBag, 
   Car, 
@@ -27,7 +27,7 @@ import { useNavigate } from "react-router-dom";
 
 const getQuickAccessItems = (t: any) => [
   { icon: MapPin, label: t("navigation.destinations"), path: "/destinations", color: "emerald" },
-  { icon: Package, label: t("navigation.packages"), path: "/packages", color: "gold" },
+  { icon: Phone, label: "SOS", path: "/profile", color: "red" },
   { icon: Calendar, label: t("navigation.events"), path: "/events", color: "emerald" },
   { icon: ShoppingBag, label: t("navigation.marketplace"), path: "/marketplace", color: "gold" },
   { icon: Car, label: t("navigation.transport"), path: "/transport", color: "emerald" },
@@ -181,6 +181,8 @@ export default function Home() {
                   <div className={`w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center ${
                     item.color === 'emerald' 
                       ? 'bg-primary/10 text-primary' 
+                      : item.color === 'red'
+                      ? 'bg-red-500/10 text-red-500'
                       : 'bg-accent/10 text-accent'
                   }`}>
                     <Icon size={20} />

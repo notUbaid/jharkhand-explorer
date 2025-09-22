@@ -587,7 +587,7 @@ export default function Destinations() {
         />
       </div>
 
-      <div className="px-6 mt-6 relative z-10">
+      <div className="px-6 mt-6 pb-32 relative z-10">
         <Tabs value={activeTab} onValueChange={(value) => {
           setActiveTab(value);
           // Update URL parameter when tab changes

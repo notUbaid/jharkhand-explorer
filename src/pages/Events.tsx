@@ -26,11 +26,11 @@ import { useNavigate } from "react-router-dom";
 const events = [
   {
     id: 1,
-    title: "Tribal Arts & Textiles Expo 2025",
+    title: "Tribal Arts and Textiles Expo 2025",
     date: "October 18–22, 2025",
     location: "Morhabadi Maidan, Ranchi",
     description: "Handicrafts & handloom exhibition focused on tribal artistry",
-    image: "/placeholder.svg",
+    image: "/src/assets/event/event1/event 1 (1).png",
     category: "Cultural",
     entryFee: "₹50",
     timings: "11:00 AM – 8:00 PM",
@@ -39,11 +39,11 @@ const events = [
   },
   {
     id: 2,
-    title: "Jharkhand Coffee & Indigenous Beverage Fest",
+    title: "Jharkhand Coffee and Indigenous Beverage Fest",
     date: "December 6–8, 2025",
     location: "Eco Retreat Campus, Netarhat",
     description: "Culinary and beverage-focused fair",
-    image: "/placeholder.svg",
+    image: "/src/assets/event/event 2/event 2 (1).png",
     category: "Food",
     entryFee: "₹100",
     timings: "9:30 AM – 6:30 PM",
@@ -52,11 +52,11 @@ const events = [
   },
   {
     id: 3,
-    title: "Seraikela Chhau Festival & Cultural Week",
+    title: "Seraikela Chhau Festival and Cultural Week",
     date: "January 10–14, 2026",
     location: "Rajmahal Grounds, Seraikela",
     description: "Performing arts and cultural celebration",
-    image: "/placeholder.svg",
+    image: "/src/assets/event/event 3/event 3 (1).png",
     category: "Cultural",
     entryFee: "Free",
     timings: "4:00 PM – 10:00 PM",
@@ -69,7 +69,7 @@ const events = [
     date: "November 22–23, 2025",
     location: "BIT Mesra Convention Hall, Ranchi",
     description: "Start-up and innovation conclave",
-    image: "/placeholder.svg",
+    image: "/src/assets/event/event 4/event 4 (1).png",
     category: "Business",
     entryFee: "₹300 (general), ₹100 (student)",
     timings: "10:00 AM – 5:30 PM",
@@ -78,11 +78,11 @@ const events = [
   },
   {
     id: 5,
-    title: "Thekua & Tilkut Mahotsav",
+    title: "Thekua and Tilkut Mahotsav",
     date: "December 28–30, 2025",
     location: "Nandan Pahar Grounds, Deoghar",
     description: "Traditional food festival",
-    image: "/placeholder.svg",
+    image: "/src/assets/event/event 5/event 5 (1).png",
     category: "Food",
     entryFee: "₹30",
     timings: "10:00 AM – 9:00 PM",
@@ -91,11 +91,11 @@ const events = [
   },
   {
     id: 6,
-    title: "Khatiani Mela (Indigenous Games & Sports Fair)",
+    title: "Khatiani Mela (Indigenous Games and Sports Fair)",
     date: "February 2–5, 2026",
     location: "Dumka Stadium Grounds",
     description: "Tribal sports and community games",
-    image: "/placeholder.svg",
+    image: "/src/assets/event/event 6/Event 6 (1).png",
     category: "Sports",
     entryFee: "₹20",
     timings: "8:00 AM – 6:00 PM",
@@ -108,7 +108,7 @@ const events = [
     date: "September 25–28, 2025",
     location: "Nepal House, Doranda (Jharkhand Pavilion) + Pragati Maidan, Delhi",
     description: "International food exhibition showcasing Jharkhand cuisine",
-    image: "/placeholder.svg",
+    image: "/src/assets/event/event 7/Event 7 (1).png",
     category: "Food",
     entryFee: "Free with registration",
     timings: "10:00 AM – 6:00 PM",
@@ -117,11 +117,11 @@ const events = [
   },
   {
     id: 8,
-    title: "Jharkhand Mining & Construction Show 2026",
+    title: "Jharkhand Mining and Construction Show 2026",
     date: "January 29–31, 2026",
     location: "Prabhat Tara Ground, HEC Campus, Ranchi",
     description: "Industrial exhibition showcasing mining and construction technologies",
-    image: "/placeholder.svg",
+    image: "/src/assets/event/event 8/Event 8 (1).png",
     category: "Business",
     entryFee: "Free (registration required)",
     timings: "10:00 AM – 6:00 PM",
@@ -172,7 +172,7 @@ export default function Events() {
         />
       </div>
 
-      <div className="px-6 mt-6 relative z-10">
+      <div className="px-6 mt-6 pb-32 relative z-10">
         {/* Category Filters */}
         <div className="space-y-4 mb-6">
           <h3 className="section-title">Categories</h3>
@@ -201,7 +201,7 @@ export default function Events() {
               onClick={() => navigate(`/events/${event.id}`)}
             >
               <div className="relative">
-                <div className="aspect-[4/3] bg-muted">
+                <div className="aspect-[3/2] bg-muted">
                   <img 
                     src={event.image} 
                     alt={event.title}
@@ -211,56 +211,56 @@ export default function Events() {
                 
                 <Badge 
                   variant="secondary" 
-                  className="absolute top-2 left-2 text-xs bg-white/90 text-foreground"
+                  className="absolute top-2 left-2 text-sm bg-white/90 text-foreground"
                 >
                   {event.category}
                 </Badge>
               </div>
               
-              <div className="p-3">
-                <div className="flex items-start justify-between mb-2">
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
-                    <h3 className="font-playfair font-semibold text-foreground mb-1 text-sm">
+                    <h3 className="font-playfair font-semibold text-foreground mb-2 text-base">
                       {event.title}
                     </h3>
-                    <div className="flex items-center text-xs text-muted-foreground mb-1">
-                      <Calendar size={10} className="mr-1" />
+                    <div className="flex items-center text-sm text-muted-foreground mb-1">
+                      <Calendar size={12} className="mr-2" />
                       {event.date}
                     </div>
-                    <div className="flex items-center text-xs text-muted-foreground">
-                      <MapPin size={10} className="mr-1" />
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <MapPin size={12} className="mr-2" />
                       {event.location}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="flex items-center text-xs font-medium mb-1">
-                      <IndianRupee size={10} className="mr-1 text-accent" />
+                    <div className="flex items-center text-sm font-medium mb-1">
+                      <IndianRupee size={12} className="mr-1 text-accent" />
                       <span className="text-accent">{event.entryFee}</span>
                     </div>
-                    <div className="flex items-center text-xs text-muted-foreground">
-                      <Users size={8} className="mr-1" />
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Users size={10} className="mr-1" />
                       {event.expectedAttendees}
                     </div>
                   </div>
                 </div>
                 
-                <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                   {event.description}
                 </p>
                   
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <Clock size={8} className="mr-1" />
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Clock size={10} className="mr-2" />
                     {event.timings}
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {event.highlights.slice(0, 1).map((highlight, index) => (
-                      <Badge key={index} variant="outline" className="text-xs px-1 py-0">
+                      <Badge key={index} variant="outline" className="text-sm px-2 py-1">
                         {highlight}
                       </Badge>
                     ))}
                     {event.highlights.length > 1 && (
-                      <Badge variant="outline" className="text-xs px-1 py-0">
+                      <Badge variant="outline" className="text-sm px-2 py-1">
                         +{event.highlights.length - 1}
                       </Badge>
                     )}

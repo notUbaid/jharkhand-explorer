@@ -143,7 +143,7 @@ export default function Packages() {
         />
       </div>
 
-      <div className="px-6 mt-6 relative z-10">
+      <div className="px-6 mt-6 pb-32 relative z-10">
         {/* Enhanced Filters */}
         <div className="space-y-6 mb-8">
           {/* Sort and Results Header */}

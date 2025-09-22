@@ -1,203 +1,320 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, MapPin, IndianRupee, ArrowLeft, Star, Users } from "lucide-react";
-
-// Mock experience data - in real app this would come from API
-const getExperienceData = (id: string) => {
-  const experiences = [
-    {
-      id: "1",
-      title: "Sohrai Painting Workshop",
-      instructor: "Artist Reena Hansda",
-      price: "₹1,800",
-      duration: "3.5 hours",
-      rating: 4.9,
-      location: "Hazaribagh",
-      maxParticipants: 10,
-      nextSlot: "Saturday 11:00 AM",
-      description: "Learn traditional Sohrai painting using natural pigments, on paper or fabric."
-    },
-    {
-      id: "2",
-      title: "Tribal Music & Drum Circle (Mandar + Nagara)",
-      instructor: "Musician Babulal Murmu",
-      price: "₹900",
-      duration: "2.5 hours",
-      rating: 4.7,
-      location: "Khunti",
-      maxParticipants: 20,
-      nextSlot: "Tomorrow 4:00 PM",
-      description: "Hands-on session with traditional tribal percussion; group rhythm circles in open field."
-    },
-    {
-      id: "3",
-      title: "Tussar Silk Weaving Demo + Hands-on Weft Weaving",
-      instructor: "Weaver Sita Devi",
-      price: "₹2,200",
-      duration: "4 hours",
-      rating: 4.8,
-      location: "Bhagaiya, Godda",
-      maxParticipants: 8,
-      nextSlot: "This Sunday",
-      description: "Watch the traditional loom in action and try basic Tussar weaving yourself."
-    },
-    {
-      id: "4",
-      title: "Folk Tales by Fire: Santhal Storytelling Night",
-      instructor: "Storyteller Doman Tudu",
-      price: "₹700",
-      duration: "2 hours",
-      rating: 4.6,
-      location: "Dumka",
-      maxParticipants: 25,
-      nextSlot: "Friday 7:00 PM",
-      description: "Listen to age-old tribal tales under the stars with tea and snacks."
-    },
-    {
-      id: "5",
-      title: "Dokra Jewelry Making Mini Workshop",
-      instructor: "Craftsman Narsingh Munda",
-      price: "₹2,500",
-      duration: "5 hours",
-      rating: 4.9,
-      location: "Chainpur, Palamu",
-      maxParticipants: 6,
-      nextSlot: "Next Monday",
-      description: "Learn wax casting and try designing a small piece (ring or pendant) with guidance."
-    },
-    {
-      id: "6",
-      title: "Wild Edible Plants Walk + Cooking Demo",
-      instructor: "Forager and Chef Lata Kisku",
-      price: "₹2,200",
-      duration: "6 hours",
-      rating: 4.8,
-      location: "Netarhat Forest Edge",
-      maxParticipants: 10,
-      nextSlot: "Sunday 9:00 AM",
-      description: "Forage seasonal greens and cook a forest-style tribal meal."
-    },
-    {
-      id: "7",
-      title: "Chhau Dance Intro Class (Seraikela Style)",
-      instructor: "Dancer Guru Mohan Singh",
-      price: "₹1,500",
-      duration: "2 hours",
-      rating: 4.9,
-      location: "Seraikela",
-      maxParticipants: 15,
-      nextSlot: "Next Friday",
-      description: "Learn basic movements of the dramatic martial-style folk dance."
-    },
-    {
-      id: "8",
-      title: "Terracotta Tile Painting (Inspired by Maluti Temples)",
-      instructor: "Artist Anjali Dutta",
-      price: "₹1,300",
-      duration: "3 hours",
-      rating: 4.7,
-      location: "Maluti, near Dumka",
-      maxParticipants: 12,
-      nextSlot: "This Weekend",
-      description: "Paint traditional designs on clay tiles, inspired by ancient temple art."
-    },
-    {
-      id: "9",
-      title: "Tribal Tattoo & Body Art Demo (Non-permanent)",
-      instructor: "Artisan Kiran Tudu",
-      price: "₹600",
-      duration: "1.5 hours",
-      rating: 4.6,
-      location: "Simdega",
-      maxParticipants: 18,
-      nextSlot: "Wednesday Afternoon",
-      description: "Get a traditional-style Santhal body art motif with safe natural dye (temporary only)."
-    },
-    {
-      id: "10",
-      title: "Lac Bangle Craft Session",
-      instructor: "Artisan Anita Kumari",
-      price: "₹1,400",
-      duration: "3 hours",
-      rating: 4.8,
-      location: "Khunti",
-      maxParticipants: 10,
-      nextSlot: "Saturday 2:00 PM",
-      description: "Shape and color your own bangle using natural lac and mirror inlays."
-    }
-  ];
-  
-  return experiences.find(exp => exp.id === id) || experiences[0];
-};
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { experiences, Experience } from "@/data/experiences";
+import { 
+  Calendar, 
+  Clock, 
+  MapPin, 
+  IndianRupee, 
+  ArrowLeft, 
+  Star, 
+  Users,
+  User,
+  Shield,
+  Heart,
+  Share2,
+  CheckCircle,
+  AlertCircle,
+  Clock3
+} from "lucide-react";
 
 export default function ExperienceDetail() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [experience] = useState(() => getExperienceData(id || "1"));
+  const [experience, setExperience] = useState<Experience | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    document.title = `${experience.title} • Discover Jharkhand`;
-  }, [experience.title]);
+    // Find the experience by ID
+    const foundExperience = experiences.find(exp => exp.id === parseInt(id || "0"));
+    setExperience(foundExperience || null);
+    setIsLoading(false);
+    
+    if (foundExperience) {
+      document.title = `${foundExperience.title} • Discover Jharkhand`;
+    } else {
+      document.title = `Experience Not Found • Discover Jharkhand`;
+    }
+  }, [id]);
+
+  const handleBookNow = () => {
+    if (experience) {
+      // Simulate booking
+      alert(`Booking ${experience.title} for ${experience.price}!`);
+    }
+  };
+
+  const handleAddToWishlist = () => {
+    if (experience) {
+      // Simulate adding to wishlist
+      alert(`Added ${experience.title} to wishlist!`);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading experience details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!experience) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Experience Not Found</h1>
+          <p className="text-muted-foreground mb-6">The experience you're looking for doesn't exist.</p>
+          <Button onClick={() => navigate("/marketplace")} variant="outline">
+            <ArrowLeft className="mr-2" size={16} />
+            Back to Marketplace
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="pb-24 min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground px-6 pt-12 pb-4">
-        <div className="flex items-center gap-3 mb-3">
-          <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
-            <ArrowLeft size={14} className="mr-1" /> Back
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="bg-primary text-primary-foreground px-6 pt-12 pb-6">
+        <div className="flex justify-between items-start mb-4">
+          <Button 
+            variant="ghost" 
+            size="default"
+            onClick={() => navigate("/marketplace?tab=experiences")}
+            className="text-primary-foreground hover:bg-primary-foreground/10 px-4 py-2"
+          >
+            <ArrowLeft className="mr-2" size={18} />
+            Back to Marketplace
           </Button>
-          <Badge variant="secondary">Workshop</Badge>
+          <LanguageToggle />
         </div>
-        <h1 className="text-2xl font-inter font-bold">{experience.title}</h1>
-        <p className="text-primary-foreground/80 text-sm mt-1">{experience.instructor}</p>
-      </header>
+      </div>
 
-      <main className="px-6 space-y-6">
-        {/* Experience Image */}
-        <div className="h-64 bg-muted rounded-lg" />
-        
-        {/* Experience Info */}
-        <div className="grid grid-cols-2 gap-3 text-sm text-muted-foreground">
-          <div className="flex items-center"><Clock size={14} className="mr-2" /> {experience.duration}</div>
-          <div className="flex items-center"><Calendar size={14} className="mr-2" /> {experience.nextSlot}</div>
-          <div className="flex items-center"><MapPin size={14} className="mr-2" /> {experience.location}</div>
-          <div className="flex items-center"><Users size={14} className="mr-2" /> Max {experience.maxParticipants}</div>
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <div className="flex items-center text-sm">
-            <IndianRupee size={16} className="text-accent mr-1" /> 
-            <span className="font-bold text-accent">{experience.price}</span>
+      <div className="px-6 py-6 pb-32 max-w-4xl mx-auto">
+        {/* Experience Header */}
+        <LuxuryCard className="p-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="md:w-1/2">
+              <div className="aspect-[4/3] bg-muted rounded-lg overflow-hidden">
+                <img 
+                  src={experience.image} 
+                  alt={experience.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            
+            <div className="md:w-1/2">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h1 className="text-2xl font-playfair font-bold text-foreground mb-2">
+                    {experience.title}
+                  </h1>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Badge variant="outline" className="text-sm">
+                      {experience.category}
+                    </Badge>
+                    <Badge variant="default" className="bg-green-500 text-white text-sm">
+                      {experience.difficulty}
+                    </Badge>
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={handleAddToWishlist}>
+                    <Heart size={16} />
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Share2 size={16} />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-1">
+                    <Star className="text-accent fill-accent" size={16} />
+                    <span className="ml-1 font-semibold">{experience.rating}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Rating</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-1">
+                    <IndianRupee size={16} className="text-accent" />
+                    <span className="ml-1 font-semibold text-lg">{experience.price}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Price</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                <div className="flex items-center">
+                  <Clock size={14} className="mr-2 text-primary" />
+                  <span>{experience.duration}</span>
+                </div>
+                <div className="flex items-center">
+                  <Users size={14} className="mr-2 text-primary" />
+                  <span>Max {experience.maxParticipants}</span>
+                </div>
+                <div className="flex items-center">
+                  <MapPin size={14} className="mr-2 text-primary" />
+                  <span>{experience.location}</span>
+                </div>
+                <div className="flex items-center">
+                  <Calendar size={14} className="mr-2 text-primary" />
+                  <span>{experience.nextSlot}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <Button 
+                  className="w-full bg-primary hover:bg-primary/90 h-12 text-lg font-semibold"
+                  onClick={handleBookNow}
+                >
+                  Book Now
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={handleAddToWishlist}
+                >
+                  <Heart className="mr-2" size={16} />
+                  Add to Wishlist
+                </Button>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center text-sm">
-            <Star className="text-accent fill-accent" size={14} />
-            <span className="font-medium ml-1">{experience.rating}</span>
+        </LuxuryCard>
+
+        {/* Experience Details */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Description */}
+            <LuxuryCard className="p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-4">About This Experience</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                {experience.description}
+              </p>
+            </LuxuryCard>
+
+            {/* What to Expect */}
+            <LuxuryCard className="p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-4">What to Expect</h2>
+              <div className="space-y-2">
+                {experience.whatToExpect.map((item, index) => (
+                  <div key={index} className="flex items-center text-sm text-muted-foreground">
+                    <CheckCircle size={14} className="mr-2 text-green-500" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </LuxuryCard>
+
+            {/* Highlights */}
+            <LuxuryCard className="p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-4">Experience Highlights</h2>
+              <div className="space-y-2">
+                {experience.highlights.map((highlight, index) => (
+                  <div key={index} className="flex items-center text-sm text-muted-foreground">
+                    <Star size={14} className="mr-2 text-accent" />
+                    {highlight}
+                  </div>
+                ))}
+              </div>
+            </LuxuryCard>
+
+            {/* Materials Included */}
+            <LuxuryCard className="p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-4">Materials Included</h2>
+              <div className="flex flex-wrap gap-2">
+                {experience.materials.map((material, index) => (
+                  <Badge key={index} variant="outline" className="text-sm">
+                    {material}
+                  </Badge>
+                ))}
+              </div>
+            </LuxuryCard>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Instructor Information */}
+            <LuxuryCard className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Instructor</h3>
+              <div className="space-y-3">
+                <div className="flex items-center">
+                  <User size={16} className="mr-3 text-primary" />
+                  <div>
+                    <span className="text-sm font-medium">{experience.instructor}</span>
+                  </div>
+                </div>
+                <div className="bg-muted rounded-lg p-3">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {experience.instructorBio}
+                  </p>
+                </div>
+              </div>
+            </LuxuryCard>
+
+            {/* Requirements */}
+            <LuxuryCard className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Requirements</h3>
+              <div className="space-y-2">
+                {experience.requirements.map((requirement, index) => (
+                  <div key={index} className="flex items-center text-sm text-muted-foreground">
+                    <AlertCircle size={14} className="mr-2 text-orange-500" />
+                    {requirement}
+                  </div>
+                ))}
+              </div>
+            </LuxuryCard>
+
+            {/* Cancellation Policy */}
+            <LuxuryCard className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Cancellation Policy</h3>
+              <div className="flex items-center text-sm text-muted-foreground">
+                <Shield size={14} className="mr-2 text-green-500" />
+                {experience.cancellationPolicy}
+              </div>
+            </LuxuryCard>
+
+            {/* Quick Info */}
+            <LuxuryCard className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Quick Info</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Duration</span>
+                  <span className="font-semibold">{experience.duration}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Max Participants</span>
+                  <span className="font-semibold">{experience.maxParticipants}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Difficulty</span>
+                  <span className="font-semibold">{experience.difficulty}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Next Available</span>
+                  <span className="font-semibold text-sm">{experience.nextSlot}</span>
+                </div>
+              </div>
+            </LuxuryCard>
           </div>
         </div>
-
-        {/* About Section */}
-        <section>
-          <h2 className="font-medium text-foreground mb-2">About This Experience</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">{experience.description}</p>
-        </section>
-
-        {/* Good to Know Section */}
-        <section>
-          <h2 className="font-medium text-foreground mb-2">Good to Know</h2>
-          <ul className="list-disc ml-4 text-sm text-muted-foreground space-y-1">
-            <li>All materials provided</li>
-            <li>Beginner friendly</li>
-            <li>Certificate of participation</li>
-            <li>Small group experience</li>
-          </ul>
-        </section>
-        {/* Action Button */}
-        <div className="pb-4">
-          <Button className="bg-primary hover:bg-primary-light">Book Now</Button>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }

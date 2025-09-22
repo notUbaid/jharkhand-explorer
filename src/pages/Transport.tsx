@@ -788,7 +788,7 @@ export default function Transport() {
 
       </div>
 
-      <div className="px-6 mt-6 relative z-10">
+      <div className="px-6 mt-6 pb-32 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted">
             <TabsTrigger value="long-distance" className="font-medium">Long Distance</TabsTrigger>

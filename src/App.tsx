@@ -21,6 +21,9 @@ import RestaurantDetail from "./pages/RestaurantDetail";
 import PackageDetail from "./pages/PackageDetail";
 import PackageCompare from "./pages/PackageCompare";
 import ProductDetail from "./pages/ProductDetail";
+import ProductRegistration from "./pages/ProductRegistration";
+import WorkshopRegistration from "./pages/WorkshopRegistration";
+import SellerProfile from "./pages/SellerProfile";
 import ExperienceDetail from "./pages/ExperienceDetail";
 import TourGuideDetail from "./pages/TourGuideDetail";
 import EventDetail from "./pages/EventDetail";
@@ -50,7 +53,10 @@ const App = () => (
                 <Route path="/packages/compare" element={<PackageCompare />} />
 
                 <Route path="/marketplace" element={<Marketplace />} />
-                <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/product-registration" element={<ProductRegistration />} />
+        <Route path="/workshop-registration" element={<WorkshopRegistration />} />
+        <Route path="/seller/:sellerId" element={<SellerProfile />} />
                 <Route path="/experiences/:id" element={<ExperienceDetail />} />
                 <Route path="/tourguides/:id" element={<TourGuideDetail />} />
 

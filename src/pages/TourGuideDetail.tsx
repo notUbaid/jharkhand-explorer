@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { tourGuides, TourGuide } from "@/data/tourGuides";
 import { 
   ArrowLeft, 
   Star, 
@@ -30,154 +31,11 @@ import {
   FileText
 } from "lucide-react";
 
-// Mock data - in a real app, this would come from an API
-const tourGuides = [
-  {
-    id: 1,
-    name: "Rajesh Kumar Singh",
-    specialization: "Historical & Cultural Tours",
-    locations: ["Ranchi", "Deoghar", "Baidyanath Temple", "Maluti Temples", "Hazaribagh", "Dumka"],
-    price: "₹2,500",
-    rating: 4.9,
-    experience: "8 years",
-    languages: ["Hindi", "English", "Santhali"],
-    verified: true,
-    image: "/placeholder.svg",
-    description: "Expert in Jharkhand's rich historical heritage, specializing in temple architecture and tribal history.",
-    specialties: ["Temple Tours", "Historical Sites", "Cultural Heritage", "Photography"],
-    availability: "Available",
-    nextAvailable: "Tomorrow 9:00 AM",
-    totalTours: 450,
-    responseTime: "Within 2 hours",
-    verificationDetails: {
-      verifiedBy: "Jharkhand Tourism Department",
-      verificationDate: "2023-01-15",
-      credentials: ["Tourism Guide License", "Historical Site Expert Certificate", "Cultural Heritage Specialist"],
-      certifications: ["Archaeological Survey of India", "Ministry of Tourism", "Jharkhand Cultural Society"]
-    },
-    bio: "Rajesh Kumar Singh is a passionate historian and cultural expert with over 8 years of experience guiding tourists through Jharkhand's rich heritage. He holds a Master's degree in History and has been certified by the Archaeological Survey of India for his expertise in temple architecture and tribal history.",
-    achievements: [
-      "Best Cultural Guide Award 2022",
-      "500+ Satisfied Tourists",
-      "Featured in Travel Magazines",
-      "Local History Expert"
-    ],
-    reviews: [
-      {
-        name: "Priya Sharma",
-        rating: 5,
-        comment: "Rajesh's knowledge of temple history is incredible. He made our Deoghar trip unforgettable!",
-        date: "2024-01-15"
-      },
-      {
-        name: "Amit Kumar",
-        rating: 5,
-        comment: "Professional, knowledgeable, and very patient with our questions. Highly recommended!",
-        date: "2024-01-10"
-      }
-    ],
-    contactInfo: {
-      phone: "+91 98765 43210",
-      email: "rajesh.singh@jharkhandtours.com",
-      whatsapp: "+91 98765 43210"
-    }
-  },
-  {
-    id: 2,
-    name: "Priya Devi",
-    specialization: "Wildlife & Nature",
-    locations: ["Betla National Park", "Hazaribagh Wildlife Sanctuary", "Netarhat", "Palamu Tiger Reserve", "Dassam Falls"],
-    price: "₹3,000",
-    rating: 4.8,
-    experience: "6 years",
-    languages: ["Hindi", "English", "Bengali"],
-    verified: true,
-    image: "/placeholder.svg",
-    description: "Wildlife enthusiast and nature photographer with deep knowledge of Jharkhand's forests and wildlife.",
-    specialties: ["Wildlife Safaris", "Bird Watching", "Nature Photography", "Forest Trails"],
-    availability: "Available",
-    nextAvailable: "Today 2:00 PM",
-    totalTours: 320,
-    responseTime: "Within 1 hour",
-    verificationDetails: {
-      verifiedBy: "Wildlife Conservation Society",
-      verificationDate: "2023-03-20",
-      credentials: ["Wildlife Guide License", "Nature Photography Certificate", "Forest Department Authorization"],
-      certifications: ["Wildlife Institute of India", "Forest Department", "Nature Photography Society"]
-    },
-    bio: "Priya Devi is a wildlife conservationist and nature photographer who has dedicated her life to protecting Jharkhand's natural heritage. With 6 years of experience, she has guided hundreds of wildlife enthusiasts through the state's national parks and sanctuaries.",
-    achievements: [
-      "Wildlife Conservation Award 2023",
-      "Nature Photography Excellence",
-      "300+ Wildlife Tours",
-      "Forest Department Recognition"
-    ],
-    reviews: [
-      {
-        name: "Ravi Kumar",
-        rating: 5,
-        comment: "Priya's wildlife knowledge is amazing. We saw tigers and many birds thanks to her expertise!",
-        date: "2024-01-12"
-      }
-    ],
-    contactInfo: {
-      phone: "+91 98765 43211",
-      email: "priya.devi@wildlifejharkhand.com",
-      whatsapp: "+91 98765 43211"
-    }
-  },
-  {
-    id: 3,
-    name: "Amit Kumar Munda",
-    specialization: "Tribal Culture & Traditions",
-    locations: ["Khunti", "Simdega", "Gumla", "West Singhbhum", "Seraikela", "Dumka"],
-    price: "₹2,000",
-    rating: 4.9,
-    experience: "10 years",
-    languages: ["Hindi", "Munda", "Ho", "English"],
-    verified: true,
-    image: "/placeholder.svg",
-    description: "Native tribal guide with authentic knowledge of Munda, Santhal, and Ho cultures and traditions.",
-    specialties: ["Tribal Villages", "Cultural Experiences", "Traditional Crafts", "Folk Music"],
-    availability: "Available",
-    nextAvailable: "This Weekend",
-    totalTours: 580,
-    responseTime: "Within 3 hours",
-    verificationDetails: {
-      verifiedBy: "Tribal Development Authority",
-      verificationDate: "2022-11-10",
-      credentials: ["Tribal Cultural Expert", "Native Language Speaker", "Cultural Heritage Guide"],
-      certifications: ["Tribal Development Authority", "Ministry of Tribal Affairs", "Cultural Heritage Society"]
-    },
-    bio: "Amit Kumar Munda is a native tribal guide from the Munda community with deep roots in Jharkhand's tribal culture. He speaks multiple tribal languages and has been preserving and sharing his cultural heritage for over 10 years.",
-    achievements: [
-      "Cultural Preservation Award 2022",
-      "Native Language Expert",
-      "600+ Cultural Tours",
-      "Tribal Community Leader"
-    ],
-    reviews: [
-      {
-        name: "Sarah Johnson",
-        rating: 5,
-        comment: "Amit's authentic tribal knowledge is incredible. He showed us the real Jharkhand culture!",
-        date: "2024-01-08"
-      }
-    ],
-    contactInfo: {
-      phone: "+91 98765 43212",
-      email: "amit.munda@tribalculture.com",
-      whatsapp: "+91 98765 43212"
-    }
-  }
-  // Add more guides as needed...
-];
-
 export default function TourGuideDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [guide, setGuide] = useState<any>(null);
+  const [guide, setGuide] = useState<TourGuide | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -231,7 +89,7 @@ export default function TourGuideDetail() {
         </div>
       </div>
 
-      <div className="px-6 py-6 max-w-4xl mx-auto">
+      <div className="px-6 py-6 pb-32 max-w-4xl mx-auto">
         {/* Guide Header */}
         <LuxuryCard className="p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-6">
@@ -370,7 +228,7 @@ export default function TourGuideDetail() {
             <LuxuryCard className="p-6">
               <h2 className="text-xl font-semibold text-foreground mb-4">Recent Reviews</h2>
               <div className="space-y-4">
-                {guide.reviews.map((review: any, index: number) => (
+                {guide.reviews.map((review: { name: string; rating: number; comment: string; date: string }, index: number) => (
                   <div key={index} className="border-b border-border pb-4 last:border-b-0">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center">
