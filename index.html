@@ -12,8 +12,50 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Zapier Chatbot -->
-    <script async type='module' src='https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js'></script>
+    <!-- Zapier Chatbot - Load dynamically to avoid ad blockers -->
+    <script>
+      // Load Zapier chatbot dynamically with error handling
+      function loadZapierChatbot() {
+        try {
+          // Check if ad blockers might be present
+          const script = document.createElement('script');
+          script.type = 'module';
+          script.src = 'https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js';
+          script.async = true;
+          
+          script.onload = function() {
+            // Create chatbot element after script loads
+            const chatbot = document.createElement('zapier-interfaces-chatbot-embed');
+            chatbot.setAttribute('is-popup', 'true');
+            chatbot.setAttribute('chatbot-id', 'cmfybpp1g0009sy7zte8xaqt6');
+            chatbot.style.display = 'none'; // Hide initially
+            
+            document.body.appendChild(chatbot);
+            
+            // Show after a delay to ensure it's loaded
+            setTimeout(() => {
+              chatbot.style.display = 'block';
+            }, 1000);
+          };
+          
+          script.onerror = function() {
+            console.log('Zapier chatbot blocked by ad blocker or failed to load');
+            // You could show a fallback contact form here
+          };
+          
+          document.head.appendChild(script);
+        } catch (error) {
+          console.log('Failed to load Zapier chatbot:', error);
+        }
+      }
+      
+      // Load chatbot after page loads
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadZapierChatbot);
+      } else {
+        loadZapierChatbot();
+      }
+    </script>
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -32,8 +74,5 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- Zapier Chatbot -->
-    <zapier-interfaces-chatbot-embed is-popup='true' chatbot-id='cmfybpp1g0009sy7zte8xaqt6'></zapier-interfaces-chatbot-embed>
   </body>
 </html>

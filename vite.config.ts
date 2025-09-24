@@ -46,6 +46,9 @@ export default defineConfig(({ mode }) => ({
             if (id.includes('i18next') || id.includes('react-i18next')) {
               return 'i18n-vendor';
             }
+            if (id.includes('@tanstack')) {
+              return 'query-vendor';
+            }
             return 'vendor';
           }
           
