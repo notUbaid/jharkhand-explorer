@@ -10,6 +10,7 @@ import { TransportOption, TrainOption, BusOption, FlightOption, City } from "@/t
 import { getAllTransportRoutes } from "@/data/transportData";
 import { useTransportComparison } from "@/contexts/TransportComparisonContext";
 import { TransportComparisonModal } from "@/components/TransportComparisonModal";
+import { RentalComparisonModal } from "@/components/RentalComparisonModal";
 import { 
   Train,
   Bus,
@@ -28,6 +29,7 @@ import {
   Calendar,
   Star,
   Heart,
+  GitCompare,
   Filter,
   SortAsc,
   SortDesc,
@@ -486,6 +488,114 @@ const getVehicleIcon = (type: string) => {
 export default function Transport() {
   const { t } = useTranslation();
   const { compareItems, addToCompare, removeFromCompare, isInCompare, canAddMore, setOpenCompareModal } = useTransportComparison();
+  
+  // Rental comparison state
+  const [rentalCompareItems, setRentalCompareItems] = useState<typeof rentalVehicles>([]);
+  const [openRentalCompareModal, setOpenRentalCompareModal] = useState(false);
+
+  const addToRentalCompare = (vehicle: typeof rentalVehicles[0]) => {
+    if (rentalCompareItems.length >= 3) {
+      return; // Limit to 3 items
+    }
+    
+    if (!rentalCompareItems.find(existing => existing.id === vehicle.id)) {
+      setRentalCompareItems(prev => [...prev, vehicle]);
+    }
+  };
+
+  const removeFromRentalCompare = (id: number) => {
+    setRentalCompareItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const isInRentalCompare = (id: number) => {
+    return rentalCompareItems.some(item => item.id === id);
+  };
+
+  const canAddMoreRentals = rentalCompareItems.length < 3;
+
+  // Search suggestions
+  const getSearchSuggestions = () => {
+    if (!searchValue.trim()) return [];
+    
+    const suggestions: string[] = [];
+    const searchTerm = searchValue.toLowerCase().trim();
+    
+    // Long distance suggestions
+    if (activeTab === "long-distance") {
+      // City suggestions
+      const cities = [...new Set([
+        ...transportData.trainRoutes.map(r => r.from),
+        ...transportData.trainRoutes.map(r => r.to),
+        ...transportData.busRoutes.map(r => r.from),
+        ...transportData.busRoutes.map(r => r.to),
+        ...transportData.flightRoutes.map(r => r.from),
+        ...transportData.flightRoutes.map(r => r.to)
+      ])];
+      
+      cities.forEach(city => {
+        if (city.toLowerCase().includes(searchTerm) && !suggestions.includes(city)) {
+          suggestions.push(city);
+        }
+      });
+      
+      // Route suggestions
+      const routes = [
+        ...transportData.trainRoutes.map(r => `${r.from} to ${r.to}`),
+        ...transportData.busRoutes.map(r => `${r.from} to ${r.to}`),
+        ...transportData.flightRoutes.map(r => `${r.from} to ${r.to}`)
+      ];
+      
+      routes.forEach(route => {
+        if (route.toLowerCase().includes(searchTerm) && !suggestions.includes(route)) {
+          suggestions.push(route);
+        }
+      });
+      
+      // Operator suggestions
+      transportData.trainRoutes.forEach(route => {
+        const trainOption = route as TrainOption;
+        if (trainOption.trainName.toLowerCase().includes(searchTerm) && !suggestions.includes(trainOption.trainName)) {
+          suggestions.push(trainOption.trainName);
+        }
+      });
+      
+      transportData.busRoutes.forEach(route => {
+        const busOption = route as BusOption;
+        if (busOption.operator.toLowerCase().includes(searchTerm) && !suggestions.includes(busOption.operator)) {
+          suggestions.push(busOption.operator);
+        }
+      });
+      
+      transportData.flightRoutes.forEach(route => {
+        const flightOption = route as FlightOption;
+        if (flightOption.airline.toLowerCase().includes(searchTerm) && !suggestions.includes(flightOption.airline)) {
+          suggestions.push(flightOption.airline);
+        }
+      });
+    }
+    
+    // Rental suggestions
+    if (activeTab === "rentals") {
+      rentalVehicles.forEach(vehicle => {
+        if (vehicle.model.toLowerCase().includes(searchTerm) && !suggestions.includes(vehicle.model)) {
+          suggestions.push(vehicle.model);
+        }
+        if (vehicle.type.toLowerCase().includes(searchTerm) && !suggestions.includes(vehicle.type)) {
+          suggestions.push(vehicle.type);
+        }
+        if (vehicle.pickupLocation.toLowerCase().includes(searchTerm) && !suggestions.includes(vehicle.pickupLocation)) {
+          suggestions.push(vehicle.pickupLocation);
+        }
+        vehicle.features.forEach(feature => {
+          if (feature.toLowerCase().includes(searchTerm) && !suggestions.includes(feature)) {
+            suggestions.push(feature);
+          }
+        });
+      });
+    }
+    
+    return suggestions.slice(0, 8); // Limit to 8 suggestions
+  };
   const [activeTab, setActiveTab] = useState("long-distance");
   const [searchValue, setSearchValue] = useState("");
   const [selectedVehicleType, setSelectedVehicleType] = useState("All");
@@ -583,14 +693,93 @@ export default function Transport() {
   const durations = ["All", "Under 5h", "5h-10h", "10h-15h", "Above 15h"];
   const sortOptions = ["price", "duration", "departure", "popularity"];
 
+  // Enhanced search functions
+  const enhancedSearchLongDistance = (option: TransportOption) => {
+    if (!searchValue.trim()) return true;
+    
+    const searchTerm = searchValue.toLowerCase().trim();
+    
+    // Basic route search
+    const matchesFrom = option.from.toLowerCase().includes(searchTerm);
+    const matchesTo = option.to.toLowerCase().includes(searchTerm);
+    const matchesRoute = `${option.from} to ${option.to}`.toLowerCase().includes(searchTerm);
+    
+    // Mode-specific search
+    let matchesModeSpecific = false;
+    if (option.mode === "train") {
+      const trainOption = option as TrainOption;
+      matchesModeSpecific = 
+        trainOption.trainName.toLowerCase().includes(searchTerm) ||
+        trainOption.trainNumber.toLowerCase().includes(searchTerm) ||
+        trainOption.classes.some(cls => cls.class.toLowerCase().includes(searchTerm));
+    } else if (option.mode === "bus") {
+      const busOption = option as BusOption;
+      matchesModeSpecific = 
+        busOption.operator.toLowerCase().includes(searchTerm) ||
+        busOption.busType.toLowerCase().includes(searchTerm) ||
+        busOption.amenities.some(amenity => amenity.toLowerCase().includes(searchTerm));
+    } else if (option.mode === "flight") {
+      const flightOption = option as FlightOption;
+      matchesModeSpecific = 
+        flightOption.airline.toLowerCase().includes(searchTerm) ||
+        flightOption.aircraft.toLowerCase().includes(searchTerm) ||
+        flightOption.amenities.some(amenity => amenity.toLowerCase().includes(searchTerm));
+    }
+    
+    // Duration and price search
+    const matchesDuration = option.duration.toLowerCase().includes(searchTerm);
+    let matchesPrice = false;
+    if (option.mode === "train") {
+      const trainOption = option as TrainOption;
+      matchesPrice = trainOption.classes.some(cls => cls.price.toLowerCase().includes(searchTerm));
+    } else if (option.mode === "bus") {
+      matchesPrice = (option as BusOption).price.toLowerCase().includes(searchTerm);
+    } else if (option.mode === "flight") {
+      matchesPrice = (option as FlightOption).price.toLowerCase().includes(searchTerm);
+    }
+    
+    return matchesFrom || matchesTo || matchesRoute || matchesModeSpecific || matchesDuration || matchesPrice;
+  };
+
+  const enhancedSearchRentals = (vehicle: typeof rentalVehicles[0]) => {
+    if (!searchValue.trim()) return true;
+    
+    const searchTerm = searchValue.toLowerCase().trim();
+    
+    // Basic vehicle search
+    const matchesModel = vehicle.model.toLowerCase().includes(searchTerm);
+    const matchesType = vehicle.type.toLowerCase().includes(searchTerm);
+    const matchesLocation = vehicle.pickupLocation.toLowerCase().includes(searchTerm);
+    
+    // Feature search
+    const matchesFeatures = vehicle.features.some((feature: string) => 
+      feature.toLowerCase().includes(searchTerm)
+    );
+    
+    // Fuel type and specs search
+    const matchesFuelType = vehicle.fuelType.toLowerCase().includes(searchTerm);
+    const matchesEngine = vehicle.engineCapacity.toLowerCase().includes(searchTerm);
+    const matchesMileage = vehicle.mileage.toLowerCase().includes(searchTerm);
+    
+    // Price search
+    const matchesPricePerDay = vehicle.pricePerDay.toLowerCase().includes(searchTerm);
+    const matchesPricePerHour = vehicle.pricePerHour.toLowerCase().includes(searchTerm);
+    
+    // Availability search
+    const matchesAvailability = vehicle.available ? 
+      (searchTerm.includes('available') || searchTerm.includes('book')) : 
+      (searchTerm.includes('unavailable') || searchTerm.includes('booked'));
+    
+    return matchesModel || matchesType || matchesLocation || matchesFeatures || 
+           matchesFuelType || matchesEngine || matchesMileage || 
+           matchesPricePerDay || matchesPricePerHour || matchesAvailability;
+  };
+
   // Filter rental vehicles
   const filteredRentalVehicles = rentalVehicles.filter(vehicle => {
     const matchesVehicleType = selectedVehicleType === "All" || vehicle.type === selectedVehicleType;
     const matchesFuelType = selectedFuelType === "All" || vehicle.fuelType === selectedFuelType;
-    const matchesSearch = searchValue === "" || 
-      vehicle.model.toLowerCase().includes(searchValue.toLowerCase()) ||
-      vehicle.type.toLowerCase().includes(searchValue.toLowerCase()) ||
-      vehicle.features.some(feature => feature.toLowerCase().includes(searchValue.toLowerCase()));
+    const matchesSearch = enhancedSearchRentals(vehicle);
     
     // Price range filtering for rentals
     const vehiclePrice = parseInt(vehicle.pricePerDay.replace(/[₹,]/g, "")) || 0;
@@ -608,13 +797,8 @@ export default function Transport() {
   
   // Filter long distance options
   const filteredLongDistanceOptions = currentRoutes.filter(option => {
-    // Search filter
-    const matchesSearch = searchValue === "" || 
-      option.from.toLowerCase().includes(searchValue.toLowerCase()) ||
-      option.to.toLowerCase().includes(searchValue.toLowerCase()) ||
-      (option.mode === "train" ? (option as TrainOption).trainName.toLowerCase().includes(searchValue.toLowerCase()) :
-       option.mode === "bus" ? (option as BusOption).operator.toLowerCase().includes(searchValue.toLowerCase()) :
-       option.mode === "flight" ? (option as FlightOption).airline.toLowerCase().includes(searchValue.toLowerCase()) : false);
+    // Enhanced search filter
+    const matchesSearch = enhancedSearchLongDistance(option);
     
     // Mode filter
     const matchesMode = selectedMode === "All" || option.mode === selectedMode;
@@ -760,7 +944,7 @@ export default function Transport() {
               setSearchValue(value);
               addToRecentSearches(value);
             }}
-            placeholder="Search destinations, routes, or operators..."
+            placeholder="Search destinations, routes, operators, train numbers, airlines, amenities..."
           />
           
           {/* Recent Searches Dropdown */}
@@ -781,6 +965,32 @@ export default function Transport() {
                     {search}
                   </button>
                 ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Search Suggestions Dropdown */}
+          {searchValue.trim() && getSearchSuggestions().length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-50">
+              <div className="p-2">
+                <p className="text-xs text-muted-foreground mb-2 flex items-center">
+                  <Search size={12} className="mr-1" />
+                  Suggestions
+                </p>
+                <div className="space-y-1">
+                  {getSearchSuggestions().map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setSearchValue(suggestion);
+                        addToRecentSearches(suggestion);
+                      }}
+                      className="w-full text-left px-2 py-1 text-sm hover:bg-muted rounded text-foreground"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -1330,7 +1540,7 @@ export default function Transport() {
               <SearchBar
                 value={searchValue}
                 onChange={setSearchValue}
-                placeholder="Search by vehicle model, type, or features..."
+                placeholder="Search by vehicle model, type, features, fuel type, location, price..."
                 className="w-full"
               />
             </div>
@@ -1422,6 +1632,22 @@ export default function Transport() {
             </div>
 
             {/* Rental Vehicles */}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-foreground">
+                Available Vehicles
+              </h3>
+              {rentalCompareItems.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOpenRentalCompareModal(true)}
+                  className="text-xs h-6 px-2"
+                >
+                  <GitCompare size={10} className="mr-1" />
+                  Compare ({rentalCompareItems.length})
+                </Button>
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
               {filteredRentalVehicles.length > 0 ? (
                 filteredRentalVehicles.map((vehicle) => (
@@ -1445,6 +1671,28 @@ export default function Transport() {
                         <Badge variant="destructive" className="text-xs">Unavailable</Badge>
                       </div>
                     )}
+
+                    {/* Compare Button */}
+                    <div className="absolute top-2 right-2 flex gap-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isInRentalCompare(vehicle.id)) {
+                            removeFromRentalCompare(vehicle.id);
+                          } else {
+                            addToRentalCompare(vehicle);
+                          }
+                        }}
+                        className={`p-2 rounded-full backdrop-blur-sm transition-all bg-white/20 text-white hover:bg-white/30 ${isInRentalCompare(vehicle.id) ? "bg-primary/80" : ""}`}
+                        disabled={!canAddMoreRentals && !isInRentalCompare(vehicle.id)}
+                        title={isInRentalCompare(vehicle.id) ? "Remove from compare" : canAddMoreRentals ? "Add to compare" : "Compare limit reached (3 max)"}
+                      >
+                        <GitCompare 
+                          size={14} 
+                          className={isInRentalCompare(vehicle.id) ? "fill-white" : ""} 
+                        />
+                      </button>
+                    </div>
                   </div>
                   
                   <div className="p-4">
@@ -1565,6 +1813,15 @@ export default function Transport() {
       
       {/* Transport Comparison Modal */}
       <TransportComparisonModal />
+      
+      {/* Rental Comparison Modal */}
+      <RentalComparisonModal 
+        compareItems={rentalCompareItems}
+        removeFromCompare={removeFromRentalCompare}
+        clearCompare={() => setRentalCompareItems([])}
+        openCompareModal={openRentalCompareModal}
+        setOpenCompareModal={setOpenRentalCompareModal}
+      />
     </div>
   );
 }

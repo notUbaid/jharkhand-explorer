@@ -4,6 +4,7 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useCart } from "@/contexts/CartContext";
 import { products, Product } from "@/data/products";
 import { 
   Star, 
@@ -24,6 +25,7 @@ import {
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { addToCart, isInCart, getCartItemQuantity } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,15 +45,15 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     if (product) {
-      // Simulate adding to cart
+      addToCart(product, quantity);
       alert(`Added ${quantity} ${product.name}(s) to cart!`);
     }
   };
 
   const handleBuyNow = () => {
     if (product) {
-      // Simulate buy now
-      alert(`Proceeding to checkout for ${quantity} ${product.name}(s)!`);
+      addToCart(product, quantity);
+      navigate('/checkout');
     }
   };
 

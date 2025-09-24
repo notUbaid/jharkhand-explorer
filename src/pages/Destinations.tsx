@@ -8,6 +8,7 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { destinations } from "@/data/destinations";
 import { 
   Filter, 
@@ -27,7 +28,8 @@ import {
   Church,
   Palette,
   Zap,
-  Pickaxe
+  Pickaxe,
+  Utensils
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -359,6 +361,7 @@ const restaurants = [
 
 export default function Destinations() {
   const { t } = useTranslation();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(() => {
     const tabParam = searchParams.get('tab');
@@ -367,6 +370,10 @@ export default function Destinations() {
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedFoodFilter, setSelectedFoodFilter] = useState("All");
+  const [crossSearchResults, setCrossSearchResults] = useState<{
+    restaurants: typeof restaurants;
+    destinations: typeof destinations;
+  }>({ restaurants: [], destinations: [] });
   const [sortByLocation, setSortByLocation] = useState(false);
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -376,6 +383,41 @@ export default function Destinations() {
   const [restaurantImageIndices, setRestaurantImageIndices] = useState<Record<string, number>>({});
   const [restaurantIsTransitioning, setRestaurantIsTransitioning] = useState<Record<string, boolean>>({});
   const navigate = useNavigate();
+
+  // Favorite functions
+  const toggleDestinationFavorite = (destination: typeof destinations[0]) => {
+    if (isFavorite(destination.id.toString(), 'destination')) {
+      removeFromFavorites(destination.id.toString(), 'destination');
+    } else {
+      addToFavorites({
+        id: destination.id.toString(),
+        type: 'destination',
+        name: destination.name,
+        description: destination.description,
+        image: destination.images[0],
+        location: destination.location,
+        rating: destination.rating,
+        category: destination.category
+      });
+    }
+  };
+
+  const toggleRestaurantFavorite = (restaurant: typeof restaurants[0]) => {
+    if (isFavorite(restaurant.id.toString(), 'destination')) {
+      removeFromFavorites(restaurant.id.toString(), 'destination');
+    } else {
+      addToFavorites({
+        id: restaurant.id.toString(),
+        type: 'destination',
+        name: restaurant.name,
+        description: restaurant.description,
+        image: restaurant.image,
+        location: restaurant.location,
+        rating: restaurant.rating,
+        category: restaurant.cuisine
+      });
+    }
+  };
 
   // Location detection function
   const getCurrentLocation = () => {
@@ -452,7 +494,7 @@ export default function Destinations() {
     }
   }, [searchParams]);
 
-  // Image rotation effect with smooth crossfade transitions for destinations
+  // Image rotation effect with smooth sliding transitions for destinations
   useEffect(() => {
     const interval = setInterval(() => {
       destinations.forEach(dest => {
@@ -460,26 +502,26 @@ export default function Destinations() {
           // Start transition
           setIsTransitioning(prev => ({ ...prev, [dest.id]: true }));
           
-          // After a short delay, change the image
+          // After longer delay for smoother transition, change the image
           setTimeout(() => {
             setImageIndices(prev => ({
               ...prev,
               [dest.id]: ((prev[dest.id] || 0) + 1) % dest.images.length
             }));
             
-            // End transition after crossfade completes
+            // End transition after longer slide completes
             setTimeout(() => {
               setIsTransitioning(prev => ({ ...prev, [dest.id]: false }));
-            }, 1000);
-          }, 500);
+            }, 2000);
+          }, 1000);
         }
       });
-    }, 8000); // Rotate every 8 seconds for slower, more elegant transition
+    }, 8000); // Rotate every 8 seconds for slower, more elegant transitions
 
     return () => clearInterval(interval);
   }, []);
 
-  // Image rotation effect for restaurants - slow slideshow
+  // Image rotation effect for restaurants - smooth sliding transitions
   useEffect(() => {
     const interval = setInterval(() => {
       restaurants.forEach(restaurant => {
@@ -487,21 +529,21 @@ export default function Destinations() {
           // Start transition
           setRestaurantIsTransitioning(prev => ({ ...prev, [restaurant.id]: true }));
           
-          // After a longer delay for slower transition, change the image
+          // After longer delay for smoother transition, change the image
           setTimeout(() => {
             setRestaurantImageIndices(prev => ({
               ...prev,
               [restaurant.id]: ((prev[restaurant.id] || 0) + 1) % restaurant.images.length
             }));
             
-            // End transition after crossfade completes
+            // End transition after longer slide completes
             setTimeout(() => {
               setRestaurantIsTransitioning(prev => ({ ...prev, [restaurant.id]: false }));
-            }, 2000); // Longer crossfade duration
-          }, 1000); // Longer delay before image change
+            }, 2000);
+          }, 1000);
         }
       });
-    }, 12000); // Rotate every 12 seconds for very slow, elegant slideshow
+    }, 10000); // Rotate every 10 seconds for slower, more elegant transitions
 
     return () => clearInterval(interval);
   }, []);
@@ -565,6 +607,44 @@ export default function Destinations() {
     navigate(`/destinations/${id}`);
   };
 
+  // Cross-page search functionality
+  const handleCrossSearch = (searchTerm: string) => {
+    if (!searchTerm.trim()) {
+      setCrossSearchResults({ restaurants: [], destinations: [] });
+      return;
+    }
+
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    
+    // Search restaurants
+    const matchingRestaurants = restaurants.filter(restaurant => 
+      restaurant.name.toLowerCase().includes(lowerSearchTerm) ||
+      restaurant.location.toLowerCase().includes(lowerSearchTerm) ||
+      restaurant.description.toLowerCase().includes(lowerSearchTerm) ||
+      restaurant.cuisine.toLowerCase().includes(lowerSearchTerm) ||
+      restaurant.tags.some(tag => tag.toLowerCase().includes(lowerSearchTerm))
+    );
+
+    // Search destinations
+    const matchingDestinations = destinations.filter(destination => 
+      destination.name.toLowerCase().includes(lowerSearchTerm) ||
+      destination.location.toLowerCase().includes(lowerSearchTerm) ||
+      destination.description.toLowerCase().includes(lowerSearchTerm) ||
+      destination.tags.some(tag => tag.toLowerCase().includes(lowerSearchTerm))
+    );
+
+    setCrossSearchResults({
+      restaurants: matchingRestaurants,
+      destinations: matchingDestinations
+    });
+  };
+
+  // Handle search value change
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+    handleCrossSearch(value);
+  };
+
   return (
     <div className="pb-24 min-h-screen bg-background">
       {/* Header */}
@@ -582,14 +662,183 @@ export default function Destinations() {
         </div>
         <SearchBar 
           value={searchValue}
-          onChange={setSearchValue}
+          onChange={handleSearchChange}
           placeholder={t("destinations.searchPlaceholder")}
         />
       </div>
 
       <div className="px-6 mt-6 pb-32 relative z-10">
+        {/* Cross-Search Results */}
+        {searchValue && (crossSearchResults.restaurants.length > 0 || crossSearchResults.destinations.length > 0) && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-4 text-foreground">
+              Search Results for "{searchValue}"
+            </h3>
+            
+            {/* Restaurant Results */}
+            {crossSearchResults.restaurants.length > 0 && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium text-foreground flex items-center">
+                    <Utensils className="mr-2" size={16} />
+                    Restaurants ({crossSearchResults.restaurants.length})
+                  </h4>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setActiveTab('food')}
+                    className="text-primary border-primary hover:bg-primary hover:text-white"
+                  >
+                    View All Restaurants
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {crossSearchResults.restaurants.slice(0, 3).map((restaurant) => (
+                    <LuxuryCard 
+                      key={restaurant.id}
+                      onClick={() => navigate(`/restaurants/${restaurant.id}`)}
+                      className="p-0 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
+                    >
+                      <div className="relative">
+                        <div className="aspect-[3/2] bg-muted overflow-hidden">
+                          <img 
+                            src={restaurant.images ? restaurant.images[0] : restaurant.image} 
+                            alt={restaurant.name}
+                            className="w-full h-full object-cover object-center"
+                          />
+                          <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-all duration-300 ease-in-out" />
+                        </div>
+                        
+                        <div className="absolute top-2 left-2">
+                          <Badge variant="secondary" className="bg-white/90 text-foreground">
+                            Restaurant
+                          </Badge>
+                        </div>
+                        
+                        <div className="absolute top-2 right-2 flex items-center space-x-1 bg-white/90 rounded-full px-2 py-1">
+                          <Star className="text-yellow-500" size={12} fill="currentColor" />
+                          <span className="text-xs font-medium">{restaurant.rating}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="p-4">
+                        <h3 className="font-semibold text-foreground mb-1 line-clamp-1">
+                          {restaurant.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-2 line-clamp-1">
+                          {restaurant.location}
+                        </p>
+                        <p className="text-xs text-muted-foreground line-clamp-2">
+                          {restaurant.description}
+                        </p>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-sm font-medium text-primary">
+                            {restaurant.priceRange}
+                          </span>
+                          <Badge variant="outline" className="text-xs">
+                            {restaurant.category}
+                          </Badge>
+                        </div>
+                      </div>
+                    </LuxuryCard>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Destination Results */}
+            {crossSearchResults.destinations.length > 0 && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium text-foreground flex items-center">
+                    <MapPin className="mr-2" size={16} />
+                    Tourist Spots ({crossSearchResults.destinations.length})
+                  </h4>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setActiveTab('spots')}
+                    className="text-primary border-primary hover:bg-primary hover:text-white"
+                  >
+                    View All Spots
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {crossSearchResults.destinations.slice(0, 3).map((destination) => (
+                    <LuxuryCard 
+                      key={destination.id}
+                      onClick={() => handleDestinationClick(destination.id)}
+                      className="p-0 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
+                    >
+                      <div className="relative">
+                        <div className="aspect-[3/2] bg-muted overflow-hidden relative">
+                          <div className={`flex transition-transform duration-[2000ms] ease-in-out ${
+                            isTransitioning[destination.id] ? '-translate-x-full' : 'translate-x-0'
+                          }`}>
+                            <div className="w-full h-full flex-shrink-0">
+                              <img 
+                                src={destination.images ? destination.images[imageIndices[destination.id] || 0] : destination.image} 
+                                alt={destination.name}
+                                className="w-full h-full object-cover object-center"
+                              />
+                            </div>
+                            
+                            {destination.images && destination.images.length > 1 && (
+                              <div className="w-full h-full flex-shrink-0">
+                                <img 
+                                  src={destination.images[((imageIndices[destination.id] || 0) + 1) % destination.images.length]} 
+                                  alt={destination.name}
+                                  className="w-full h-full object-cover object-center"
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-all duration-300 ease-in-out" />
+                        </div>
+                        
+                        <div className="absolute top-2 left-2">
+                          <Badge variant="secondary" className="bg-white/90 text-foreground">
+                            Tourist Spot
+                          </Badge>
+                        </div>
+                        
+                        <div className="absolute top-2 right-2 flex items-center space-x-1 bg-white/90 rounded-full px-2 py-1">
+                          <Star className="text-yellow-500" size={12} fill="currentColor" />
+                          <span className="text-xs font-medium">{destination.rating}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="p-4">
+                        <h3 className="font-semibold text-foreground mb-1 line-clamp-1">
+                          {destination.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-2 line-clamp-1">
+                          {destination.location}
+                        </p>
+                        <p className="text-xs text-muted-foreground line-clamp-2">
+                          {destination.description}
+                        </p>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-sm font-medium text-primary">
+                            {destination.category}
+                          </span>
+                          <Badge variant="outline" className="text-xs">
+                            {destination.tags[0]}
+                          </Badge>
+                        </div>
+                      </div>
+                    </LuxuryCard>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <Tabs value={activeTab} onValueChange={(value) => {
           setActiveTab(value);
+          setSearchValue("");
+          setCrossSearchResults({ restaurants: [], destinations: [] });
           // Update URL parameter when tab changes
           const newSearchParams = new URLSearchParams(searchParams);
           if (value === 'food') {
@@ -691,26 +940,31 @@ export default function Destinations() {
                   className="p-0 overflow-hidden"
                 >
                   <div className="relative">
-                    <div className="aspect-[3/2] bg-muted overflow-hidden">
-                      {/* Current Image */}
-                      <img 
-                        src={destination.images ? destination.images[imageIndices[destination.id] || 0] : destination.image} 
-                        alt={destination.name}
-                        className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
-                          isTransitioning[destination.id] ? 'opacity-0' : 'opacity-100'
-                        }`}
-                      />
-                      
-                      {/* Next Image (for crossfade) */}
-                      {destination.images && destination.images.length > 1 && (
-                        <img 
-                          src={destination.images[((imageIndices[destination.id] || 0) + 1) % destination.images.length]} 
-                          alt={destination.name}
-                          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
-                            isTransitioning[destination.id] ? 'opacity-100' : 'opacity-0'
-                          }`}
-                        />
-                      )}
+                    <div className="aspect-[3/2] bg-muted overflow-hidden relative">
+                      {/* Image Container with sliding animation */}
+                      <div className={`flex transition-transform duration-[2000ms] ease-in-out ${
+                        isTransitioning[destination.id] ? '-translate-x-full' : 'translate-x-0'
+                      }`}>
+                        {/* Current Image */}
+                        <div className="w-full h-full flex-shrink-0">
+                          <img 
+                            src={destination.images ? destination.images[imageIndices[destination.id] || 0] : destination.image} 
+                            alt={destination.name}
+                            className="w-full h-full object-cover object-center"
+                          />
+                        </div>
+                        
+                        {/* Next Image (for sliding) */}
+                        {destination.images && destination.images.length > 1 && (
+                          <div className="w-full h-full flex-shrink-0">
+                            <img 
+                              src={destination.images[((imageIndices[destination.id] || 0) + 1) % destination.images.length]} 
+                              alt={destination.name}
+                              className="w-full h-full object-cover object-center"
+                            />
+                          </div>
+                        )}
+                      </div>
                       
                       {/* Hover Effect Overlay */}
                       <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-all duration-300 ease-in-out" />
@@ -719,13 +973,13 @@ export default function Destinations() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Add to favorites logic here
+                        toggleDestinationFavorite(destination);
                       }}
                       className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full"
                     >
                       <Heart 
                         size={14} 
-                        className="text-red-500"
+                        className={isFavorite(destination.id.toString(), 'destination') ? "text-red-500 fill-red-500" : "text-red-500"}
                       />
                     </button>
                   </div>
@@ -864,26 +1118,31 @@ export default function Destinations() {
                   className="p-0 overflow-hidden"
                 >
                   <div className="relative">
-                    <div className="aspect-[3/2] bg-muted overflow-hidden">
-                      {/* Current Image */}
-                      <img 
-                        src={restaurant.images ? restaurant.images[restaurantImageIndices[restaurant.id] || 0] : restaurant.image} 
-                        alt={restaurant.name}
-                        className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-[3000ms] ease-in-out ${
-                          restaurantIsTransitioning[restaurant.id] ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
-                        }`}
-                      />
-                      
-                      {/* Next Image (for crossfade) */}
-                      {restaurant.images && restaurant.images.length > 1 && (
-                        <img 
-                          src={restaurant.images[((restaurantImageIndices[restaurant.id] || 0) + 1) % restaurant.images.length]} 
-                          alt={restaurant.name}
-                          className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-[3000ms] ease-in-out ${
-                            restaurantIsTransitioning[restaurant.id] ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-                          }`}
-                        />
-                      )}
+                    <div className="aspect-[3/2] bg-muted overflow-hidden relative">
+                      {/* Image Container with sliding animation */}
+                      <div className={`flex transition-transform duration-[2000ms] ease-in-out ${
+                        restaurantIsTransitioning[restaurant.id] ? '-translate-x-full' : 'translate-x-0'
+                      }`}>
+                        {/* Current Image */}
+                        <div className="w-full h-full flex-shrink-0">
+                          <img 
+                            src={restaurant.images ? restaurant.images[restaurantImageIndices[restaurant.id] || 0] : restaurant.image} 
+                            alt={restaurant.name}
+                            className="w-full h-full object-cover object-center"
+                          />
+                        </div>
+                        
+                        {/* Next Image (for sliding) */}
+                        {restaurant.images && restaurant.images.length > 1 && (
+                          <div className="w-full h-full flex-shrink-0">
+                            <img 
+                              src={restaurant.images[((restaurantImageIndices[restaurant.id] || 0) + 1) % restaurant.images.length]} 
+                              alt={restaurant.name}
+                              className="w-full h-full object-cover object-center"
+                            />
+                          </div>
+                        )}
+                      </div>
                       
                       {/* Hover Effect Overlay */}
                       <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-all duration-300 ease-in-out" />
@@ -892,13 +1151,13 @@ export default function Destinations() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Add to favorites logic here
+                        toggleDestinationFavorite(destination);
                       }}
                       className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full"
                     >
                       <Heart 
                         size={14} 
-                        className="text-red-500"
+                        className={isFavorite(destination.id.toString(), 'destination') ? "text-red-500 fill-red-500" : "text-red-500"}
                       />
                     </button>
                   </div>

@@ -7,6 +7,8 @@ import { BottomNavigation } from "@/components/ui/bottom-navigation";
 import { DarkModeProvider } from "@/contexts/DarkModeContext";
 import { PackageComparisonProvider } from "@/contexts/PackageComparisonContext";
 import { TransportComparisonProvider } from "@/contexts/TransportComparisonContext";
+import { FavoritesProvider } from "@/contexts/FavoritesContext";
+import { CartProvider } from "@/contexts/CartContext";
 import Home from "./pages/Home";
 import Destinations from "./pages/Destinations";
 import Packages from "./pages/Packages";
@@ -23,12 +25,17 @@ import PackageCompare from "./pages/PackageCompare";
 import ProductDetail from "./pages/ProductDetail";
 import ProductRegistration from "./pages/ProductRegistration";
 import WorkshopRegistration from "./pages/WorkshopRegistration";
+import TourGuideRegistration from "./pages/TourGuideRegistration";
+import EventRegistration from "./pages/EventRegistration";
+import SearchResults from "./pages/SearchResults";
 import SellerProfile from "./pages/SellerProfile";
 import ExperienceDetail from "./pages/ExperienceDetail";
 import TourGuideDetail from "./pages/TourGuideDetail";
 import EventDetail from "./pages/EventDetail";
 import StayDetail from "./pages/StayDetail";
 import StayCompare from "./pages/StayCompare";
+import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
 
 const queryClient = new QueryClient();
 
@@ -37,7 +44,9 @@ const App = () => (
     <DarkModeProvider>
       <PackageComparisonProvider>
         <TransportComparisonProvider>
-          <TooltipProvider>
+          <FavoritesProvider>
+            <CartProvider>
+              <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -56,6 +65,9 @@ const App = () => (
         <Route path="/products/:id" element={<ProductDetail />} />
         <Route path="/product-registration" element={<ProductRegistration />} />
         <Route path="/workshop-registration" element={<WorkshopRegistration />} />
+        <Route path="/tourguide-registration" element={<TourGuideRegistration />} />
+        <Route path="/event-registration" element={<EventRegistration />} />
+        <Route path="/search" element={<SearchResults />} />
         <Route path="/seller/:sellerId" element={<SellerProfile />} />
                 <Route path="/experiences/:id" element={<ExperienceDetail />} />
                 <Route path="/tourguides/:id" element={<TourGuideDetail />} />
@@ -70,12 +82,16 @@ const App = () => (
                 <Route path="/stays/compare" element={<StayCompare />} />
 
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/orders" element={<Orders />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <BottomNavigation />
             </div>
           </BrowserRouter>
           </TooltipProvider>
+            </CartProvider>
+          </FavoritesProvider>
         </TransportComparisonProvider>
       </PackageComparisonProvider>
     </DarkModeProvider>

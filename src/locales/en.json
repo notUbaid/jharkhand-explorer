@@ -50,8 +50,8 @@
     "subtitle": "Premium Tourism Experiences",
     "quickAccess": "Quick Access",
     "festivalSpotlight": "Festival Spotlight",
-    "sarhulFestival2024": "Sarhul Festival 2024",
-    "sarhulDescription": "Experience the vibrant celebration of spring with traditional Santhal rituals and cultural performances.",
+    "sarhulFestival2025": "Sarhul Festival 2025",
+    "sarhulDescription": "Experience the sacred spring celebration of Jharkhand's tribal communities. Witness the worship of the Sal tree, traditional Jhumar dances, and the Lota Pani ritual. Join the vibrant processions, taste authentic tribal cuisine, and immerse yourself in the deep connection between nature and culture that defines this ancient festival.",
     "factOfTheDay": "Jharkhand Fact of the Day",
     "factContent": "Jharkhand is home to over 30 tribal communities, making it one of India's most culturally diverse states. The state's name literally means \"land of forests.\"",
     "highlights": {
@@ -118,7 +118,7 @@
   },
   "packages": {
     "title": "Travel Packages",
-    "searchPlaceholder": "Search packages by destination, theme...",
+    "searchPlaceholder": "Search by destination, theme, activities, accommodation, meals, or any package details...",
     "categories": "Categories",
     "cultural": "Cultural",
     "nature": "Nature",
@@ -163,7 +163,7 @@
   },
   "marketplace": {
     "title": "Marketplace",
-    "searchPlaceholder": "Search products, experiences...",
+    "searchPlaceholder": "Search products, experiences, tour guides, locations, categories...",
     "products": "Products",
     "experiences": "Experiences",
     "categories": "Categories",
@@ -178,7 +178,7 @@
   },
   "events": {
     "title": "Events",
-    "searchPlaceholder": "Search events...",
+    "searchPlaceholder": "Search events by title, description, location, category...",
     "upcoming": "Upcoming",
     "ongoing": "Ongoing",
     "past": "Past",
@@ -205,7 +205,8 @@
   },
   "stays": {
     "title": "Stays",
-    "searchPlaceholder": "Search hotels, resorts...",
+    "subtitle": "Discover comfortable accommodations across Jharkhand",
+    "searchPlaceholder": "Search hotels, resorts, homestays, locations, amenities...",
     "hotels": "Hotels",
     "resorts": "Resorts",
     "homestays": "Homestays",

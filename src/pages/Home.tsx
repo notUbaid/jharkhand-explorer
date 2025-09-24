@@ -25,16 +25,16 @@ import culturalHeritageImage from "@/assets/home/Cultural Heritage.png";
 import naturalWondersImage from "@/assets/home/Natural Wonders.png";
 import { useNavigate } from "react-router-dom";
 
-const getQuickAccessItems = (t: any) => [
+const getQuickAccessItems = (t: (key: string) => string) => [
   { icon: MapPin, label: t("navigation.destinations"), path: "/destinations", color: "emerald" },
-  { icon: Phone, label: "SOS", path: "/profile", color: "red" },
+  { icon: Phone, label: "SOS", path: "/profile#settings", color: "red" },
   { icon: Calendar, label: t("navigation.events"), path: "/events", color: "emerald" },
   { icon: ShoppingBag, label: t("navigation.marketplace"), path: "/marketplace", color: "gold" },
   { icon: Car, label: t("navigation.transport"), path: "/transport", color: "emerald" },
   { icon: Building, label: t("navigation.stays"), path: "/stays", color: "gold" },
 ];
 
-const getHighlights = (t: any) => [
+const getHighlights = (t: (key: string) => string) => [
   {
     title: t("home.highlights.topDestinations"),
     subtitle: t("home.highlights.topDestinationsSubtitle"),
@@ -55,6 +55,13 @@ const getHighlights = (t: any) => [
 export default function Home() {
   const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState("");
+  
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchValue.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchValue.trim())}`);
+    }
+  };
   const [currentHighlight, setCurrentHighlight] = useState(0);
   const navigate = useNavigate();
 
@@ -109,11 +116,14 @@ export default function Home() {
           </div>
           
           {/* Search Bar */}
-          <SearchBar 
-            value={searchValue}
-            onChange={setSearchValue}
-            className="mb-4"
-          />
+          <form onSubmit={handleSearch} className="w-full max-w-2xl mx-auto">
+            <SearchBar 
+              value={searchValue}
+              onChange={setSearchValue}
+              placeholder="Search destinations, experiences, products, events, tour guides..."
+              className="mb-4"
+            />
+          </form>
         </div>
       </div>
 
@@ -205,7 +215,7 @@ export default function Home() {
                 {t("home.festivalSpotlight")}
               </Badge>
               <h3 className="font-playfair font-semibold text-foreground mb-1">
-                {t("home.sarhulFestival2024")}
+                {t("home.sarhulFestival2025")}
               </h3>
               <p className="text-sm text-muted-foreground mb-3">
                 {t("home.sarhulDescription")}

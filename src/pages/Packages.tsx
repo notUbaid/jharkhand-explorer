@@ -85,10 +85,82 @@ export default function Packages() {
 
 
   const filteredPackages = packages.filter(pkg => {
-    const matchesSearch = pkg.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-                         pkg.description.toLowerCase().includes(searchValue.toLowerCase()) ||
-                         pkg.highlights.some(h => h.toLowerCase().includes(searchValue.toLowerCase()));
-    const matchesCategory = selectedCategory === "All" || pkg.category === selectedCategory;
+    if (!searchValue.trim()) {
+      // If no search term, only apply filters
+      const matchesCategory = selectedCategory === "All" || pkg.category === selectedCategory;
+      
+      // Price range filtering
+      const price = parseInt(pkg.price.replace(/[₹,]/g, ''));
+      let matchesPrice = true;
+      if (selectedPriceRange === "Under ₹10K") matchesPrice = price < 10000;
+      else if (selectedPriceRange === "₹10K-20K") matchesPrice = price >= 10000 && price <= 20000;
+      else if (selectedPriceRange === "₹20K-30K") matchesPrice = price >= 20000 && price <= 30000;
+      else if (selectedPriceRange === "Above ₹30K") matchesPrice = price > 30000;
+      
+      // Duration filtering
+      const durationDays = parseInt(pkg.duration.split(' ')[0]);
+      let matchesDuration = true;
+      if (selectedDuration === "1-3 Days") matchesDuration = durationDays >= 1 && durationDays <= 3;
+      else if (selectedDuration === "4-6 Days") matchesDuration = durationDays >= 4 && durationDays <= 6;
+      else if (selectedDuration === "7+ Days") matchesDuration = durationDays >= 7;
+      
+      return matchesCategory && matchesPrice && matchesDuration;
+    }
+
+    // Comprehensive search functionality
+    const searchTerm = searchValue.toLowerCase().trim();
+    
+    // Search in title
+    const matchesTitle = pkg.title.toLowerCase().includes(searchTerm);
+    
+    // Search in description
+    const matchesDescription = pkg.description.toLowerCase().includes(searchTerm);
+    
+    // Search in highlights
+    const matchesHighlights = pkg.highlights.some(h => h.toLowerCase().includes(searchTerm));
+    
+    // Search in category (theme)
+    const matchesCategory = pkg.category.toLowerCase().includes(searchTerm);
+    
+    // Search in departure city
+    const matchesDepartureCity = pkg.departureCity.toLowerCase().includes(searchTerm);
+    
+    // Search in difficulty level
+    const matchesDifficulty = pkg.difficulty.toLowerCase().includes(searchTerm);
+    
+    // Search in group type
+    const matchesGroupType = pkg.type.toLowerCase().includes(searchTerm);
+    
+    // Search in best time to visit
+    const matchesBestTime = pkg.bestTime.toLowerCase().includes(searchTerm);
+    
+    // Search in itinerary activities
+    const matchesItinerary = pkg.itinerary.some(day => 
+      day.title.toLowerCase().includes(searchTerm) ||
+      day.activities.some(activity => activity.toLowerCase().includes(searchTerm))
+    );
+    
+    // Search in accommodation
+    const matchesAccommodation = pkg.accommodation.some(acc => acc.toLowerCase().includes(searchTerm));
+    
+    // Search in meals
+    const matchesMeals = pkg.meals.some(meal => meal.toLowerCase().includes(searchTerm));
+    
+    // Search in inclusions
+    const matchesInclusions = pkg.inclusions.some(inc => inc.toLowerCase().includes(searchTerm));
+    
+    // Search in travel tips
+    const matchesTravelTips = pkg.travelTips.some(tip => tip.toLowerCase().includes(searchTerm));
+    
+    // Combine all search criteria
+    const matchesSearch = matchesTitle || matchesDescription || matchesHighlights || 
+                         matchesCategory || matchesDepartureCity || matchesDifficulty || 
+                         matchesGroupType || matchesBestTime || matchesItinerary || 
+                         matchesAccommodation || matchesMeals || matchesInclusions || 
+                         matchesTravelTips;
+    
+    // Apply filters
+    const matchesCategoryFilter = selectedCategory === "All" || pkg.category === selectedCategory;
     
     // Price range filtering
     const price = parseInt(pkg.price.replace(/[₹,]/g, ''));
@@ -105,7 +177,7 @@ export default function Packages() {
     else if (selectedDuration === "4-6 Days") matchesDuration = durationDays >= 4 && durationDays <= 6;
     else if (selectedDuration === "7+ Days") matchesDuration = durationDays >= 7;
     
-    return matchesSearch && matchesCategory && matchesPrice && matchesDuration;
+    return matchesSearch && matchesCategoryFilter && matchesPrice && matchesDuration;
   });
 
   // Sorting logic

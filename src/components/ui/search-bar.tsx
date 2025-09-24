@@ -24,7 +24,7 @@ export const SearchBar = ({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
-        className="luxury-input pl-12 pr-4 py-4 text-lg font-medium rounded-2xl border-0 bg-card shadow-lg focus:shadow-xl transition-all duration-300"
+        className="luxury-input pl-12 pr-4 py-4 text-lg font-medium rounded-2xl border-0 bg-card shadow-lg focus:shadow-xl transition-all duration-300 text-foreground placeholder:text-muted-foreground"
       />
     </div>
   );

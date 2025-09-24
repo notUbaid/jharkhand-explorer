@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useFavorites } from "@/contexts/FavoritesContext";
+import { useCart } from "@/contexts/CartContext";
 import { tourGuides } from "@/data/tourGuides";
 import { products } from "@/data/products";
 import { experiences } from "@/data/experiences";
@@ -27,15 +29,75 @@ import { useNavigate } from "react-router-dom";
 
 export default function Marketplace() {
   const { t } = useTranslation();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const { addToCart, isInCart, getCartItemQuantity } = useCart();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("products");
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedExperienceCategory, setSelectedExperienceCategory] = useState("All");
   const [selectedSpecialization, setSelectedSpecialization] = useState("All");
-  const [favorites, setFavorites] = useState<number[]>([]);
-  const [cart, setCart] = useState<number[]>([]);
+  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
+  const [selectedRating, setSelectedRating] = useState("All");
+  const [selectedLocation, setSelectedLocation] = useState("All");
+  const [sortBy, setSortBy] = useState("relevance");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const navigate = useNavigate();
+
+  // Favorite functions
+  const toggleProductFavorite = (product: typeof products[0]) => {
+    if (isFavorite(product.id.toString(), 'product')) {
+      removeFromFavorites(product.id.toString(), 'product');
+    } else {
+      addToFavorites({
+        id: product.id.toString(),
+        type: 'product',
+        name: product.name,
+        description: product.description,
+        image: product.image,
+        price: product.price,
+        location: product.sellerProfile?.address,
+        rating: product.rating,
+        category: product.category
+      });
+    }
+  };
+
+  const toggleExperienceFavorite = (experience: typeof experiences[0]) => {
+    if (isFavorite(experience.id.toString(), 'experience')) {
+      removeFromFavorites(experience.id.toString(), 'experience');
+    } else {
+      addToFavorites({
+        id: experience.id.toString(),
+        type: 'experience',
+        name: experience.title,
+        description: experience.description,
+        image: experience.image,
+        price: experience.price,
+        location: experience.location,
+        rating: experience.rating,
+        category: experience.category
+      });
+    }
+  };
+
+  const toggleTourGuideFavorite = (guide: typeof tourGuides[0]) => {
+    if (isFavorite(guide.id.toString(), 'tourguide')) {
+      removeFromFavorites(guide.id.toString(), 'tourguide');
+    } else {
+      addToFavorites({
+        id: guide.id.toString(),
+        type: 'tourguide',
+        name: guide.name,
+        description: guide.bio,
+        image: guide.image,
+        price: guide.price,
+        location: guide.locations.join(', '),
+        rating: guide.rating,
+        category: guide.specialties.join(', ')
+      });
+    }
+  };
 
   // Handle URL tab parameter
   useEffect(() => {
@@ -52,19 +114,204 @@ export default function Marketplace() {
     "Adventure & Trekking", "Religious & Spiritual Tours", "Art & Handicrafts", "Food & Culinary Tours",
     "Family & Solo Travel", "Photography & Instagram Tours"
   ];
+  const priceRanges = ["All", "Under ₹500", "₹500-1000", "₹1000-2000", "₹2000-5000", "Above ₹5000"];
+  const ratingOptions = ["All", "4.5+ Stars", "4.0+ Stars", "3.5+ Stars", "3.0+ Stars"];
+  const locationOptions = ["All", "Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Deoghar", "Hazaribagh", "Giridih"];
+  const sortOptions = [
+    { value: "relevance", label: "Most Relevant" },
+    { value: "price-low", label: "Price: Low to High" },
+    { value: "price-high", label: "Price: High to Low" },
+    { value: "rating", label: "Highest Rated" },
+    { value: "newest", label: "Newest First" },
+    { value: "popular", label: "Most Popular" }
+  ];
 
-  const toggleFavorite = (id: number, type: 'product' | 'experience' | 'tourguide') => {
-    const key = `${type}-${id}`;
-    setFavorites(prev => 
-      prev.includes(id) 
-        ? prev.filter(fav => fav !== id)
-        : [...prev, id]
-    );
+  // Universal search function
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const universalSearch = (items: any[], searchTerm: string, type: 'product' | 'experience' | 'tourguide') => {
+    if (!searchTerm.trim()) return items;
+    
+    const term = searchTerm.toLowerCase().trim();
+    
+    return items.filter(item => {
+      // Common search fields
+      const titleMatch = item.title?.toLowerCase().includes(term) || 
+                        item.name?.toLowerCase().includes(term);
+      const descriptionMatch = item.description?.toLowerCase().includes(term);
+      const locationMatch = item.location?.toLowerCase().includes(term) ||
+                           item.pickupLocation?.toLowerCase().includes(term);
+      
+      // Type-specific search fields
+      let typeSpecificMatch = false;
+      
+      if (type === 'product') {
+        typeSpecificMatch = 
+          item.category?.toLowerCase().includes(term) ||
+          item.sellerProfile?.businessName?.toLowerCase().includes(term) ||
+          item.sellerProfile?.specialties?.some((s: string) => s.toLowerCase().includes(term)) ||
+          item.features?.some((f: string) => f.toLowerCase().includes(term));
+      } else if (type === 'experience') {
+        typeSpecificMatch = 
+          item.instructor?.toLowerCase().includes(term) ||
+          item.category?.toLowerCase().includes(term) ||
+          item.difficulty?.toLowerCase().includes(term) ||
+          item.whatToExpect?.some((w: string) => w.toLowerCase().includes(term)) ||
+          item.highlights?.some((h: string) => h.toLowerCase().includes(term)) ||
+          item.materials?.some((m: string) => m.toLowerCase().includes(term));
+      } else if (type === 'tourguide') {
+        typeSpecificMatch = 
+          item.specialization?.toLowerCase().includes(term) ||
+          item.specialties?.some((s: string) => s.toLowerCase().includes(term)) ||
+          item.locations?.some((l: string) => l.toLowerCase().includes(term)) ||
+          item.languages?.some((lang: string) => lang.toLowerCase().includes(term)) ||
+          item.experience?.toLowerCase().includes(term);
+      }
+      
+      return titleMatch || descriptionMatch || locationMatch || typeSpecificMatch;
+    });
   };
 
-  const addToCart = (id: number) => {
-    setCart(prev => [...prev, id]);
+  // Advanced filtering function
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const applyAdvancedFilters = (items: any[], type: 'product' | 'experience' | 'tourguide') => {
+    return items.filter(item => {
+      // Price range filter
+      if (selectedPriceRange !== "All") {
+        const price = parseFloat(item.price?.replace(/[₹,]/g, '') || '0');
+        let priceMatch = false;
+        
+        switch (selectedPriceRange) {
+          case "Under ₹500":
+            priceMatch = price < 500;
+            break;
+          case "₹500-1000":
+            priceMatch = price >= 500 && price <= 1000;
+            break;
+          case "₹1000-2000":
+            priceMatch = price >= 1000 && price <= 2000;
+            break;
+          case "₹2000-5000":
+            priceMatch = price >= 2000 && price <= 5000;
+            break;
+          case "Above ₹5000":
+            priceMatch = price > 5000;
+            break;
+        }
+        
+        if (!priceMatch) return false;
+      }
+      
+      // Rating filter
+      if (selectedRating !== "All") {
+        const rating = item.rating || 0;
+        let ratingMatch = false;
+        
+        switch (selectedRating) {
+          case "4.5+ Stars":
+            ratingMatch = rating >= 4.5;
+            break;
+          case "4.0+ Stars":
+            ratingMatch = rating >= 4.0;
+            break;
+          case "3.5+ Stars":
+            ratingMatch = rating >= 3.5;
+            break;
+          case "3.0+ Stars":
+            ratingMatch = rating >= 3.0;
+            break;
+        }
+        
+        if (!ratingMatch) return false;
+      }
+      
+      // Location filter
+      if (selectedLocation !== "All") {
+        const itemLocation = item.location || item.pickupLocation || '';
+        if (!itemLocation.toLowerCase().includes(selectedLocation.toLowerCase())) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
   };
+
+  // Sorting function
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sortItems = (items: any[], type: 'product' | 'experience' | 'tourguide') => {
+    return [...items].sort((a, b) => {
+      switch (sortBy) {
+        case "price-low": {
+          const priceA = parseFloat(a.price?.replace(/[₹,]/g, '') || '0');
+          const priceB = parseFloat(b.price?.replace(/[₹,]/g, '') || '0');
+          return priceA - priceB;
+        }
+        case "price-high": {
+          const priceA2 = parseFloat(a.price?.replace(/[₹,]/g, '') || '0');
+          const priceB2 = parseFloat(b.price?.replace(/[₹,]/g, '') || '0');
+          return priceB2 - priceA2;
+        }
+        case "rating":
+          return (b.rating || 0) - (a.rating || 0);
+        case "newest":
+          return (b.id || 0) - (a.id || 0);
+        case "popular":
+          return (b.rating || 0) - (a.rating || 0);
+        default: // relevance
+          return 0;
+      }
+    });
+  };
+
+  // Filtered and sorted data
+  const filteredProducts = sortItems(
+    applyAdvancedFilters(
+      universalSearch(
+        products.filter(product => 
+          selectedCategory === "All" || product.category === selectedCategory
+        ), 
+        searchValue, 
+        'product'
+      ), 
+      'product'
+    ), 
+    'product'
+  );
+
+  const filteredExperiences = sortItems(
+    applyAdvancedFilters(
+      universalSearch(
+        experiences.filter(experience => 
+          selectedExperienceCategory === "All" || 
+          (selectedExperienceCategory === "Art & Craft" && experience.title.includes("Art")) ||
+          (selectedExperienceCategory === "Music & Dance" && experience.title.includes("Music")) ||
+          (selectedExperienceCategory === "Cooking & Food" && experience.title.includes("Cooking")) ||
+          (selectedExperienceCategory === "Nature & Adventure" && experience.title.includes("Plants")) ||
+          (selectedExperienceCategory === "Cultural Heritage" && 
+            (experience.title.includes("Folk") || experience.title.includes("Tribal") || 
+             experience.title.includes("Tattoo")))
+        ), 
+        searchValue, 
+        'experience'
+      ), 
+      'experience'
+    ), 
+    'experience'
+  );
+
+  const filteredTourGuides = sortItems(
+    applyAdvancedFilters(
+      universalSearch(
+        tourGuides.filter(guide => 
+          selectedSpecialization === "All" || guide.specialization === selectedSpecialization
+        ), 
+        searchValue, 
+        'tourguide'
+      ), 
+      'tourguide'
+    ), 
+    'tourguide'
+  );
 
   return (
     <div className="pb-24 min-h-screen bg-background">
@@ -83,6 +330,80 @@ export default function Marketplace() {
           onChange={setSearchValue}
           placeholder={t("marketplace.searchPlaceholder")}
         />
+        
+        {/* Advanced Search Controls */}
+        <div className="flex flex-wrap items-center gap-4 mb-4">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="text-xs"
+            >
+              {showAdvancedFilters ? "Hide Filters" : "Show Filters"}
+            </Button>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="text-xs px-2 py-1 border rounded bg-background text-foreground"
+            >
+              {sortOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Advanced Filters */}
+        {showAdvancedFilters && (
+          <div className="bg-muted/30 p-4 rounded-lg mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="text-xs font-medium text-foreground mb-1 block">Price Range</label>
+                <select
+                  value={selectedPriceRange}
+                  onChange={(e) => setSelectedPriceRange(e.target.value)}
+                  className="w-full text-xs px-2 py-1 border rounded bg-background text-foreground"
+                >
+                  {priceRanges.map(range => (
+                    <option key={range} value={range}>{range}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="text-xs font-medium text-foreground mb-1 block">Rating</label>
+                <select
+                  value={selectedRating}
+                  onChange={(e) => setSelectedRating(e.target.value)}
+                  className="w-full text-xs px-2 py-1 border rounded bg-background text-foreground"
+                >
+                  {ratingOptions.map(rating => (
+                    <option key={rating} value={rating}>{rating}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="text-xs font-medium text-foreground mb-1 block">Location</label>
+                <select
+                  value={selectedLocation}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
+                  className="w-full text-xs px-2 py-1 border rounded bg-background text-foreground"
+                >
+                  {locationOptions.map(location => (
+                    <option key={location} value={location}>{location}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="px-6 mt-6 pb-32 relative z-10">
@@ -114,7 +435,7 @@ export default function Marketplace() {
 
             {/* Products Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <LuxuryCard 
                   key={product.id}
                   className="p-0 overflow-hidden"
@@ -138,13 +459,13 @@ export default function Marketplace() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleFavorite(product.id, 'product');
+                        toggleProductFavorite(product);
                       }}
                       className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full"
                     >
                       <Heart 
                         size={14} 
-                        className={favorites.includes(product.id) ? 'text-accent fill-accent' : 'text-muted-foreground'} 
+                        className={isFavorite(product.id.toString(), 'product') ? 'text-accent fill-accent' : 'text-muted-foreground'} 
                       />
                     </button>
                   </div>
@@ -180,12 +501,12 @@ export default function Marketplace() {
                         disabled={!product.inStock}
                         onClick={(e) => {
                           e.stopPropagation();
-                          addToCart(product.id);
+                          addToCart(product);
                         }}
                         className="text-xs px-2 py-1 h-7"
                       >
                         <ShoppingCart size={12} className="mr-1" />
-                        {product.inStock ? 'Add' : 'Unavailable'}
+                        {product.inStock ? (isInCart(product.id) ? `In Cart (${getCartItemQuantity(product.id)})` : 'Add') : 'Unavailable'}
                       </Button>
                     </div>
                   </div>
@@ -235,31 +556,7 @@ export default function Marketplace() {
 
             {/* Experiences List */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-              {experiences
-                .filter(experience => 
-                  selectedExperienceCategory === "All" || 
-                  (selectedExperienceCategory === "Art & Craft" && 
-                    (experience.title.includes("Painting") || experience.title.includes("Weaving") || 
-                     experience.title.includes("Jewelry") || experience.title.includes("Terracotta") || 
-                     experience.title.includes("Bangle"))) ||
-                  (selectedExperienceCategory === "Music & Dance" && 
-                    (experience.title.includes("Music") || experience.title.includes("Drum") || 
-                     experience.title.includes("Dance"))) ||
-                  (selectedExperienceCategory === "Cooking & Food" && 
-                    experience.title.includes("Cooking")) ||
-                  (selectedExperienceCategory === "Nature & Adventure" && 
-                    experience.title.includes("Plants")) ||
-                  (selectedExperienceCategory === "Cultural Heritage" && 
-                    (experience.title.includes("Folk") || experience.title.includes("Tribal") || 
-                     experience.title.includes("Tattoo")))
-                )
-                .filter(experience => 
-                  searchValue === "" || 
-                  experience.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-                  experience.instructor.toLowerCase().includes(searchValue.toLowerCase()) ||
-                  experience.location.toLowerCase().includes(searchValue.toLowerCase())
-                )
-                .map((experience) => (
+              {filteredExperiences.map((experience) => (
                 <LuxuryCard 
                   key={experience.id}
                   className="p-0 overflow-hidden hover:shadow-lg transition-shadow duration-300"
@@ -291,13 +588,13 @@ export default function Marketplace() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleFavorite(experience.id, 'experience');
+                        toggleExperienceFavorite(experience);
                       }}
                       className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white/90 transition-colors"
                     >
                       <Heart 
                         size={14} 
-                        className={favorites.includes(experience.id) ? "text-red-500 fill-red-500" : "text-gray-600"}
+                        className={isFavorite(experience.id.toString(), 'experience') ? "text-red-500 fill-red-500" : "text-gray-600"}
                       />
                     </button>
                   </div>
@@ -417,17 +714,7 @@ export default function Marketplace() {
 
             {/* Tour Guides Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-              {tourGuides
-                .filter(guide => 
-                  selectedSpecialization === "All" || guide.specialization === selectedSpecialization
-                )
-                .filter(guide => 
-                  searchValue === "" || 
-                  guide.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-                  guide.specialization.toLowerCase().includes(searchValue.toLowerCase()) ||
-                  guide.locations.some(location => location.toLowerCase().includes(searchValue.toLowerCase()))
-                )
-                .map((guide) => (
+              {filteredTourGuides.map((guide) => (
                 <LuxuryCard 
                   key={guide.id}
                   className="p-0 overflow-hidden"
@@ -453,13 +740,13 @@ export default function Marketplace() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleFavorite(guide.id, 'tourguide');
+                        toggleTourGuideFavorite(guide);
                       }}
                       className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full"
                     >
                       <Heart 
                         size={14} 
-                        className={favorites.includes(guide.id) ? 'text-accent fill-accent' : 'text-muted-foreground'} 
+                        className={isFavorite(guide.id.toString(), 'tourguide') ? 'text-accent fill-accent' : 'text-muted-foreground'} 
                       />
                     </button>
                   </div>
@@ -543,7 +830,11 @@ export default function Marketplace() {
                 <p className="text-sm text-muted-foreground mb-3">
                   Share your knowledge and earn money by guiding tourists
                 </p>
-                <Button variant="outline" className="text-primary border-primary">
+                <Button 
+                  variant="outline" 
+                  className="text-primary border-primary"
+                  onClick={() => navigate("/tourguide-registration")}
+                >
                   Register as Guide
                 </Button>
               </div>

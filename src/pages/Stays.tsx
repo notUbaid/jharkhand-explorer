@@ -5,6 +5,7 @@ import { SearchBar } from "@/components/ui/search-bar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { 
   Building, 
   Home, 
@@ -22,18 +23,19 @@ import {
   GitCompare,
   Calendar,
   Bath,
-  Accessibility
+  Accessibility,
+  Search
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { stays } from "@/data/stays";
 
 export default function Stays() {
   const { t } = useTranslation();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPriceRange, setSelectedPriceRange] = useState("All");
   const [sortBy, setSortBy] = useState("popularity");
-  const [favorites, setFavorites] = useState<number[]>([]);
   const [comparing, setComparing] = useState<number[]>([]);
   const [stayImageIndices, setStayImageIndices] = useState<Record<number, number>>({});
   const [stayIsTransitioning, setStayIsTransitioning] = useState<Record<number, boolean>>({});
@@ -48,12 +50,110 @@ export default function Stays() {
     { value: "rating", label: "Rating" }
   ];
 
-  const toggleFavorite = (id: number) => {
-    setFavorites(prev => 
-      prev.includes(id) 
-        ? prev.filter(fav => fav !== id)
-        : [...prev, id]
+  // Enhanced search function for stays
+  const enhancedSearchStays = (stay: typeof stays[0]) => {
+    if (!searchValue.trim()) return true;
+    
+    const searchTerm = searchValue.toLowerCase().trim();
+    
+    // Basic stay search
+    const matchesName = stay.name.toLowerCase().includes(searchTerm);
+    const matchesDescription = stay.description.toLowerCase().includes(searchTerm);
+    const matchesLocation = stay.location.toLowerCase().includes(searchTerm);
+    const matchesCategory = stay.category.toLowerCase().includes(searchTerm);
+    
+    // Highlights search
+    const matchesHighlights = stay.highlights.some(highlight => 
+      highlight.toLowerCase().includes(searchTerm)
     );
+    
+    // Amenities search
+    const matchesAmenities = stay.amenities.some(amenity => 
+      amenity.toLowerCase().includes(searchTerm)
+    );
+    
+    // Price search
+    const matchesPrice = stay.price.toLowerCase().includes(searchTerm);
+    
+    // Rating search
+    const matchesRating = stay.rating.toString().includes(searchTerm);
+    
+    // Capacity search
+    const matchesCapacity = stay.capacity.toString().includes(searchTerm);
+    
+    // Type-specific searches
+    const matchesType = stay.type?.toLowerCase().includes(searchTerm) || false;
+    
+    return matchesName || matchesDescription || matchesLocation || matchesCategory || 
+           matchesHighlights || matchesAmenities || matchesPrice || matchesRating || 
+           matchesCapacity || matchesType;
+  };
+
+  // Search suggestions
+  const getSearchSuggestions = () => {
+    if (!searchValue.trim()) return [];
+    
+    const suggestions: string[] = [];
+    const searchTerm = searchValue.toLowerCase().trim();
+    
+    // Location suggestions
+    const locations = [...new Set(stays.map(stay => stay.location))];
+    locations.forEach(location => {
+      if (location.toLowerCase().includes(searchTerm) && !suggestions.includes(location)) {
+        suggestions.push(location);
+      }
+    });
+    
+    // Category suggestions
+    const categories = [...new Set(stays.map(stay => stay.category))];
+    categories.forEach(category => {
+      if (category.toLowerCase().includes(searchTerm) && !suggestions.includes(category)) {
+        suggestions.push(category);
+      }
+    });
+    
+    // Amenity suggestions
+    const amenities = [...new Set(stays.flatMap(stay => stay.amenities))];
+    amenities.forEach(amenity => {
+      if (amenity.toLowerCase().includes(searchTerm) && !suggestions.includes(amenity)) {
+        suggestions.push(amenity);
+      }
+    });
+    
+    // Highlight suggestions
+    const highlights = [...new Set(stays.flatMap(stay => stay.highlights))];
+    highlights.forEach(highlight => {
+      if (highlight.toLowerCase().includes(searchTerm) && !suggestions.includes(highlight)) {
+        suggestions.push(highlight);
+      }
+    });
+    
+    // Stay name suggestions
+    stays.forEach(stay => {
+      if (stay.name.toLowerCase().includes(searchTerm) && !suggestions.includes(stay.name)) {
+        suggestions.push(stay.name);
+      }
+    });
+    
+    return suggestions.slice(0, 8); // Limit to 8 suggestions
+  };
+
+  const toggleFavorite = (stay: typeof stays[0]) => {
+    if (isFavorite(stay.id.toString(), 'stay')) {
+      removeFromFavorites(stay.id.toString(), 'stay');
+    } else {
+      addToFavorites({
+        id: stay.id.toString(),
+        type: 'stay',
+        name: stay.name,
+        description: stay.description,
+        image: stay.images[0],
+        price: stay.price,
+        location: stay.location,
+        rating: stay.rating,
+        category: stay.category
+      });
+    }
   };
 
   const toggleCompare = (id: number) => {
@@ -110,9 +210,8 @@ export default function Stays() {
   }, []);
 
   const filteredStays = stays.filter(stay => {
-    const matchesSearch = stay.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-                         stay.description.toLowerCase().includes(searchValue.toLowerCase()) ||
-                         stay.highlights.some(h => h.toLowerCase().includes(searchValue.toLowerCase()));
+    // Enhanced search functionality
+    const matchesSearch = enhancedSearchStays(stay);
     const matchesCategory = selectedCategory === "All" || stay.category === selectedCategory;
     
     // Price range filtering
@@ -152,11 +251,36 @@ export default function Stays() {
           <LanguageToggle />
         </div>
         
-        <SearchBar
-          value={searchValue}
-          onChange={setSearchValue}
-          placeholder={t("stays.searchPlaceholder")}
-        />
+        <div className="relative">
+          <SearchBar
+            value={searchValue}
+            onChange={setSearchValue}
+            placeholder={t("stays.searchPlaceholder")}
+          />
+          
+          {/* Search Suggestions Dropdown */}
+          {searchValue.trim() && getSearchSuggestions().length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-50">
+              <div className="p-2">
+                <p className="text-xs text-muted-foreground mb-2 flex items-center">
+                  <Search size={12} className="mr-1" />
+                  Suggestions
+                </p>
+                <div className="space-y-1">
+                  {getSearchSuggestions().map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSearchValue(suggestion)}
+                      className="w-full text-left px-2 py-1 text-sm hover:bg-muted rounded text-foreground"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="px-6 mt-6 pb-32 relative z-10">
@@ -276,15 +400,15 @@ export default function Stays() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleFavorite(stay.id);
+                      toggleFavorite(stay);
                     }}
                     className={`p-2 rounded-full backdrop-blur-sm transition-all ${
-                      favorites.includes(stay.id) 
+                      isFavorite(stay.id.toString(), 'stay')
                         ? 'bg-accent text-white' 
                         : 'bg-white/20 text-white hover:bg-white/30'
                     }`}
                   >
-                    <Heart size={14} className={favorites.includes(stay.id) ? 'fill-current' : ''} />
+                    <Heart size={14} className={isFavorite(stay.id.toString(), 'stay') ? 'fill-current' : ''} />
                   </button>
                   <button
                     onClick={(e) => {

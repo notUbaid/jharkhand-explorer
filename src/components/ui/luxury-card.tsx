@@ -6,16 +6,19 @@ interface LuxuryCardProps {
   className?: string;
   onClick?: () => void;
   hoverable?: boolean;
+  id?: string;
 }
 
 export const LuxuryCard = ({ 
   children, 
   className, 
   onClick, 
-  hoverable = true 
+  hoverable = true,
+  id
 }: LuxuryCardProps) => {
   return (
     <div 
+      id={id}
       className={cn(
         "luxury-card p-4",
         hoverable && "cursor-pointer hover:scale-[1.02]",

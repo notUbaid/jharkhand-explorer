@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { useDarkMode } from "@/contexts/DarkModeContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { 
   User, 
   Heart, 
@@ -32,8 +33,18 @@ import {
   Send,
   Zap,
   Eye,
-  EyeOff
+  EyeOff,
+  Star,
+  IndianRupee,
+  Building,
+  ShoppingBag,
+  Sparkles,
+  Car,
+  Plane,
+  Train,
+  Bus
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const userProfile = {
   name: "Ubaid Khan",
@@ -44,13 +55,6 @@ const userProfile = {
   language: "English",
   interests: ["Culture", "Nature", "Food", "Adventure"],
 };
-
-const favorites = [
-  { id: 1, type: "Destination", name: "Betla National Park", image: "/placeholder.svg" },
-  { id: 2, type: "Restaurant", name: "Tribal Thali House", image: "/placeholder.svg" },
-  { id: 3, type: "Package", name: "Cultural Explorer", image: "/placeholder.svg" },
-  { id: 4, type: "Hotel", name: "Heritage Homestay", image: "/placeholder.svg" },
-];
 
 const bookings = [
   { id: 1, type: "Package", name: "Wildlife Retreat", date: "March 15-18, 2024", status: "Confirmed" },
@@ -87,6 +91,8 @@ const trustedContacts = [
 export default function Profile() {
   const { t, i18n } = useTranslation();
   const { isDarkMode } = useDarkMode();
+  const { favorites, removeFromFavorites, getFavoritesByType } = useFavorites();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("personal");
   const [highContrast, setHighContrast] = useState(false);
   const [voiceAssist, setVoiceAssist] = useState(false);
@@ -96,6 +102,54 @@ export default function Profile() {
   const [locationShared, setLocationShared] = useState(false);
   const [emergencyMessage, setEmergencyMessage] = useState("");
   const [isCalling, setIsCalling] = useState(false);
+
+  // Helper function to get type icon
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'destination':
+        return <MapPin size={16} className="text-blue-600" />;
+      case 'package':
+        return <Calendar size={16} className="text-green-600" />;
+      case 'stay':
+        return <Building size={16} className="text-purple-600" />;
+      case 'product':
+        return <ShoppingBag size={16} className="text-orange-600" />;
+      case 'experience':
+        return <Sparkles size={16} className="text-pink-600" />;
+      case 'tourguide':
+        return <User size={16} className="text-indigo-600" />;
+      case 'event':
+        return <Calendar size={16} className="text-red-600" />;
+      case 'transport':
+        return <Car size={16} className="text-teal-600" />;
+      default:
+        return <Heart size={16} className="text-gray-600" />;
+    }
+  };
+
+  // Helper function to get type label
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'destination':
+        return 'Destination';
+      case 'package':
+        return 'Package';
+      case 'stay':
+        return 'Stay';
+      case 'product':
+        return 'Product';
+      case 'experience':
+        return 'Experience';
+      case 'tourguide':
+        return 'Tour Guide';
+      case 'event':
+        return 'Event';
+      case 'transport':
+        return 'Transport';
+      default:
+        return 'Item';
+    }
+  };
 
   const languages = ["English", "Hindi"];
   const fontSizes = ["Small", "Medium", "Large"];
@@ -136,6 +190,36 @@ export default function Profile() {
       alert("Location shared with emergency contacts!");
     }, 1000);
   };
+
+  // Handle hash navigation to SOS section
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#sos' || window.location.hash === '#settings') {
+        // Switch to settings tab first
+        setActiveTab('settings');
+        
+        setTimeout(() => {
+          const sosElement = document.getElementById('sos');
+          if (sosElement) {
+            sosElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start' 
+            });
+          }
+        }, 200);
+      }
+    };
+
+    // Check hash on component mount
+    handleHashChange();
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
 
   return (
     <div className="pb-24 min-h-screen bg-background">
@@ -231,17 +315,86 @@ export default function Profile() {
           </TabsContent>
 
           <TabsContent value="favorites" className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              {favorites.map((item) => (
-                <LuxuryCard key={item.id} className="p-3">
-                  <div className="aspect-square bg-muted rounded-lg mb-2">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded-lg" />
-                  </div>
-                  <Badge variant="outline" className="text-xs mb-1">{item.type}</Badge>
-                  <h4 className="font-medium text-foreground text-sm">{item.name}</h4>
-                </LuxuryCard>
-              ))}
-            </div>
+            {favorites.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {favorites.map((item) => (
+                  <LuxuryCard key={`${item.type}-${item.id}`} className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
+                        {item.image ? (
+                          <img 
+                            src={item.image} 
+                            alt={item.name} 
+                            className="w-full h-full object-cover rounded-lg" 
+                          />
+                        ) : (
+                          getTypeIcon(item.type)
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge variant="outline" className="text-xs">
+                            {getTypeLabel(item.type)}
+                          </Badge>
+                          <button
+                            onClick={() => removeFromFavorites(item.id, item.type)}
+                            className="text-red-500 hover:text-red-700 transition-colors"
+                            title="Remove from favorites"
+                          >
+                            <Heart size={14} className="fill-current" />
+                          </button>
+                        </div>
+                        <h4 className="font-medium text-foreground text-sm mb-1 truncate">
+                          {item.name}
+                        </h4>
+                        {item.description && (
+                          <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
+                            {item.description}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          {item.price && (
+                            <div className="flex items-center gap-1">
+                              <IndianRupee size={12} />
+                              {item.price}
+                            </div>
+                          )}
+                          {item.rating && (
+                            <div className="flex items-center gap-1">
+                              <Star size={12} className="fill-current text-yellow-500" />
+                              {item.rating}
+                            </div>
+                          )}
+                          {item.location && (
+                            <div className="flex items-center gap-1">
+                              <MapPin size={12} />
+                              {item.location}
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-2">
+                          Added {item.addedAt.toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  </LuxuryCard>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Heart size={48} className="mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">No favorites yet</h3>
+                <p className="text-muted-foreground mb-4">
+                  Start exploring and add items to your favorites!
+                </p>
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate('/destinations')}
+                >
+                  Explore Destinations
+                </Button>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="bookings" className="space-y-4">
@@ -383,7 +536,7 @@ export default function Profile() {
             </LuxuryCard>
 
             {/* Enhanced Safety Hub */}
-            <LuxuryCard className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-red-500/20">
+            <LuxuryCard id="sos" className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-red-500/20">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
                   <Shield className="text-red-500 mr-2" size={20} />
