@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -6,13 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { BookingModal } from "@/components/BookingModal";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { TransportOption, TrainOption, BusOption, FlightOption, City } from "@/types/Transport";
 import { getAllTransportRoutes } from "@/data/transportData";
 import { useTransportComparison } from "@/contexts/TransportComparisonContext";
-import { TransportComparisonModal } from "@/components/TransportComparisonModal";
-import { RentalComparisonModal } from "@/components/RentalComparisonModal";
 import { BookingItem } from "@/hooks/useBooking";
+
+// Lazy load heavy components
+const BookingModal = lazy(() => import("@/components/BookingModal").then(module => ({ default: module.BookingModal })));
+const TransportComparisonModal = lazy(() => import("@/components/TransportComparisonModal").then(module => ({ default: module.TransportComparisonModal })));
+const RentalComparisonModal = lazy(() => import("@/components/RentalComparisonModal").then(module => ({ default: module.RentalComparisonModal })));
 import { 
   Train,
   Bus,
@@ -616,14 +619,14 @@ export default function Transport() {
   };
   const [activeTab, setActiveTab] = useState("long-distance");
   const [searchValue, setSearchValue] = useState("");
-  const [selectedVehicleType, setSelectedVehicleType] = useState("All");
-  const [selectedFuelType, setSelectedFuelType] = useState("All");
-  const [selectedRentalPriceRange, setSelectedRentalPriceRange] = useState("All");
-  const [selectedMode, setSelectedMode] = useState("All");
-  const [selectedFromCity, setSelectedFromCity] = useState("All");
-  const [selectedToCity, setSelectedToCity] = useState("All");
-  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
-  const [selectedDuration, setSelectedDuration] = useState("All");
+  const [selectedVehicleType, setSelectedVehicleType] = useState(t("common.all"));
+  const [selectedFuelType, setSelectedFuelType] = useState(t("common.all"));
+  const [selectedRentalPriceRange, setSelectedRentalPriceRange] = useState(t("common.all"));
+  const [selectedMode, setSelectedMode] = useState(t("common.all"));
+  const [selectedFromCity, setSelectedFromCity] = useState(t("common.all"));
+  const [selectedToCity, setSelectedToCity] = useState(t("common.all"));
+  const [selectedPriceRange, setSelectedPriceRange] = useState(t("common.all"));
+  const [selectedDuration, setSelectedDuration] = useState(t("common.all"));
   const [sortBy, setSortBy] = useState("price");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -837,7 +840,7 @@ export default function Transport() {
     }
     
     const priceValue = parseInt(optionPrice.replace(/[₹,]/g, "")) || 0;
-    const matchesPriceRange = selectedPriceRange === "All" ||
+    const matchesPriceRange = selectedPriceRange === t("common.all") ||
       (selectedPriceRange === "Under ₹1K" && priceValue < 1000) ||
       (selectedPriceRange === "₹1K-3K" && priceValue >= 1000 && priceValue <= 3000) ||
       (selectedPriceRange === "₹3K-5K" && priceValue > 3000 && priceValue <= 5000) ||
@@ -845,7 +848,7 @@ export default function Transport() {
     
     // Duration filter
     const durationHours = parseInt(option.duration.split("h")[0]) || 0;
-    const matchesDuration = selectedDuration === "All" ||
+    const matchesDuration = selectedDuration === t("common.all") ||
       (selectedDuration === "Under 5h" && durationHours < 5) ||
       (selectedDuration === "5h-10h" && durationHours >= 5 && durationHours <= 10) ||
       (selectedDuration === "10h-15h" && durationHours > 10 && durationHours <= 15) ||
@@ -950,7 +953,10 @@ export default function Transport() {
             >
               {viewMode === "grid" ? <List size={16} /> : <Grid size={16} />}
             </Button>
-            <LanguageToggle />
+            <div className="flex gap-2">
+              <LanguageToggle />
+              <DarkModeToggle />
+            </div>
           </div>
         </div>
         
@@ -1842,45 +1848,51 @@ export default function Transport() {
       </div>
       
       {/* Transport Comparison Modal */}
-      <TransportComparisonModal />
+      <Suspense fallback={<div className="flex justify-center p-4">Loading...</div>}>
+        <TransportComparisonModal />
+      </Suspense>
       
       {/* Rental Comparison Modal */}
-      <RentalComparisonModal 
-        compareItems={rentalCompareItems}
-        removeFromCompare={removeFromRentalCompare}
-        clearCompare={() => setRentalCompareItems([])}
-        openCompareModal={openRentalCompareModal}
-        setOpenCompareModal={setOpenRentalCompareModal}
-      />
+      <Suspense fallback={<div className="flex justify-center p-4">Loading...</div>}>
+        <RentalComparisonModal 
+          compareItems={rentalCompareItems}
+          removeFromCompare={removeFromRentalCompare}
+          clearCompare={() => setRentalCompareItems([])}
+          openCompareModal={openRentalCompareModal}
+          setOpenCompareModal={setOpenRentalCompareModal}
+        />
+      </Suspense>
 
       {/* Booking Modal */}
-      <BookingModal
-        isOpen={showBookingModal}
-        onClose={() => setShowBookingModal(false)}
-        bookingItems={selectedVehicle ? [{
-          id: selectedVehicle.id.toString(),
-          type: 'rental',
-          title: `${selectedVehicle.model} (${selectedVehicle.type})`,
-          price: rentalType === 'daily' 
-            ? parseFloat(selectedVehicle.pricePerDay.replace(/[₹,]/g, ''))
-            : parseFloat(selectedVehicle.pricePerHour.replace(/[₹,]/g, '')),
-          quantity: 1,
-          duration: rentalType === 'daily' ? '1 Day' : '1 Hour',
-          location: selectedVehicle.pickupLocation,
-          image: selectedVehicle.image,
-          metadata: {
-            vehicleType: selectedVehicle.type,
-            seats: selectedVehicle.seats,
-            fuelType: selectedVehicle.fuelType,
-            mileage: selectedVehicle.mileage,
-            features: selectedVehicle.features,
-            rentalType: rentalType,
-            pricePerDay: selectedVehicle.pricePerDay,
-            pricePerHour: selectedVehicle.pricePerHour
-          }
-        }] : []}
-        onSuccess={handleBookingSuccess}
-      />
+      <Suspense fallback={<div className="flex justify-center p-4">Loading...</div>}>
+        <BookingModal
+          isOpen={showBookingModal}
+          onClose={() => setShowBookingModal(false)}
+          bookingItems={selectedVehicle ? [{
+            id: selectedVehicle.id.toString(),
+            type: 'rental',
+            title: `${selectedVehicle.model} (${selectedVehicle.type})`,
+            price: rentalType === 'daily' 
+              ? parseFloat(selectedVehicle.pricePerDay.replace(/[₹,]/g, ''))
+              : parseFloat(selectedVehicle.pricePerHour.replace(/[₹,]/g, '')),
+            quantity: 1,
+            duration: rentalType === 'daily' ? '1 Day' : '1 Hour',
+            location: selectedVehicle.pickupLocation,
+            image: selectedVehicle.image,
+            metadata: {
+              vehicleType: selectedVehicle.type,
+              seats: selectedVehicle.seats,
+              fuelType: selectedVehicle.fuelType,
+              mileage: selectedVehicle.mileage,
+              features: selectedVehicle.features,
+              rentalType: rentalType,
+              pricePerDay: selectedVehicle.pricePerDay,
+              pricePerHour: selectedVehicle.pricePerHour
+            }
+          }] : []}
+          onSuccess={handleBookingSuccess}
+        />
+      </Suspense>
     </div>
   );
 }

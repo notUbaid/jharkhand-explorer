@@ -92,7 +92,7 @@ export const generateRazorpayOptions = (
     name: RAZORPAY_CONFIG.name,
     description: `Booking #${orderId}`,
     image: RAZORPAY_CONFIG.image,
-    order_id: orderId,
+    // Remove order_id to avoid server-side requirement
     handler: function (response: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       console.log('Payment successful:', response);
       return response;
@@ -202,7 +202,7 @@ export const processPayment = async (
       // Save booking with payment details
       const finalBookingDetails: BookingDetails = {
         ...bookingDetails,
-        bookingId: response.razorpay_order_id,
+        bookingId: response.razorpay_order_id || bookingId, // Use Razorpay order ID or fallback to our booking ID
         paymentId: response.razorpay_payment_id,
         status: 'paid',
         createdAt: new Date()
@@ -211,7 +211,7 @@ export const processPayment = async (
       saveBooking(finalBookingDetails);
       
       // Show success message
-      alert(`Booking confirmed! Booking ID: ${response.razorpay_order_id}`);
+      alert(`Booking confirmed! Payment ID: ${response.razorpay_payment_id}`);
       
       return response;
     };

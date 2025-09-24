@@ -5,6 +5,7 @@ import { SearchBar } from "@/components/ui/search-bar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { 
   Dialog,
   DialogContent,
@@ -151,21 +152,46 @@ const categoryIcons = {
 export default function Events() {
   const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
-  const [selectedLocation, setSelectedLocation] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState(t("common.all"));
+  const [selectedPriceRange, setSelectedPriceRange] = useState(t("common.all"));
+  const [selectedLocation, setSelectedLocation] = useState(t("common.all"));
   const [sortBy, setSortBy] = useState("relevance");
   const navigate = useNavigate();
 
-  const categories = ["All", "Cultural", "Food", "Business", "Sports", "Music", "Art", "Adventure"];
-  const priceRanges = ["All", "Free", "Under ₹100", "₹100-500", "₹500-1000", "Above ₹1000"];
-  const locationOptions = ["All", "Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Deoghar", "Hazaribagh", "Giridih"];
+  const categories = [
+    t("common.all"), 
+    t("categories.cultural"), 
+    t("categories.food"), 
+    t("categories.business"), 
+    t("categories.sports"), 
+    t("categories.music"), 
+    t("categories.art"), 
+    t("categories.adventure")
+  ];
+  const priceRanges = [
+    t("common.all"), 
+    t("common.free"), 
+    t("common.under100"), 
+    t("common.100To500"), 
+    t("common.500To1000"), 
+    t("common.above1000")
+  ];
+  const locationOptions = [
+    t("common.all"), 
+    "Ranchi", 
+    "Jamshedpur", 
+    "Dhanbad", 
+    "Bokaro", 
+    "Deoghar", 
+    "Hazaribagh", 
+    "Giridih"
+  ];
   const sortOptions = [
-    { value: "relevance", label: "Most Relevant" },
-    { value: "date", label: "Date: Soonest First" },
-    { value: "price-low", label: "Price: Low to High" },
-    { value: "price-high", label: "Price: High to Low" },
-    { value: "popular", label: "Most Popular" }
+    { value: "relevance", label: t("common.mostRelevant") },
+    { value: "date", label: t("common.date") + ": Soonest First" },
+    { value: "price-low", label: t("common.price") + ": Low to High" },
+    { value: "price-high", label: t("common.price") + ": High to Low" },
+    { value: "popular", label: t("common.mostPopular") }
   ];
 
   const getCategoryIcon = (category: string) => {
@@ -177,29 +203,29 @@ export default function Events() {
   const filteredEvents = events
     .filter(event => {
       // Category filter
-      if (selectedCategory !== "All" && event.category !== selectedCategory) {
+      if (selectedCategory !== t("common.all") && event.category !== selectedCategory) {
         return false;
       }
 
       // Price range filter
-      if (selectedPriceRange !== "All") {
+      if (selectedPriceRange !== t("common.all")) {
         const entryFee = event.entryFee || "Free";
         let priceMatch = false;
         
         switch (selectedPriceRange) {
-          case "Free":
+          case t("common.free"):
             priceMatch = entryFee === "Free" || entryFee === "₹0";
             break;
-          case "Under ₹100":
+          case t("common.under100"):
             priceMatch = entryFee !== "Free" && parseFloat(entryFee.replace(/[₹,]/g, '')) < 100;
             break;
-          case "₹100-500":
+          case t("common.100To500"):
             priceMatch = parseFloat(entryFee.replace(/[₹,]/g, '')) >= 100 && parseFloat(entryFee.replace(/[₹,]/g, '')) <= 500;
             break;
-          case "₹500-1000":
+          case t("common.500To1000"):
             priceMatch = parseFloat(entryFee.replace(/[₹,]/g, '')) >= 500 && parseFloat(entryFee.replace(/[₹,]/g, '')) <= 1000;
             break;
-          case "Above ₹1000":
+          case t("common.above1000"):
             priceMatch = parseFloat(entryFee.replace(/[₹,]/g, '')) > 1000;
             break;
         }
@@ -208,7 +234,7 @@ export default function Events() {
       }
 
       // Location filter
-      if (selectedLocation !== "All") {
+      if (selectedLocation !== t("common.all")) {
         if (!event.location.toLowerCase().includes(selectedLocation.toLowerCase())) {
           return false;
         }
@@ -268,7 +294,10 @@ export default function Events() {
               {t("events.title")}
             </h1>
           </div>
-          <LanguageToggle />
+          <div className="flex gap-2">
+            <LanguageToggle />
+            <DarkModeToggle />
+          </div>
         </div>
         <SearchBar 
           value={searchValue}

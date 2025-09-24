@@ -7,8 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useProductsCart } from "@/hooks/useProductsCart";
+import { processRazorpayPayment } from "@/lib/razorpay";
 import { tourGuides } from "@/data/tourGuides";
 import { products } from "@/data/products";
 import { experiences } from "@/data/experiences";
@@ -28,12 +30,6 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-declare global {
-  interface Window {
-    Razorpay: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  }
-}
-
 export default function Marketplace() {
   const { t } = useTranslation();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
@@ -41,12 +37,12 @@ export default function Marketplace() {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("products");
   const [searchValue, setSearchValue] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedExperienceCategory, setSelectedExperienceCategory] = useState("All");
-  const [selectedSpecialization, setSelectedSpecialization] = useState("All");
-  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
-  const [selectedRating, setSelectedRating] = useState("All");
-  const [selectedLocation, setSelectedLocation] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState(t("common.all"));
+  const [selectedExperienceCategory, setSelectedExperienceCategory] = useState(t("common.all"));
+  const [selectedSpecialization, setSelectedSpecialization] = useState(t("common.all"));
+  const [selectedPriceRange, setSelectedPriceRange] = useState(t("common.all"));
+  const [selectedRating, setSelectedRating] = useState(t("common.all"));
+  const [selectedLocation, setSelectedLocation] = useState(t("common.all"));
   const [sortBy, setSortBy] = useState("relevance");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const navigate = useNavigate();
@@ -56,52 +52,39 @@ export default function Marketplace() {
     if (items.length === 0) return;
 
     try {
-      // Load Razorpay script if not already loaded
-      if (!window.Razorpay) {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        document.body.appendChild(script);
-        await new Promise((resolve) => {
-          script.onload = resolve;
-        });
-      }
-
-      // Generate order ID
       const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-      // Razorpay options
-      const options = {
-        key: 'rzp_test_RLUAMPaeE93MzD', // Your Razorpay key
-        amount: totalPrice * 100, // Amount in paise
-        currency: 'INR',
-        name: 'Jharkhand Explorer',
-        description: `Order #${orderId}`,
-        image: '/assets/Logo.jpg',
-        order_id: orderId,
-        handler: function (response: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+      
+      const result = await processRazorpayPayment(
+        totalPrice,
+        `Order #${orderId}`,
+        {
+          name: 'Customer',
+          email: 'customer@example.com',
+          phone: '9876543210',
+        },
+        {
+          order_id: orderId,
+          items: items.map(item => `${item.product.name} (${item.quantity}x)`).join(', '),
+          total_amount: totalPrice.toString()
+        },
+        (response) => {
           // Payment successful
+          console.log('Payment successful:', response);
           alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
           clearCart();
         },
-        prefill: {
-          name: 'Customer',
-          email: 'customer@example.com',
-          contact: '9876543210',
-        },
-        theme: {
-          color: '#059669'
-        },
-        modal: {
-          ondismiss: function() {
-            console.log('Payment modal dismissed');
-          }
+        (error) => {
+          // Payment failed or cancelled
+          console.error('Payment error:', error);
+          alert('Payment failed. Please try again.');
         }
-      };
+      );
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      if (!result.success) {
+        alert(result.error || 'Payment failed. Please try again.');
+      }
     } catch (error) {
-      console.error('Payment error:', error);
+      console.error('Checkout error:', error);
       alert('Payment failed. Please try again.');
     }
   };
@@ -169,23 +152,65 @@ export default function Marketplace() {
     }
   }, [searchParams]);
 
-  const productCategories = ["All", "Handicrafts", "Food Items", "Clothing/Textiles", "Souvenirs"];
-  const experienceCategories = ["All", "Art & Craft", "Music & Dance", "Cooking & Food", "Nature & Adventure", "Cultural Heritage"];
-  const tourGuideSpecializations = [
-    "All", "Historical & Cultural Tours", "Wildlife & Nature", "Tribal Culture & Traditions",
-    "Adventure & Trekking", "Religious & Spiritual Tours", "Art & Handicrafts", "Food & Culinary Tours",
-    "Family & Solo Travel", "Photography & Instagram Tours"
+  const productCategories = [
+    "All", 
+    "Handicrafts", 
+    "Food Items", 
+    "Textiles", 
+    "Souvenirs"
   ];
-  const priceRanges = ["All", "Under ₹500", "₹500-1000", "₹1000-2000", "₹2000-5000", "Above ₹5000"];
-  const ratingOptions = ["All", "4.5+ Stars", "4.0+ Stars", "3.5+ Stars", "3.0+ Stars"];
-  const locationOptions = ["All", "Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Deoghar", "Hazaribagh", "Giridih"];
+  const experienceCategories = [
+    "All", 
+    "Art & Craft", 
+    "Music & Dance", 
+    "Cooking & Food", 
+    "Nature & Adventure", 
+    "Cultural Heritage"
+  ];
+  const tourGuideSpecializations = [
+    "All", 
+    "Historical & Cultural Tours", 
+    "Wildlife & Nature", 
+    "Tribal Culture & Traditions",
+    "Adventure & Trekking", 
+    "Religious & Spiritual Tours", 
+    "Art & Handicrafts", 
+    "Food & Culinary Tours",
+    "Family & Solo Travel", 
+    "Photography & Instagram Tours"
+  ];
+  const priceRanges = [
+    t("common.all"), 
+    "Under ₹500", 
+    "₹500-1000", 
+    "₹1000-2000", 
+    "₹2000-5000", 
+    "Above ₹5000"
+  ];
+  const ratingOptions = [
+    t("common.all"), 
+    "4.5+ Stars", 
+    "4.0+ Stars", 
+    "3.5+ Stars", 
+    "3.0+ Stars"
+  ];
+  const locationOptions = [
+    t("common.all"), 
+    t("common.ranchi"), 
+    t("common.jamshedpur"), 
+    t("common.dhanbad"), 
+    t("common.bokaro"), 
+    "Deoghar", 
+    "Hazaribagh", 
+    "Giridih"
+  ];
   const sortOptions = [
-    { value: "relevance", label: "Most Relevant" },
-    { value: "price-low", label: "Price: Low to High" },
-    { value: "price-high", label: "Price: High to Low" },
+    { value: "relevance", label: t("common.mostRelevant") },
+    { value: "price-low", label: t("common.price") + ": Low to High" },
+    { value: "price-high", label: t("common.price") + ": High to Low" },
     { value: "rating", label: "Highest Rated" },
     { value: "newest", label: "Newest First" },
-    { value: "popular", label: "Most Popular" }
+    { value: "popular", label: t("common.mostPopular") }
   ];
 
   // Universal search function
@@ -238,7 +263,7 @@ export default function Marketplace() {
   const applyAdvancedFilters = (items: any[], type: 'product' | 'experience' | 'tourguide') => {
     return items.filter(item => {
       // Price range filter
-      if (selectedPriceRange !== "All") {
+      if (selectedPriceRange !== t("common.all")) {
         const price = parseFloat(item.price?.replace(/[₹,]/g, '') || '0');
         let priceMatch = false;
         
@@ -264,7 +289,7 @@ export default function Marketplace() {
       }
       
       // Rating filter
-      if (selectedRating !== "All") {
+      if (selectedRating !== t("common.all")) {
         const rating = item.rating || 0;
         let ratingMatch = false;
         
@@ -330,7 +355,7 @@ export default function Marketplace() {
     applyAdvancedFilters(
       universalSearch(
         products.filter(product => 
-          selectedCategory === "All" || product.category === selectedCategory
+          selectedCategory === t("common.all") || product.category === selectedCategory
         ), 
         searchValue, 
         'product'
@@ -385,7 +410,10 @@ export default function Marketplace() {
               {t("marketplace.title")}
             </h1>
           </div>
-          <LanguageToggle />
+          <div className="flex gap-2">
+            <LanguageToggle />
+            <DarkModeToggle />
+          </div>
         </div>
         <SearchBar 
           value={searchValue}

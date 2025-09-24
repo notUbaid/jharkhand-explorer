@@ -5,9 +5,11 @@ import { SearchBar } from "@/components/ui/search-bar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useStayComparison } from "@/contexts/StayComparisonContext";
 import { StayComparisonModal } from "@/components/StayComparisonModal";
+import { BookingModal } from "@/components/BookingModal";
 import { 
   Building, 
   Home, 
@@ -30,26 +32,43 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { stays } from "@/data/stays";
+import { BookingItem } from "@/hooks/useBooking";
 
 export default function Stays() {
   const { t } = useTranslation();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { compareItems, addToCompare, removeFromCompare, isInCompare, canAddMore, setOpenCompareModal } = useStayComparison();
   const [searchValue, setSearchValue] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState(t("common.all"));
+  const [selectedPriceRange, setSelectedPriceRange] = useState(t("common.all"));
   const [sortBy, setSortBy] = useState("popularity");
   const [stayImageIndices, setStayImageIndices] = useState<Record<number, number>>({});
   const [stayIsTransitioning, setStayIsTransitioning] = useState<Record<number, boolean>>({});
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedStay, setSelectedStay] = useState<typeof stays[0] | null>(null);
   const navigate = useNavigate();
 
-  const categories = ["All", "Luxury", "Premium", "Mid-range", "Resort", "Eco Lodge", "Homestay"];
-  const priceRanges = ["All", "Under ₹3K", "₹3K-5K", "₹5K-8K", "Above ₹8K"];
+  const categories = [
+    t("common.all"), 
+    t("common.luxury"), 
+    t("common.premium"), 
+    t("common.midRange"), 
+    t("common.resort"), 
+    t("common.ecoLodge"), 
+    t("common.homestay")
+  ];
+  const priceRanges = [
+    t("common.all"), 
+    t("common.under3K"), 
+    t("common.3KTo5K"), 
+    t("common.5KTo8K"), 
+    t("common.above8K")
+  ];
   const sortOptions = [
-    { value: "popularity", label: "Most Popular" },
-    { value: "price-low", label: "Price: Low to High" },
-    { value: "price-high", label: "Price: High to Low" },
-    { value: "rating", label: "Rating" }
+    { value: "popularity", label: t("common.mostPopular") },
+    { value: "price-low", label: t("common.price") + ": Low to High" },
+    { value: "price-high", label: t("common.price") + ": High to Low" },
+    { value: "rating", label: t("common.rating") }
   ];
 
   // Enhanced search function for stays
@@ -80,15 +99,8 @@ export default function Stays() {
     // Rating search
     const matchesRating = stay.rating.toString().includes(searchTerm);
     
-    // Capacity search
-    const matchesCapacity = stay.capacity.toString().includes(searchTerm);
-    
-    // Type-specific searches
-    const matchesType = stay.type?.toLowerCase().includes(searchTerm) || false;
-    
     return matchesName || matchesDescription || matchesLocation || matchesCategory || 
-           matchesHighlights || matchesAmenities || matchesPrice || matchesRating || 
-           matchesCapacity || matchesType;
+           matchesHighlights || matchesAmenities || matchesPrice || matchesRating;
   };
 
   // Search suggestions
@@ -166,6 +178,17 @@ export default function Stays() {
     }
   };
 
+  const handleBookNow = (stay: typeof stays[0]) => {
+    setSelectedStay(stay);
+    setShowBookingModal(true);
+  };
+
+  const handleBookingSuccess = (bookingId: string) => {
+    console.log('Booking successful:', bookingId);
+    setShowBookingModal(false);
+    setSelectedStay(null);
+  };
+
   // Image rotation for stays
   useEffect(() => {
     const interval = setInterval(() => {
@@ -210,15 +233,15 @@ export default function Stays() {
   const filteredStays = stays.filter(stay => {
     // Enhanced search functionality
     const matchesSearch = enhancedSearchStays(stay);
-    const matchesCategory = selectedCategory === "All" || stay.category === selectedCategory;
+    const matchesCategory = selectedCategory === t("common.all") || stay.category === selectedCategory;
     
     // Price range filtering
     const price = parseInt(stay.price.replace(/[₹,]/g, ''));
     let matchesPrice = true;
-    if (selectedPriceRange === "Under ₹3K") matchesPrice = price < 3000;
-    else if (selectedPriceRange === "₹3K-5K") matchesPrice = price >= 3000 && price <= 5000;
-    else if (selectedPriceRange === "₹5K-8K") matchesPrice = price >= 5000 && price <= 8000;
-    else if (selectedPriceRange === "Above ₹8K") matchesPrice = price > 8000;
+    if (selectedPriceRange === t("common.under3K")) matchesPrice = price < 3000;
+    else if (selectedPriceRange === t("common.3KTo5K")) matchesPrice = price >= 3000 && price <= 5000;
+    else if (selectedPriceRange === t("common.5KTo8K")) matchesPrice = price >= 5000 && price <= 8000;
+    else if (selectedPriceRange === t("common.above8K")) matchesPrice = price > 8000;
     
     return matchesSearch && matchesCategory && matchesPrice;
   });
@@ -246,7 +269,10 @@ export default function Stays() {
             <h1 className="text-3xl font-playfair font-bold">{t("stays.title")}</h1>
             <p className="text-primary-foreground/80 mt-1">{t("stays.subtitle")}</p>
           </div>
-          <LanguageToggle />
+          <div className="flex gap-2">
+            <LanguageToggle />
+            <DarkModeToggle />
+          </div>
         </div>
         
         <div className="relative">
@@ -290,18 +316,18 @@ export default function Stays() {
               <h3 className="font-semibold text-foreground">
                 {sortedStays.length} Stay{sortedStays.length !== 1 ? 's' : ''} Found
               </h3>
-              {(selectedCategory !== "All" || selectedPriceRange !== "All" || searchValue) && (
+              {(selectedCategory !== t("common.all") || selectedPriceRange !== t("common.all") || searchValue) && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setSelectedCategory("All");
-                    setSelectedPriceRange("All");
+                    setSelectedCategory(t("common.all"));
+                    setSelectedPriceRange(t("common.all"));
                     setSearchValue("");
                   }}
                   className="text-xs"
                 >
-                  Clear Filters
+                  {t("common.clearFilters")}
                 </Button>
               )}
             </div>
@@ -489,6 +515,10 @@ export default function Stays() {
                     <Button 
                       size="sm" 
                       className="bg-primary hover:bg-primary-light"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBookNow(stay);
+                      }}
                     >
                       Book Now
                     </Button>
@@ -510,12 +540,12 @@ export default function Stays() {
             <Button
               variant="outline"
               onClick={() => {
-                setSelectedCategory("All");
-                setSelectedPriceRange("All");
+                setSelectedCategory(t("common.all"));
+                setSelectedPriceRange(t("common.all"));
                 setSearchValue("");
               }}
             >
-              Clear All Filters
+              {t("common.clearAll")} {t("common.filters")}
             </Button>
           </div>
         )}
@@ -536,6 +566,28 @@ export default function Stays() {
 
       {/* Comparison Modal */}
       <StayComparisonModal />
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        bookingItems={selectedStay ? [{
+          id: selectedStay.id.toString(),
+          type: 'stay',
+          title: selectedStay.name,
+          price: parseFloat(selectedStay.price.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: '1 night',
+          location: selectedStay.location,
+          image: selectedStay.images[0],
+          metadata: {
+            category: selectedStay.category,
+            amenities: selectedStay.amenities,
+            rating: selectedStay.rating
+          }
+        }] : []}
+        onSuccess={handleBookingSuccess}
+      />
     </div>
   );
 }

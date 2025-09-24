@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,8 +13,10 @@ import { usePackageComparison } from "@/contexts/PackageComparisonContext";
 import { PackageSelectionModal } from "@/components/PackageSelectionModal";
 import { PackageComparison } from "@/components/PackageComparison";
 import { BookingItem } from "@/hooks/useBooking";
+import { scrollManager } from "@/utils/scrollManager";
 
 export default function PackageDetail() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [packageData, setPackageData] = useState(getPackageById(id || "1"));
@@ -25,7 +28,7 @@ export default function PackageDetail() {
     const pkg = getPackageById(id || "1");
     setPackageData(pkg);
     document.title = `${pkg.title} • Discover Jharkhand`;
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    scrollManager.scrollToTop(true);
   }, [id]);
 
   const handleComparePackage = () => {
@@ -55,7 +58,7 @@ export default function PackageDetail() {
       <header className="bg-primary text-primary-foreground px-6 pt-12 pb-4">
         <div className="flex items-center gap-3 mb-3">
           <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
-            <ArrowLeft size={14} className="mr-1" /> Back
+            <ArrowLeft size={14} className="mr-1" /> {t("common.back")}
           </Button>
           <Badge variant="secondary">{packageData.category}</Badge>
         </div>
@@ -70,21 +73,21 @@ export default function PackageDetail() {
             <div className="flex items-center">
               <Clock size={16} className="mr-2 text-primary" />
               <div>
-                <div className="text-muted-foreground text-xs">Duration</div>
+                <div className="text-muted-foreground text-xs">{t("common.duration")}</div>
                 <div className="font-semibold">{packageData.duration}</div>
               </div>
             </div>
             <div className="flex items-center">
               <Users size={16} className="mr-2 text-primary" />
               <div>
-                <div className="text-muted-foreground text-xs">Group Size</div>
+                <div className="text-muted-foreground text-xs">{t("common.groupSize")}</div>
                 <div className="font-semibold">{packageData.groupSize}</div>
               </div>
             </div>
             <div className="flex items-center">
               <Calendar size={16} className="mr-2 text-primary" />
               <div>
-                <div className="text-muted-foreground text-xs">Best Time</div>
+                <div className="text-muted-foreground text-xs">{t("common.bestTime")}</div>
                 <div className="font-semibold">{packageData.bestTime}</div>
               </div>
             </div>
@@ -95,7 +98,7 @@ export default function PackageDetail() {
               <div className="flex items-center">
                 <Star className="text-accent fill-accent" size={16} />
                 <span className="text-lg font-semibold ml-2">{packageData.rating}</span>
-                <span className="text-muted-foreground ml-1">rating</span>
+                <span className="text-muted-foreground ml-1">{t("common.rating")}</span>
               </div>
               <div className="text-right">
                 <div className="flex items-center">
@@ -116,7 +119,7 @@ export default function PackageDetail() {
 
         {/* Highlights Section */}
         <section>
-          <h3 className="font-medium text-foreground mb-2">Highlights</h3>
+          <h3 className="font-medium text-foreground mb-2">{t("common.highlights")}</h3>
           <div className="flex flex-wrap gap-2 text-xs">
             {packageData.highlights.map((highlight, index) => (
               <Badge key={index} variant="secondary" className="bg-primary/10 text-primary">
@@ -128,7 +131,7 @@ export default function PackageDetail() {
 
         {/* Itinerary Section */}
         <section>
-          <h3 className="font-medium text-foreground mb-2">Itinerary</h3>
+          <h3 className="font-medium text-foreground mb-2">{t("common.itinerary")}</h3>
           <Accordion type="single" collapsible>
             {packageData.itinerary.map((day) => (
               <AccordionItem key={day.day} value={`day-${day.day}`}>
@@ -184,10 +187,10 @@ export default function PackageDetail() {
 
         {/* Inclusions/Exclusions Section */}
         <section>
-          <h3 className="font-medium text-foreground mb-2">Inclusions / Exclusions</h3>
+          <h3 className="font-medium text-foreground mb-2">{t("common.inclusionsExclusions")}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div className="p-3 bg-muted rounded-lg">
-              <h4 className="font-medium mb-2 text-success">Inclusions</h4>
+              <h4 className="font-medium mb-2 text-success">{t("common.inclusions")}</h4>
               <ul className="list-disc ml-4 text-muted-foreground space-y-1">
                 {packageData.inclusions.map((inclusion, index) => (
                   <li key={index}>{inclusion}</li>
@@ -207,7 +210,7 @@ export default function PackageDetail() {
 
         {/* Travel Tips Section */}
         <section>
-          <h3 className="font-medium text-foreground mb-2">Travel Tips</h3>
+          <h3 className="font-medium text-foreground mb-2">{t("common.travelTips")}</h3>
           <div className="space-y-2">
             {packageData.travelTips.map((tip, index) => (
               <div key={index} className="flex items-start gap-2 p-3 bg-muted rounded-lg">
@@ -220,11 +223,11 @@ export default function PackageDetail() {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-2 pb-4">
-          <Button className="bg-primary hover:bg-primary-light" onClick={handleBookNow}>Book Now</Button>
+          <Button className="bg-primary hover:bg-primary-light" onClick={handleBookNow}>{t("common.bookNow")}</Button>
           <Button variant="outline" onClick={handleComparePackage}>
-            <GitCompare size={14} className="mr-1" /> Compare Package
+            <GitCompare size={14} className="mr-1" /> {t("common.compare")} {t("common.package")}
           </Button>
-          <Button variant="outline"><Share2 size={14} className="mr-1" /> Share</Button>
+          <Button variant="outline"><Share2 size={14} className="mr-1" /> {t("common.share")}</Button>
         </div>
       </main>
 
@@ -250,7 +253,7 @@ export default function PackageDetail() {
           price: parseFloat(packageData.price.replace(/[₹,]/g, '')),
           quantity: 1,
           duration: packageData.duration,
-          location: packageData.destinations?.join(', ') || packageData.location || 'Jharkhand',
+          location: packageData.departureCity || 'Jharkhand',
           image: packageData.image,
           metadata: {
             category: packageData.category,

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -46,50 +45,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const userProfile = {
-  name: "Ubaid Khan",
-  email: "me.khanubaid@gmail.com",
-  phone: "+91 9624444730",
-  avatar: "/placeholder.svg",
-  joinDate: "Member since Jan 2024",
-  language: "English",
-  interests: ["Culture", "Nature", "Food", "Adventure"],
-};
-
-const bookings = [
-  { id: 1, type: "Package", name: "Wildlife Retreat", date: "March 15-18, 2024", status: "Confirmed" },
-  { id: 2, type: "Hotel", name: "Eco Lodge Netarhat", date: "April 5-7, 2024", status: "Pending" },
-  { id: 3, type: "Event", name: "Sarhul Festival", date: "March 15, 2024", status: "Confirmed" },
-];
-
-const contributions = [
-  { id: 1, type: "Event", name: "Folk Music Workshop", status: "Approved" },
-  { id: 2, type: "Product", name: "Handwoven Scarves", status: "Under Review" },
-];
-
-const achievements = [
-  { id: 1, title: "Cultural Explorer", description: "Visited 5+ cultural sites", icon: "🎭" },
-  { id: 2, title: "Nature Lover", description: "Explored 3+ national parks", icon: "🌲" },
-  { id: 3, title: "Foodie", description: "Tried 10+ local restaurants", icon: "🍽️" },
-  { id: 4, title: "Festival Enthusiast", description: "Attended 2+ festivals", icon: "🎉" },
-];
-
-const emergencyContacts = [
-  { name: "Police", number: "100", color: "destructive", description: "Emergency police assistance" },
-  { name: "Ambulance", number: "108", color: "accent", description: "Medical emergency & ambulance" },
-  { name: "Fire Department", number: "101", color: "destructive", description: "Fire & rescue services" },
-  { name: "Women's Helpline", number: "181", color: "primary", description: "Women safety & support" },
-  { name: "Tourism Helpline", number: "1363", color: "success", description: "Tourist assistance" },
-  { name: "Roadside Assistance", number: "103", color: "secondary", description: "Vehicle breakdown help" },
-];
-
-const trustedContacts = [
-  { name: "Rajesh Sharma", relation: "Father", number: "+91 98765 43211" },
-  { name: "Meera Devi", relation: "Mother", number: "+91 98765 43212" },
-];
-
 export default function Profile() {
-  const { t, i18n } = useTranslation();
   const { isDarkMode } = useDarkMode();
   const { favorites, removeFromFavorites, getFavoritesByType } = useFavorites();
   const navigate = useNavigate();
@@ -97,7 +53,49 @@ export default function Profile() {
   const [highContrast, setHighContrast] = useState(false);
   const [voiceAssist, setVoiceAssist] = useState(false);
   const [fontSize, setFontSize] = useState("medium");
-  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language === "hi" ? "Hindi" : "English");
+  const [selectedLanguage, setSelectedLanguage] = useState("English");
+
+  const userProfile = {
+    name: "Ubaid Khan",
+    email: "me.khanubaid@gmail.com",
+    phone: "+91 9624444730",
+    avatar: "/placeholder.svg",
+    joinDate: "Member Since Jan 2024",
+    language: "Language",
+    interests: ["Cultural", "Nature", "Food", "Adventure"],
+  };
+
+  const bookings = [
+    { id: 1, type: "Package", name: "Wildlife Retreat Package", date: "March 15-18, 2024", status: "Confirmed" },
+    { id: 2, type: "Hotel", name: "Eco Lodge Netarhat", date: "April 5-7, 2024", status: "Pending" },
+    { id: 3, type: "Event", name: "Sarhul Festival", date: "March 15, 2024", status: "Confirmed" },
+  ];
+
+  const contributions = [
+    { id: 1, type: "Event", name: "Folk Music Workshop", status: "Approved" },
+    { id: 2, type: "Product", name: "Handwoven Scarves", status: "Under Review" },
+  ];
+
+  const achievements = [
+    { id: 1, title: "Cultural Explorer", description: "Visited 5+ cultural sites", icon: "🎭" },
+    { id: 2, title: "Nature Lover", description: "Explored 3+ national parks", icon: "🌲" },
+    { id: 3, title: "Foodie", description: "Tried 10+ local restaurants", icon: "🍽️" },
+    { id: 4, title: "Festival Enthusiast", description: "Attended 2+ festivals", icon: "🎉" },
+  ];
+
+  const emergencyContacts = [
+    { name: "Police", number: "100", color: "destructive", description: "Emergency police assistance" },
+    { name: "Ambulance", number: "108", color: "accent", description: "Medical emergency services" },
+    { name: "Fire Department", number: "101", color: "destructive", description: "Fire and rescue services" },
+    { name: "Women's Helpline", number: "181", color: "primary", description: "Women safety and support" },
+    { name: "Tourism Helpline", number: "1363", color: "success", description: "Tourist assistance and information" },
+    { name: "Roadside Assistance", number: "103", color: "secondary", description: "Vehicle breakdown assistance" },
+  ];
+
+  const trustedContacts = [
+    { name: "Rajesh Sharma", relation: "Father", number: "+91 98765 43211" },
+    { name: "Meera Devi", relation: "Mother", number: "+91 98765 43212" },
+  ];
   const [isPanicMode, setIsPanicMode] = useState(false);
   const [locationShared, setLocationShared] = useState(false);
   const [emergencyMessage, setEmergencyMessage] = useState("");
@@ -156,9 +154,7 @@ export default function Profile() {
 
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language);
-    // Change the i18n language
-    const languageCode = language === "English" ? "en" : "hi";
-    i18n.changeLanguage(languageCode);
+    // Language change functionality can be added here if needed
   };
 
   const handleEmergencyCall = (number: string, name: string) => {
@@ -242,11 +238,11 @@ export default function Profile() {
       <div className="px-6 -mt-2 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-6 bg-muted text-xs">
-            <TabsTrigger value="personal">{t("profile.personal")}</TabsTrigger>
-            <TabsTrigger value="favorites">{t("profile.myFavorites")}</TabsTrigger>
-            <TabsTrigger value="bookings">{t("profile.myBookings")}</TabsTrigger>
-            <TabsTrigger value="contributions">{t("profile.myReviews")}</TabsTrigger>
-            <TabsTrigger value="settings">{t("profile.settings")}</TabsTrigger>
+            <TabsTrigger value="personal">Personal</TabsTrigger>
+            <TabsTrigger value="favorites">My Favorites</TabsTrigger>
+            <TabsTrigger value="bookings">My Bookings</TabsTrigger>
+            <TabsTrigger value="contributions">My Reviews</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="personal" className="space-y-4">
@@ -457,7 +453,7 @@ export default function Profile() {
             <LuxuryCard>
               <div className="flex items-center mb-4">
                 <Globe className="text-primary mr-2" size={20} />
-                <h3 className="font-playfair font-semibold text-foreground">{t("profile.language")}</h3>
+                <h3 className="font-playfair font-semibold text-foreground">Language</h3>
               </div>
               <div className="flex flex-wrap gap-2">
                 {languages.map((lang) => (

@@ -38,23 +38,14 @@ export const StayComparisonModal = () => {
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <span>Compare Stays ({compareItems.length}/2)</span>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={clearCompare}
-                disabled={compareItems.length === 0}
-              >
-                Clear All
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setOpenCompareModal(false)}
-              >
-                <X size={16} />
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={clearCompare}
+              disabled={compareItems.length === 0}
+            >
+              Clear All
+            </Button>
           </DialogTitle>
         </DialogHeader>
 
@@ -110,7 +101,7 @@ export const StayComparisonModal = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
                           <Users size={14} className="mr-1 text-muted-foreground" />
-                          <span className="text-sm">{stay.capacity} guests</span>
+                          <span className="text-sm">2-4 guests</span>
                         </div>
                         <div className="flex items-center">
                           <IndianRupee size={14} className="text-accent" />

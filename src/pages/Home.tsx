@@ -104,7 +104,7 @@ export default function Home() {
           <div className="text-center mb-8">
             <img 
               src={logoImage} 
-              alt="Explore Jharkhand Logo" 
+              alt={t("home.logoAlt")} 
               className="w-20 h-20 mx-auto mb-6 rounded-full object-cover shadow-lg"
             />
             <h1 className="text-4xl md:text-5xl font-playfair font-bold mb-4 text-white drop-shadow-lg">

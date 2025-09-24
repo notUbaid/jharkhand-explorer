@@ -471,7 +471,9 @@ export default function RestaurantDetail() {
     const container = scrollContainerRef.current;
     if (container) {
       container.addEventListener('scroll', checkScrollButtons);
-      return () => container.removeEventListener('scroll', checkScrollButtons);
+      return () => {
+        container.removeEventListener('scroll', checkScrollButtons);
+      };
     }
   }, [restaurant.images]);
 

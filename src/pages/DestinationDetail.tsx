@@ -1,11 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Clock, IndianRupee, Phone, Navigation, Eye, Heart, ArrowLeft, Accessibility, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { getDestinationById } from "@/data/destinations";
 export default function DestinationDetail() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [destination] = useState(() => getDestinationById(id || "1"));
@@ -44,7 +46,9 @@ export default function DestinationDetail() {
     const container = scrollContainerRef.current;
     if (container) {
       container.addEventListener('scroll', checkScrollButtons);
-      return () => container.removeEventListener('scroll', checkScrollButtons);
+      return () => {
+        container.removeEventListener('scroll', checkScrollButtons);
+      };
     }
   }, [destination.images]);
 
@@ -53,7 +57,7 @@ export default function DestinationDetail() {
       <header className="bg-primary text-primary-foreground px-6 pt-12 pb-4">
         <div className="flex items-center gap-3 mb-3">
           <Button variant="secondary" size="sm" onClick={() => navigate('/destinations?tab=spots')}>
-            <ArrowLeft size={14} className="mr-1" /> Back
+            <ArrowLeft size={14} className="mr-1" /> {t("common.back")}
           </Button>
           <Badge variant="secondary">{destination.category}</Badge>
         </div>
@@ -64,7 +68,7 @@ export default function DestinationDetail() {
             <span className="text-sm font-medium ml-1">{destination.rating}</span>
           </div>
           <span className="text-primary-foreground/60 text-sm">•</span>
-          <span className="text-primary-foreground/80 text-sm">Explore & Discover</span>
+          <span className="text-primary-foreground/80 text-sm">{t("common.exploreDiscover")}</span>
         </div>
       </header>
 
@@ -132,22 +136,22 @@ export default function DestinationDetail() {
 
         {/* Content Sections */}
         <section>
-          <h2 className="font-medium text-foreground mb-2">About</h2>
+          <h2 className="font-medium text-foreground mb-2">{t("common.about")}</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">{destination.description}</p>
         </section>
         
         <section>
-          <h3 className="font-medium text-foreground mb-2">Key Attractions</h3>
+          <h3 className="font-medium text-foreground mb-2">{t("common.keyAttractions")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">{destination.keyAttractions}</p>
         </section>
         
         <section>
-          <h3 className="font-medium text-foreground mb-2">Travel Tips</h3>
+          <h3 className="font-medium text-foreground mb-2">{t("common.travelTips")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">{destination.travelTips}</p>
         </section>
         
         <section>
-          <h3 className="font-medium text-foreground mb-2">Accessibility</h3>
+          <h3 className="font-medium text-foreground mb-2">{t("common.accessibility")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">{destination.accessibility}</p>
         </section>
 
@@ -158,7 +162,7 @@ export default function DestinationDetail() {
               variant="outline" 
               onClick={() => window.open(destination.directionsLink, '_blank')}
             >
-              <Navigation size={16} className="mr-1" /> More Info
+              <Navigation size={16} className="mr-1" /> {t("common.moreInfo")}
             </Button>
           )}
           {destination.view360Link && (
@@ -166,11 +170,11 @@ export default function DestinationDetail() {
               variant="outline"
               onClick={() => window.open(destination.view360Link, '_blank')}
             >
-              <Eye size={16} className="mr-1" /> 360° View
+              <Eye size={16} className="mr-1" /> {t("common.view360")}
             </Button>
           )}
           <Button className="bg-primary hover:bg-primary-light">
-            <Heart size={16} className="mr-1" /> Add to Favorites
+            <Heart size={16} className="mr-1" /> {t("common.addToFavorites")}
           </Button>
         </div>
 

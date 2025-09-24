@@ -38,12 +38,12 @@ export const destinations = [
       "/assets/Tourist Spots/[(Netarhat)3].jpg"
     ],
     isHiddenGem: false,
-    description: "Known as the 'Queen of Chotanagpur', Netarhat is Jharkhand's most beautiful hill station located at 1,100m elevation. Famous for its mesmerizing sunrise and sunset views, this plateau offers scenic vistas of rolling hills, pine forests, and waterfalls. An ideal escape for nature lovers and photography enthusiasts.",
-    entryFee: "Free (₹0) for general access and viewpoints",
-    timings: "Public hill station (best to go before dawn-10:00 for sunrise, and evening for sunset viewpoints)",
+    description: "छोटानागपुर की 'रानी' के रूप में जाना जाने वाला नेतरहाट, समुद्र तल से 1,100 मीटर की ऊंचाई पर स्थित झारखंड का सबसे सुंदर हिल स्टेशन है। अपने मनमोहक सूर्योदय और सूर्यास्त के दृश्यों के लिए प्रसिद्ध, यह पठार लहरदार पहाड़ियों, पाइन जंगलों और झरने के मनोरम दृश्य प्रदान करता है। प्रकृति प्रेमियों और फोटोग्राफी उत्साही लोगों के लिए एक आदर्श पलायन।",
+    entryFee: "सामान्य पहुंच और दृश्य बिंदुओं के लिए निःशुल्क (₹0)",
+    timings: "सार्वजनिक हिल स्टेशन (सूर्योदय के लिए भोर से पहले-10:00, और सूर्यास्त दृश्य बिंदुओं के लिए शाम को जाने के लिए सबसे अच्छा)",
     contact: "+91-9876543211",
-    tags: ["Nature", "Eco", "Adventure"],
-    keyAttractions: "Sunrise Point (Magnolia Point) for spectacular dawn views, Koel View Point for panoramic vistas, Upper Ghaghri Falls (30m cascade), Lower Ghaghri Falls (beautiful cascade), Netarhat Residential School (heritage building), Pine forest trails, Sunset viewpoint, and year-round cool hill climate",
+    tags: ["प्रकृति", "पारिस्थितिकी", "रोमांच"],
+    keyAttractions: "शानदार भोर के दृश्यों के लिए सूर्योदय बिंदु (मैगनोलिया पॉइंट), मनोरम दृश्यों के लिए कोयल दृश्य बिंदु, ऊपरी घाघरी झरना (30 मीटर कैस्केड), निचला घाघरी झरना (सुंदर कैस्केड), नेतरहाट आवासीय स्कूल (विरासत भवन), पाइन जंगल ट्रेल्स, सूर्यास्त दृश्य बिंदु, और साल भर ठंडा पहाड़ी जलवायु",
     travelTips: "Arrive before 5:30 AM for sunrise viewing (carry warm clothes, blankets, and hot beverages). Mobile network is limited at viewpoints, so inform family about your location. Best visiting months are October-February for clear skies and comfortable weather. Carry camera with extra batteries, snacks, and water. Book accommodation in advance during peak season. Road conditions can be challenging during monsoon.",
     accessibility: "Wheelchair access Limited (some road-accessible viewpoints like Sunrise Point; forest trails and waterfall areas are not accessible). Senior-friendly Yes for main viewpoints with vehicle access. Female guide Available on request for solo female travelers. Children-friendly with safe viewing areas. Basic medical facilities available at Netarhat town. Parking available at major viewpoints.",
     directionsLink: "https://share.google/NetarhatDirections123",
@@ -52,9 +52,9 @@ export const destinations = [
   },
   {
     id: 3,
-    name: "Patratu Valley",
-    location: "Patratu Valley / Patratu Dam, Ramgarh district (near Ranchi)",
-    category: "Nature",
+    name: "पत्रातू घाटी",
+    location: "पत्रातू घाटी / पत्रातू बांध, रामगढ़ जिला (रांची के पास)",
+    category: "प्रकृति",
     rating: 4.6,
     image: "/assets/Tourist Spots/[(Patratu Valley)1].jpg",
     images: [
@@ -63,7 +63,7 @@ export const destinations = [
       "/assets/Tourist Spots/[(Patratu Valley)3].jpg"
     ],
     isHiddenGem: false,
-    description: "A beautiful valley around Patratu Dam, offering scenic vistas of rolling hills and serene waters. This hidden gem provides winding scenic drives, lakeside boating, peaceful picnic spots, and numerous photo opportunities. Ideal for a day trip from Ranchi, offering tranquility and natural beauty away from urban life.",
+    description: "पत्रातू बांध के आसपास एक सुंदर घाटी, जो लहरदार पहाड़ियों और शांत पानी के मनोरम दृश्य प्रदान करती है। यह छुपा हुआ रत्न घुमावदार सुंदर ड्राइव, झील के किनारे नौका विहार, शांत पिकनिक स्थल और कई फोटो अवसर प्रदान करता है। रांची से एक दिन की यात्रा के लिए आदर्श, शहरी जीवन से दूर शांति और प्राकृतिक सुंदरता प्रदान करता है।",
     entryFee: "Free (₹0) for valley/viewing areas; boat rides/private activities extra (operator-dependent)",
     timings: "Daytime visiting recommended (typical daylight hours 06:30 – 18:00 for scenic drives & lakeside visits)",
     contact: "+91-9876543213",
@@ -77,9 +77,9 @@ export const destinations = [
   },
   {
     id: 4,
-    name: "Hundru Falls",
-    location: "Hundru Falls, Kanke area, Ranchi district",
-    category: "Nature",
+    name: "हुंडरू झरना",
+    location: "हुंडरू झरना, कांके क्षेत्र, रांची जिला",
+    category: "प्रकृति",
     rating: 4.4,
     image: "/assets/Tourist Spots/[(Hundru Falls)1].jpg",
     images: [
@@ -88,7 +88,7 @@ export const destinations = [
       "/assets/Tourist Spots/[(Hundru Falls)3].jpg"
     ],
     isHiddenGem: false,
-    description: "One of Jharkhand's most spectacular waterfalls, Hundru Falls drops 98 meters from rocky cliffs into a deep pool. Located on the Subarnarekha River, this natural wonder provides mesmerizing views from multiple viewpoints, making it a popular destination for picnics, photography, and nature appreciation. The surrounding rocky terrain and lush greenery create an ideal backdrop for memorable experiences.",
+    description: "झारखंड के सबसे शानदार झरनों में से एक, हुंडरू झरना 98 मीटर नीचे चट्टानी चट्टानों से एक गहरे पूल में गिरता है। सुबर्णरेखा नदी पर स्थित, यह प्राकृतिक चमत्कार कई दृश्य बिंदुओं से मनमोहक दृश्य प्रदान करता है, जो इसे पिकनिक, फोटोग्राफी और प्रकृति की सराहना के लिए एक लोकप्रिय गंतव्य बनाता है। आसपास की चट्टानी इलाका और हरे-भरे हरियाली यादगार अनुभवों के लिए एक आदर्श पृष्ठभूमि बनाती है।",
     entryFee: "₹10 per person (nominal local entry); parking fees apply (typical small vehicle rates)",
     timings: "Common visiting window 06:00 – 18:00 (daylight hours; check local advisories during heavy rain)",
     contact: "+91-9876543214",

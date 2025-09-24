@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +11,7 @@ import { PackageComparisonProvider } from "@/contexts/PackageComparisonContext";
 import { TransportComparisonProvider } from "@/contexts/TransportComparisonContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import { StayComparisonProvider } from "@/contexts/StayComparisonContext";
+import { enhancedScrollManager } from "@/utils/enhanced-scroll-manager";
 import Home from "./pages/Home";
 import Destinations from "./pages/Destinations";
 import Packages from "./pages/Packages";
@@ -38,7 +40,18 @@ import StayCompare from "./pages/StayCompare";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  useEffect(() => {
+    // Initialize enhanced scroll manager
+    enhancedScrollManager.init();
+    
+    // Cleanup on unmount
+    return () => {
+      enhancedScrollManager.destroy();
+    };
+  }, []);
+
+  return (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <DarkModeProvider>
@@ -50,7 +63,7 @@ const App = () => (
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
-                  <div className="relative">
+                  <div className="relative min-h-screen bg-background">
                     <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/destinations" element={<Destinations />} />
@@ -95,6 +108,7 @@ const App = () => (
         </DarkModeProvider>
     </QueryClientProvider>
   </ErrorBoundary>
-);
+  );
+};
 
 export default App;

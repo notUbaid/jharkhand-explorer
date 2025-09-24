@@ -1,128 +1,212 @@
-import { config, validateEnvironment } from '@/config/environment';
+import { config } from '@/config/environment';
 
-// Validate environment on import
-validateEnvironment();
-
-// Note: Razorpay server-side initialization should be done in your backend
-// This file contains client-side utilities for payment processing
-
-export interface PaymentDetails {
-  amount: number;
-  currency: string;
-  orderId: string;
-  paymentId: string;
-  signature: string;
-  status: 'success' | 'failed' | 'pending';
+// Global Razorpay interface
+declare global {
+  interface Window {
+    Razorpay: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  }
 }
 
-export interface OrderItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+// Razorpay configuration
+const RAZORPAY_CONFIG = {
+  keyId: config.razorpay.keyId,
+  currency: config.payment.currency,
+  name: config.app.name,
+  image: '/assets/Logo.jpg',
+  theme: {
+    color: '#059669'
+  }
+};
 
-export interface OrderDetails {
-  items: OrderItem[];
-  totalAmount: number;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  shippingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    pincode: string;
-  };
-  orderId: string;
-  paymentId?: string;
-  status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
-  createdAt: Date;
-}
+// Load Razorpay script with retry mechanism
+export const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    // Check if already loaded
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
 
-// Client-side Razorpay options generator
-export const generateRazorpayOptions = (
+    // Check if script is already being loaded
+    const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+    if (existingScript) {
+      existingScript.addEventListener('load', () => resolve(true));
+      existingScript.addEventListener('error', () => reject(new Error('Failed to load Razorpay script')));
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.defer = true; // Add defer to prevent blocking
+    
+    script.onload = () => {
+      console.log('Razorpay script loaded successfully');
+      resolve(true);
+    };
+    
+    script.onerror = (error) => {
+      console.error('Failed to load Razorpay script:', error);
+      // Clean up failed script
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+      reject(new Error('Failed to load Razorpay script'));
+    };
+    
+    // Add to head instead of body to prevent layout issues
+    document.head.appendChild(script);
+  });
+};
+
+// Validate Razorpay configuration
+export const validateRazorpayConfig = () => {
+  const errors: string[] = [];
+  
+  // Check if key ID is valid (starts with rzp_test_ or rzp_live_)
+  if (!RAZORPAY_CONFIG.keyId || !RAZORPAY_CONFIG.keyId.startsWith('rzp_')) {
+    errors.push('Invalid Razorpay Key ID format');
+  }
+  
+  if (!RAZORPAY_CONFIG.currency) {
+    errors.push('Currency not specified');
+  }
+  
+  if (errors.length > 0) {
+    console.error('Razorpay Configuration Errors:', errors);
+    return false;
+  }
+  
+  return true;
+};
+
+// Create Razorpay options without order_id (client-side only)
+export const createRazorpayOptions = (
   amount: number,
-  orderId: string,
+  description: string,
   customerDetails: {
     name: string;
     email: string;
     phone: string;
   },
-  shippingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    pincode: string;
-  }
+  notes?: Record<string, string>
 ) => {
+  // Validate configuration
+  if (!validateRazorpayConfig()) {
+    throw new Error('Invalid Razorpay configuration');
+  }
+
+  // Validate amount
+  if (amount < config.payment.minAmount || amount > config.payment.maxAmount) {
+    throw new Error(`Amount must be between ₹${config.payment.minAmount} and ₹${config.payment.maxAmount}`);
+  }
+
+  // Debug logging
+  console.log('Creating Razorpay options with:', {
+    keyId: RAZORPAY_CONFIG.keyId,
+    amount: amount * 100,
+    currency: RAZORPAY_CONFIG.currency,
+    description,
+    customerDetails
+  });
+
   return {
-    key: config.razorpay.keyId,
-    amount: amount * 100, // Amount in paise
-    currency: config.payment.currency,
-    name: config.app.name,
-    description: `Order #${orderId}`,
-    image: '/assets/Logo.jpg',
-    order_id: orderId,
-    handler: function (response: any) {
-      // Payment successful callback
-      console.log('Payment successful:', response);
-      return response;
-    },
+    key: RAZORPAY_CONFIG.keyId,
+    amount: Math.round(amount * 100), // Convert to paise and round to avoid decimal issues
+    currency: RAZORPAY_CONFIG.currency,
+    name: RAZORPAY_CONFIG.name,
+    description: description,
+    image: RAZORPAY_CONFIG.image,
+    // Don't include order_id - let Razorpay handle it
     prefill: {
       name: customerDetails.name,
       email: customerDetails.email,
       contact: customerDetails.phone,
     },
-    notes: {
-      address: `${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state} - ${shippingAddress.pincode}`,
-    },
-    theme: {
-      color: '#059669'
-    },
+    notes: notes || {},
+    theme: RAZORPAY_CONFIG.theme,
     modal: {
       ondismiss: function() {
-        console.log('Payment modal dismissed');
+        console.log('Payment modal dismissed by user');
       }
+    },
+    // Add retry configuration
+    retry: {
+      enabled: true,
+      max_count: 3
     }
   };
 };
 
-// Save order to localStorage (in a real app, this would be sent to a backend)
-export const saveOrder = (orderDetails: OrderDetails): void => {
+// Process payment with proper error handling
+export const processRazorpayPayment = async (
+  amount: number,
+  description: string,
+  customerDetails: {
+    name: string;
+    email: string;
+    phone: string;
+  },
+  notes?: Record<string, string>,
+  onSuccess?: (response: any) => void, // eslint-disable-line @typescript-eslint/no-explicit-any
+  onError?: (error: any) => void // eslint-disable-line @typescript-eslint/no-explicit-any
+): Promise<{ success: boolean; paymentId?: string; orderId?: string; error?: string }> => {
   try {
-    const existingOrders = JSON.parse(localStorage.getItem(config.storage.ordersKey) || '[]');
-    existingOrders.push(orderDetails);
-    localStorage.setItem(config.storage.ordersKey, JSON.stringify(existingOrders));
-  } catch (error) {
-    console.error('Error saving order:', error);
+    // Load Razorpay script
+    await loadRazorpayScript();
+
+    // Create options
+    const options = createRazorpayOptions(amount, description, customerDetails, notes);
+
+    // Create Razorpay instance with proper handlers
+    const razorpay = new window.Razorpay({
+      ...options,
+      handler: function (response: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+        console.log('Payment successful:', response);
+        
+        if (onSuccess) {
+          onSuccess(response);
+        }
+        
+        return response;
+      },
+      modal: {
+        ...options.modal,
+        ondismiss: function() {
+          console.log('Payment modal dismissed');
+          if (onError) {
+            onError(new Error('Payment cancelled by user'));
+          }
+        }
+      }
+    });
+
+    // Create and open Razorpay instance
+    razorpay.open();
+
+    return { success: true };
+  } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+    console.error('Razorpay payment error:', error);
+    
+    if (onError) {
+      onError(error);
+    }
+    
+    return { 
+      success: false, 
+      error: error.message || 'Payment failed. Please try again.' 
+    };
   }
 };
 
-// Get orders from localStorage
-export const getOrders = (): OrderDetails[] => {
+// Test Razorpay connection
+export const testRazorpayConnection = async (): Promise<boolean> => {
   try {
-    const orders = JSON.parse(localStorage.getItem(config.storage.ordersKey) || '[]');
-    return orders.map((order: any) => ({
-      ...order,
-      createdAt: new Date(order.createdAt)
-    }));
+    await loadRazorpayScript();
+    return window.Razorpay !== undefined;
   } catch (error) {
-    console.error('Error loading orders:', error);
-    return [];
-  }
-};
-
-// Update order status
-export const updateOrderStatus = (orderId: string, status: OrderDetails['status']): void => {
-  try {
-    const orders = getOrders();
-    const updatedOrders = orders.map(order =>
-      order.orderId === orderId ? { ...order, status } : order
-    );
-    localStorage.setItem(config.storage.ordersKey, JSON.stringify(updatedOrders));
-  } catch (error) {
-    console.error('Error updating order status:', error);
+    console.error('Razorpay connection test failed:', error);
+    return false;
   }
 };

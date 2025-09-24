@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BookingModal } from "@/components/BookingModal";
@@ -9,6 +10,7 @@ import { getStayById } from "@/data/stays";
 import { BookingItem } from "@/hooks/useBooking";
 
 export default function StayDetail() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [stay] = useState(() => getStayById(id || "1"));
@@ -19,10 +21,10 @@ export default function StayDetail() {
   const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
-    document.title = `${stay?.name} • Discover Jharkhand`;
+    document.title = `${stay?.name} • ${t("common.discoverJharkhand")}`;
     // Scroll to top when component mounts or stay changes
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  }, [stay?.name, id]);
+  }, [stay?.name, id, t]);
 
   const handleBookNow = () => {
     setShowBookingModal(true);
@@ -68,7 +70,9 @@ export default function StayDetail() {
     const container = scrollContainerRef.current;
     if (container) {
       container.addEventListener('scroll', checkScrollButtons);
-      return () => container.removeEventListener('scroll', checkScrollButtons);
+      return () => {
+        container.removeEventListener('scroll', checkScrollButtons);
+      };
     }
   }, [stay?.images]);
 
@@ -78,7 +82,7 @@ export default function StayDetail() {
         <div className="text-center">
           <Building size={48} className="mx-auto text-muted-foreground mb-4" />
           <h2 className="text-xl font-semibold text-foreground mb-2">Stay not found</h2>
-          <Button onClick={() => navigate('/stays')}>Back to Stays</Button>
+          <Button onClick={() => navigate('/stays')}>{t("common.backToStays")}</Button>
         </div>
       </div>
     );
@@ -89,7 +93,7 @@ export default function StayDetail() {
       <header className="bg-primary text-primary-foreground px-6 pt-12 pb-4">
         <div className="flex items-center gap-3 mb-3">
           <Button variant="secondary" size="sm" onClick={() => navigate('/stays')}>
-            <ArrowLeft size={14} className="mr-1" /> Back
+            <ArrowLeft size={14} className="mr-1" /> {t("common.back")}
           </Button>
           <Badge variant="secondary">{stay.category}</Badge>
         </div>
@@ -189,7 +193,7 @@ export default function StayDetail() {
                   <IndianRupee size={20} className="text-accent" />
                   <span className="text-2xl font-bold text-accent">{stay.price}</span>
                 </div>
-                <div className="text-sm text-muted-foreground">per night</div>
+                <div className="text-sm text-muted-foreground">{t("common.perNight")}</div>
               </div>
             </div>
           </div>
@@ -204,7 +208,7 @@ export default function StayDetail() {
         {/* Highlights Section */}
         {stay.highlights && (
           <section>
-            <h2 className="font-medium text-foreground mb-2">Highlights</h2>
+            <h2 className="font-medium text-foreground mb-2">{t("common.highlights")}</h2>
             <div className="flex flex-wrap gap-2">
               {stay.highlights.map((highlight, index) => (
                 <Badge key={index} variant="secondary" className="text-xs">
@@ -218,7 +222,7 @@ export default function StayDetail() {
         {/* Amenities Section */}
         {stay.amenities && (
           <section>
-            <h2 className="font-medium text-foreground mb-2">Amenities</h2>
+            <h2 className="font-medium text-foreground mb-2">{t("common.amenities")}</h2>
             <div className="flex flex-wrap gap-2">
               {stay.amenities.map((amenity, index) => (
                 <Badge key={index} variant="outline" className="text-xs">
@@ -315,10 +319,10 @@ export default function StayDetail() {
             className={isInCompare(stay?.id || 0) ? "bg-primary text-primary-foreground" : ""}
           >
             <GitCompare size={16} className="mr-1" /> 
-            {isInCompare(stay?.id || 0) ? 'Remove from Compare' : 'Compare'}
+            {isInCompare(stay?.id || 0) ? t("common.removeFromCompare") : t("common.compare")}
           </Button>
           <Button className="bg-primary hover:bg-primary-light" onClick={handleBookNow}>
-            Book Now
+            {t("common.bookNow")}
           </Button>
         </div>
       </main>
@@ -339,9 +343,7 @@ export default function StayDetail() {
           metadata: {
             category: stay.category,
             rating: stay.rating,
-            amenities: stay.amenities,
-            rooms: stay.rooms,
-            capacity: stay.capacity
+            amenities: stay.amenities
           }
         }] : []}
         onSuccess={handleBookingSuccess}

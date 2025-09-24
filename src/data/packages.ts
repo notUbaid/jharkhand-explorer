@@ -7,22 +7,22 @@ export const packages = [
     category: "Nature",
     rating: 4.8,
     image: "/assets/Packages/Grand Jharkhand Explorer.png",
-    highlights: ["Betla National Park Safari", "Netarhat Hill Station", "Waterfalls Trail", "Palamu Fort", "Baidyanath Temple"],
+    highlights: ["Betla National Park Safari", "Netarhat Hill Station", "Waterfall Trail", "Palamu Fort", "Baidyanath Temple"],
     difficulty: "Moderate",
     type: "Family · Friends · Solo · Group",
-    description: "Embark on an unforgettable journey through Jharkhand's pristine wilderness and rich cultural heritage. This comprehensive tour takes you through dense forests teeming with wildlife, cascading waterfalls, ancient forts, and sacred temples. Experience the perfect blend of adventure and spirituality as you explore Betla National Park's tiger reserves, witness the breathtaking sunrise at Netarhat Hill Station, and discover the architectural marvels of Palamu Fort. This carefully curated itinerary offers authentic encounters with local communities, traditional cuisine, and the natural beauty that makes Jharkhand a hidden gem of India.",
+    description: "Embark on an unforgettable journey through Jharkhand's ancient wilderness and rich cultural heritage. This comprehensive tour takes you through dense forests teeming with wildlife, waterfalls, ancient forts, and sacred temples. Explore the tiger sanctuaries of Betla National Park, witness mesmerizing sunrises at Netarhat Hill Station, and discover the architectural marvels of Palamu Fort. This carefully crafted itinerary provides authentic encounters with local communities, traditional cuisines, and natural beauty that makes Jharkhand India's hidden gem.",
     groupSize: "2-12 people",
     bestTime: "October to March",
     departureCity: "Ranchi",
     itinerary: [
       {
         day: 1,
-        title: "Arrival in Ranchi",
-        activities: ["Airport/Railway pickup", "Rock Garden & Kanke Dam", "Firayalal Market shopping"]
+        title: "Arrival at Ranchi",
+        activities: ["Airport/Railway pickup", "Rock Garden and Kanke Dam", "Firayalal Market shopping"]
       },
       {
         day: 2,
-        title: "Ranchi Waterfalls Trail",
+        title: "Ranchi Waterfall Trail",
         activities: ["Dassam Falls", "Jonha Falls (Gautamdhara)", "Hundru Falls"]
       },
       {
@@ -32,18 +32,18 @@ export const packages = [
       },
       {
         day: 4,
-        title: "Betla National Park & Palamu Fort",
-        activities: ["Jungle Safari", "Palamu Fort ruins", "Wildlife spotting"]
+        title: "Betla National Park and Palamu Fort",
+        activities: ["Jungle Safari", "Palamu Fort Ruins", "Wildlife Viewing"]
       },
       {
         day: 5,
-        title: "Religious & Departure",
-        activities: ["Baidyanath Temple OR Jagannath Temple", "Checkout & departure"]
+        title: "Religious and Departure",
+        activities: ["Baidyanath Temple or Jagannath Temple", "Checkout and Departure"]
       }
     ],
     accommodation: [
-      "Ranchi – Hotel Capitol Residency / Radisson Blu (3N) - 4★ luxury with city views",
-      "Netarhat – Netarhat Tourist Lodge (1N) - Mountain lodge with panoramic views"
+      "Ranchi – Hotel Capital Residency / Radisson Blu (3 nights) - 4★ Luxury with city views",
+      "Netarhat – Netarhat Tourist Lodge (1 night) - Hill lodge with scenic views"
     ],
     meals: [
       "Daily breakfast at hotel (continental & Indian)",
@@ -79,19 +79,19 @@ export const packages = [
   },
   {
     id: 2,
-    title: "🟢 Mining Discovery Tour (Coalfields & Open-Cast)",
-    duration: "3 Days / 2 Nights",
+    title: "🟢 खनन खोज यात्रा (कोयला क्षेत्र और खुले खनन)",
+    duration: "3 दिन / 2 रातें",
     price: "₹6,499",
-    category: "Mining",
+    category: "खनन",
     rating: 4.6,
     image: "/assets/Packages/mining.png",
-    highlights: ["Jharia Coalfield Heritage", "North Urimari Open-Cast Mine", "ISM Geological Museum", "AR/VR Mine Simulation", "Patratu Valley"],
-    difficulty: "Moderate",
-    type: "Educational · Adventure · Heritage",
-    description: "Discover the fascinating world of coal mining in Jharkhand, India's coal capital. This educational tour takes you through historic coalfields, modern open-cast operations, and geological museums. Learn about the industry that powers India's economy while experiencing the unique heritage of mining communities.",
-    groupSize: "4-20 people",
-    bestTime: "October to April",
-    departureCity: "Dhanbad",
+    highlights: ["झरिया कोयला क्षेत्र विरासत", "उत्तर उरिमारी खुला खनन", "आईएसएम भूवैज्ञानिक संग्रहालय", "एआर/वीआर खनन सिमुलेशन", "पत्रातू घाटी"],
+    difficulty: "मध्यम",
+    type: "शैक्षिक · रोमांच · विरासत",
+    description: "झारखंड में कोयला खनन के आकर्षक दुनिया की खोज करें, जो भारत की कोयला राजधानी है। यह शैक्षिक यात्रा आपको ऐतिहासिक कोयला क्षेत्रों, आधुनिक खुले खनन संचालन और भूवैज्ञानिक संग्रहालयों के माध्यम से ले जाती है। भारत की अर्थव्यवस्था को शक्ति प्रदान करने वाले उद्योग के बारे में जानें और खनन समुदायों की अनूठी विरासत का अनुभव करें।",
+    groupSize: "4-20 लोग",
+    bestTime: "अक्टूबर से अप्रैल",
+    departureCity: "धनबाद",
     itinerary: [
       {
         day: 1,

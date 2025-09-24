@@ -7,6 +7,54 @@ Deep emerald, gold accents, luxurious feel with soft shadows
 All colors MUST be HSL.
 */
 
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-feature-settings: "rlig" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimize animations for performance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* GPU acceleration for smooth animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Optimize image loading */
+img {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 200px;
+}
+
+/* Optimize scrolling performance */
+.scroll-container {
+  contain: layout style paint;
+  content-visibility: auto;
+}
+
 @layer base {
   :root {
     /* Main Color Palette */
@@ -73,9 +121,12 @@ All colors MUST be HSL.
     --nav-background: hsl(var(--card) / 0.95);
     --nav-border: hsl(var(--border) / 0.8);
     
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  /* Enhanced Animations */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --transition-gentle: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-stagger: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
@@ -132,8 +183,21 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+  }
+
   body {
     @apply bg-background text-foreground font-inter antialiased;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    position: relative; /* Ensure proper positioning context */
+  }
+  
+  /* Ensure main content area is scrollable */
+  #root {
+    min-height: 100vh;
+    position: relative;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -175,28 +239,129 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Premium Card Component */
+  /* Enhanced Premium Card Component */
   .luxury-card {
-    @apply bg-card border border-border rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02];
+    @apply bg-card border border-border rounded-2xl shadow-md hover:shadow-lg transition-all duration-500 hover:scale-[1.03];
     background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary)/0.3));
     box-shadow: 0 4px 20px hsl(var(--primary) / 0.08);
+    animation: slideInUp 0.6s ease-out;
   }
   
   .luxury-card:hover {
-    box-shadow: 0 8px 40px hsl(var(--primary) / 0.12);
+    box-shadow: 0 12px 50px hsl(var(--primary) / 0.15);
+    transform: translateY(-4px) scale(1.03);
   }
+
+  .luxury-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease-out;
+  }
+
+  /* Staggered animation for card grids */
+  .luxury-card:nth-child(1) { animation-delay: 0.1s; }
+  .luxury-card:nth-child(2) { animation-delay: 0.2s; }
+  .luxury-card:nth-child(3) { animation-delay: 0.3s; }
+  .luxury-card:nth-child(4) { animation-delay: 0.4s; }
+  .luxury-card:nth-child(5) { animation-delay: 0.5s; }
+  .luxury-card:nth-child(6) { animation-delay: 0.6s; }
   
-  /* Premium Button Variants */
+  /* Enhanced Premium Button Variants */
   .btn-emerald {
-    @apply bg-primary text-primary-foreground hover:bg-primary-light transition-all duration-300 rounded-xl;
+    @apply bg-primary text-primary-foreground hover:bg-primary-light transition-all duration-300 rounded-xl relative overflow-hidden;
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
     box-shadow: 0 4px 16px hsl(var(--primary) / 0.3);
+    transform: translateY(0);
+  }
+
+  .btn-emerald:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsl(var(--primary) / 0.4);
+  }
+
+  .btn-emerald:active {
+    transform: translateY(0);
+    transition: transform 0.1s ease-out;
+  }
+
+  .btn-emerald::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-emerald:hover::before {
+    left: 100%;
   }
   
   .btn-gold {
-    @apply bg-accent text-accent-foreground hover:bg-accent-light transition-all duration-300 rounded-xl;
+    @apply bg-accent text-accent-foreground hover:bg-accent-light transition-all duration-300 rounded-xl relative overflow-hidden;
     background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)));
     box-shadow: 0 4px 16px hsl(var(--accent) / 0.3);
+    transform: translateY(0);
+  }
+
+  .btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsl(var(--accent) / 0.4);
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  .btn-gold:active {
+    transform: translateY(0);
+    transition: transform 0.1s ease-out;
+  }
+
+  .btn-gold::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-gold:hover::before {
+    left: 100%;
+  }
+
+  /* Interactive Button States */
+  .btn-interactive {
+    @apply transition-all duration-200 ease-out;
+    transform: translateY(0);
+  }
+
+  .btn-interactive:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.2);
+  }
+
+  .btn-interactive:active {
+    transform: translateY(0);
+    transition: transform 0.1s ease-out;
+  }
+
+  /* Loading Button Animation */
+  .btn-loading {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 1.5s infinite;
   }
   
   /* Hero Section */
@@ -246,7 +411,7 @@ All colors MUST be HSL.
     @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
   }
 
-  /* Image Transition Animations */
+  /* Enhanced Animation Keyframes */
   @keyframes fadeInOut {
     0%, 100% {
       opacity: 1;
@@ -269,12 +434,121 @@ All colors MUST be HSL.
     }
   }
 
+  @keyframes slideInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @keyframes gentlePulse {
     0%, 100% {
       transform: scale(1);
     }
     50% {
       transform: scale(1.02);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200px 0;
+    }
+    100% {
+      background-position: calc(200px + 100%) 0;
+    }
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
+    }
+  }
+
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes wiggle {
+    0%, 7% {
+      transform: rotateZ(0);
+    }
+    15% {
+      transform: rotateZ(-15deg);
+    }
+    20% {
+      transform: rotateZ(10deg);
+    }
+    25% {
+      transform: rotateZ(-10deg);
+    }
+    30% {
+      transform: rotateZ(6deg);
+    }
+    35% {
+      transform: rotateZ(-4deg);
+    }
+    40%, 100% {
+      transform: rotateZ(0);
+    }
+  }
+
+  @keyframes heartbeat {
+    0% {
+      transform: scale(1);
+    }
+    14% {
+      transform: scale(1.1);
+    }
+    28% {
+      transform: scale(1);
+    }
+    42% {
+      transform: scale(1.1);
+    }
+    70% {
+      transform: scale(1);
     }
   }
 
@@ -287,22 +561,152 @@ All colors MUST be HSL.
     transform: scale(1.05);
   }
 
-  /* Crossfade animation for destination images */
+  /* Enhanced Crossfade animation for destination images */
   .crossfade-container {
     position: relative;
     overflow: hidden;
+    border-radius: 1rem;
   }
 
   .crossfade-image {
-    transition: opacity 1.5s ease-in-out;
+    transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(1);
   }
 
   .crossfade-image.fade-out {
     opacity: 0;
+    transform: scale(1.1);
   }
 
   .crossfade-image.fade-in {
     opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Enhanced Image Hover Effects */
+  .image-hover-zoom {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .image-hover-zoom:hover {
+    transform: scale(1.05);
+  }
+
+  .image-hover-zoom img {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .image-hover-zoom:hover img {
+    transform: scale(1.1);
+  }
+
+  /* Floating Elements */
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .float-animation:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+
+  .float-animation:nth-child(3) {
+    animation-delay: 1s;
+  }
+
+  /* Heartbeat Animation for Favorites */
+  .heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+
+  /* Wiggle Animation for Interactive Elements */
+  .wiggle:hover {
+    animation: wiggle 0.5s ease-in-out;
+  }
+
+  /* Bounce In Animation for Modals */
+  .bounce-in {
+    animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* Staggered List Animations */
+  .stagger-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideInUp 0.6s ease-out forwards;
+  }
+
+  .stagger-item:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-item:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-item:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-item:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-item:nth-child(6) { animation-delay: 0.6s; }
+
+  /* Enhanced Input Focus States */
+  .luxury-input:focus {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1), 0 4px 20px hsl(var(--primary) / 0.15);
+  }
+
+  /* Enhanced Badge Animations */
+  .badge-animated {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .badge-animated:hover {
+    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.2);
+  }
+
+  /* Enhanced Navigation Animations */
+  .nav-item {
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(-50%);
+  }
+
+  .nav-item:hover::after,
+  .nav-item.active::after {
+    width: 100%;
+  }
+
+  /* Enhanced Loading States */
+  .skeleton {
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted) / 0.5) 50%, hsl(var(--muted)) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Enhanced Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, hsl(var(--primary-light)), hsl(var(--primary)));
   }
 }
 

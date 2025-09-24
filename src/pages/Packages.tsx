@@ -5,6 +5,8 @@ import { SearchBar } from "@/components/ui/search-bar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { BookingModal } from "@/components/BookingModal";
 import { 
   Clock, 
   IndianRupee, 
@@ -26,30 +28,55 @@ import { Package } from "@/types/Package";
 import { usePackageComparison } from "@/contexts/PackageComparisonContext";
 import { PackageSelectionModal } from "@/components/PackageSelectionModal";
 import { PackageComparison } from "@/components/PackageComparison";
+import { BookingItem } from "@/hooks/useBooking";
 
 export default function Packages() {
   const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedPriceRange, setSelectedPriceRange] = useState("All");
-  const [selectedDuration, setSelectedDuration] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState(t("common.all"));
+  const [selectedPriceRange, setSelectedPriceRange] = useState(t("common.all"));
+  const [selectedDuration, setSelectedDuration] = useState(t("common.all"));
   const [sortBy, setSortBy] = useState("popularity");
   const [favorites, setFavorites] = useState<number[]>([]);
   const [comparing, setComparing] = useState<number[]>([]);
   const [showSelectionModal, setShowSelectionModal] = useState(false);
   const [selectedPackageForComparison, setSelectedPackageForComparison] = useState<Package | null>(null);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const navigate = useNavigate();
   const { setLeftPackage, setRightPackage, setOpenComparisonModal } = usePackageComparison();
 
-  const categories = ["All", "Nature", "Adventure", "Cultural", "Religious", "Heritage", "Comprehensive", "Premium", "Mining", "Backpacking"];
-  const priceRanges = ["All", "Under ₹10K", "₹10K-20K", "₹20K-30K", "Above ₹30K"];
-  const durations = ["All", "1-3 Days", "4-6 Days", "7+ Days"];
+  const categories = [
+    t("common.all"), 
+    t("categories.nature"), 
+    t("categories.adventure"), 
+    t("categories.cultural"), 
+    t("categories.religious"), 
+    t("categories.heritage"), 
+    t("categories.comprehensive"), 
+    t("categories.premium"), 
+    t("categories.mining"), 
+    t("categories.backpacking")
+  ];
+  const priceRanges = [
+    t("common.all"), 
+    t("common.under10K"), 
+    t("common.10KTo20K"), 
+    t("common.20KTo30K"), 
+    t("common.above30K")
+  ];
+  const durations = [
+    t("common.all"), 
+    t("common.1To3Days"), 
+    t("common.4To6Days"), 
+    t("common.7PlusDays")
+  ];
   const sortOptions = [
-    { value: "popularity", label: "Most Popular" },
-    { value: "price-low", label: "Price: Low to High" },
-    { value: "price-high", label: "Price: High to Low" },
-    { value: "duration", label: "Duration" },
-    { value: "rating", label: "Rating" }
+    { value: "popularity", label: t("common.mostPopular") },
+    { value: "price-low", label: t("common.price") + ": Low to High" },
+    { value: "price-high", label: t("common.price") + ": High to Low" },
+    { value: "duration", label: t("common.duration") },
+    { value: "rating", label: t("common.rating") }
   ];
 
   const toggleFavorite = (id: number) => {
@@ -83,26 +110,37 @@ export default function Packages() {
     setOpenComparisonModal(true);
   };
 
+  const handleBookNow = (pkg: Package) => {
+    setSelectedPackage(pkg);
+    setShowBookingModal(true);
+  };
+
+  const handleBookingSuccess = (bookingId: string) => {
+    console.log('Booking successful:', bookingId);
+    setShowBookingModal(false);
+    setSelectedPackage(null);
+  };
+
 
   const filteredPackages = packages.filter(pkg => {
     if (!searchValue.trim()) {
       // If no search term, only apply filters
-      const matchesCategory = selectedCategory === "All" || pkg.category === selectedCategory;
+      const matchesCategory = selectedCategory === t("common.all") || pkg.category === selectedCategory;
       
       // Price range filtering
       const price = parseInt(pkg.price.replace(/[₹,]/g, ''));
       let matchesPrice = true;
-      if (selectedPriceRange === "Under ₹10K") matchesPrice = price < 10000;
-      else if (selectedPriceRange === "₹10K-20K") matchesPrice = price >= 10000 && price <= 20000;
-      else if (selectedPriceRange === "₹20K-30K") matchesPrice = price >= 20000 && price <= 30000;
-      else if (selectedPriceRange === "Above ₹30K") matchesPrice = price > 30000;
+      if (selectedPriceRange === t("common.under10K")) matchesPrice = price < 10000;
+      else if (selectedPriceRange === t("common.10KTo20K")) matchesPrice = price >= 10000 && price <= 20000;
+      else if (selectedPriceRange === t("common.20KTo30K")) matchesPrice = price >= 20000 && price <= 30000;
+      else if (selectedPriceRange === t("common.above30K")) matchesPrice = price > 30000;
       
       // Duration filtering
       const durationDays = parseInt(pkg.duration.split(' ')[0]);
       let matchesDuration = true;
-      if (selectedDuration === "1-3 Days") matchesDuration = durationDays >= 1 && durationDays <= 3;
-      else if (selectedDuration === "4-6 Days") matchesDuration = durationDays >= 4 && durationDays <= 6;
-      else if (selectedDuration === "7+ Days") matchesDuration = durationDays >= 7;
+      if (selectedDuration === t("common.1To3Days")) matchesDuration = durationDays >= 1 && durationDays <= 3;
+      else if (selectedDuration === t("common.4To6Days")) matchesDuration = durationDays >= 4 && durationDays <= 6;
+      else if (selectedDuration === t("common.7PlusDays")) matchesDuration = durationDays >= 7;
       
       return matchesCategory && matchesPrice && matchesDuration;
     }
@@ -160,22 +198,22 @@ export default function Packages() {
                          matchesTravelTips;
     
     // Apply filters
-    const matchesCategoryFilter = selectedCategory === "All" || pkg.category === selectedCategory;
+    const matchesCategoryFilter = selectedCategory === t("common.all") || pkg.category === selectedCategory;
     
     // Price range filtering
     const price = parseInt(pkg.price.replace(/[₹,]/g, ''));
     let matchesPrice = true;
-    if (selectedPriceRange === "Under ₹10K") matchesPrice = price < 10000;
-    else if (selectedPriceRange === "₹10K-20K") matchesPrice = price >= 10000 && price <= 20000;
-    else if (selectedPriceRange === "₹20K-30K") matchesPrice = price >= 20000 && price <= 30000;
-    else if (selectedPriceRange === "Above ₹30K") matchesPrice = price > 30000;
+    if (selectedPriceRange === t("common.under10K")) matchesPrice = price < 10000;
+    else if (selectedPriceRange === t("common.10KTo20K")) matchesPrice = price >= 10000 && price <= 20000;
+    else if (selectedPriceRange === t("common.20KTo30K")) matchesPrice = price >= 20000 && price <= 30000;
+    else if (selectedPriceRange === t("common.above30K")) matchesPrice = price > 30000;
     
     // Duration filtering
     const durationDays = parseInt(pkg.duration.split(' ')[0]);
     let matchesDuration = true;
-    if (selectedDuration === "1-3 Days") matchesDuration = durationDays >= 1 && durationDays <= 3;
-    else if (selectedDuration === "4-6 Days") matchesDuration = durationDays >= 4 && durationDays <= 6;
-    else if (selectedDuration === "7+ Days") matchesDuration = durationDays >= 7;
+    if (selectedDuration === t("common.1To3Days")) matchesDuration = durationDays >= 1 && durationDays <= 3;
+    else if (selectedDuration === t("common.4To6Days")) matchesDuration = durationDays >= 4 && durationDays <= 6;
+    else if (selectedDuration === t("common.7PlusDays")) matchesDuration = durationDays >= 7;
     
     return matchesSearch && matchesCategoryFilter && matchesPrice && matchesDuration;
   });
@@ -206,7 +244,10 @@ export default function Packages() {
               {t("packages.title")}
             </h1>
           </div>
-          <LanguageToggle />
+          <div className="flex gap-2">
+            <LanguageToggle />
+            <DarkModeToggle />
+          </div>
         </div>
         <SearchBar 
           value={searchValue}
@@ -224,19 +265,19 @@ export default function Packages() {
               <h3 className="font-semibold text-foreground">
                 {sortedPackages.length} Package{sortedPackages.length !== 1 ? 's' : ''} Found
               </h3>
-              {(selectedCategory !== "All" || selectedPriceRange !== "All" || selectedDuration !== "All" || searchValue) && (
+              {(selectedCategory !== t("common.all") || selectedPriceRange !== t("common.all") || selectedDuration !== t("common.all") || searchValue) && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setSelectedCategory("All");
-                    setSelectedPriceRange("All");
-                    setSelectedDuration("All");
+                    setSelectedCategory(t("common.all"));
+                    setSelectedPriceRange(t("common.all"));
+                    setSelectedDuration(t("common.all"));
                     setSearchValue("");
                   }}
                   className="text-xs"
                 >
-                  Clear Filters
+                  {t("common.clearFilters")}
                 </Button>
               )}
             </div>
@@ -411,6 +452,7 @@ export default function Packages() {
                     <Button 
                       size="sm" 
                       className="bg-primary hover:bg-primary-light"
+                      onClick={() => handleBookNow(pkg)}
                     >
                       {t("common.bookNow")}
                     </Button>
@@ -438,6 +480,30 @@ export default function Packages() {
 
       {/* Package Comparison Modal */}
       <PackageComparison />
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        bookingItems={selectedPackage ? [{
+          id: selectedPackage.id.toString(),
+          type: 'package',
+          title: selectedPackage.title,
+          price: parseFloat(selectedPackage.price.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: selectedPackage.duration,
+          location: selectedPackage.departureCity || 'Jharkhand',
+          image: selectedPackage.image,
+          metadata: {
+            category: selectedPackage.category,
+            type: selectedPackage.type,
+            groupSize: selectedPackage.groupSize,
+            bestTime: selectedPackage.bestTime,
+            rating: selectedPackage.rating
+          }
+        }] : []}
+        onSuccess={handleBookingSuccess}
+      />
     </div>
   );
 }

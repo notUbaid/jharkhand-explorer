@@ -34,11 +34,12 @@ export const config = {
 export const validateEnvironment = () => {
   const warnings: string[] = [];
   
-  if (!config.razorpay.keyId || config.razorpay.keyId === 'rzp_test_RLUAMPaeE93MzD') {
+  // Only warn if no key is provided at all, not if using the provided test key
+  if (!config.razorpay.keyId) {
     warnings.push('Razorpay Key ID not configured. Please set VITE_RAZORPAY_KEY_ID in your environment variables.');
   }
   
-  if (!config.razorpay.keySecret || config.razorpay.keySecret === 'uJyWNmb704GUA2Hx1ahqYKyf') {
+  if (!config.razorpay.keySecret) {
     warnings.push('Razorpay Key Secret not configured. Please set VITE_RAZORPAY_KEY_SECRET in your environment variables.');
   }
   

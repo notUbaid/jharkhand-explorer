@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, MapPin, IndianRupee, User, Mail, Phone, CreditCard, Loader2 } from 'lucide-react';
-import { BookingItem, useBooking } from '@/hooks/useBooking';
+import { BookingItem } from '@/hooks/useBooking';
+import { processRazorpayPayment } from '@/lib/razorpay';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -16,55 +18,133 @@ interface BookingModalProps {
 }
 
 export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: BookingModalProps) => {
-  const { createBooking, isLoading } = useBooking();
+  const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     customerName: '',
     customerEmail: '',
     customerPhone: '',
     bookingDate: '',
     bookingTime: '',
-    specialRequests: ''
+    specialRequests: '',
+    rentalDays: 1,
+    rentalHours: 1
   });
 
-  const totalAmount = bookingItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  // Calculate total amount with proper handling of NaN values and rental duration
+  const totalAmount = bookingItems.reduce((sum, item) => {
+    const price = isNaN(item.price) ? 0 : item.price;
+    let quantity = item.quantity;
+    
+    // For rentals, multiply by days or hours based on duration
+    if (item.type === 'rental') {
+      if (item.duration?.includes('Day')) {
+        quantity = item.quantity * formData.rentalDays;
+      } else if (item.duration?.includes('Hour')) {
+        quantity = item.quantity * formData.rentalHours;
+      }
+    }
+    
+    return sum + (price * quantity);
+  }, 0);
+
+  // Check if this is a free booking
+  const isFreeBooking = totalAmount === 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.customerName || !formData.customerEmail || !formData.customerPhone || !formData.bookingDate) {
-      alert('Please fill in all required fields');
+      alert(t('common.pleaseFillRequiredFields'));
       return;
     }
 
-    const result = await createBooking(
-      bookingItems,
-      {
-        name: formData.customerName,
-        email: formData.customerEmail,
-        phone: formData.customerPhone
-      },
-      formData.bookingDate,
-      formData.specialRequests
-    );
+    setIsLoading(true);
 
-    if (result.success && result.bookingId) {
-      onSuccess?.(result.bookingId);
-      onClose();
-      // Reset form
-      setFormData({
-        customerName: '',
-        customerEmail: '',
-        customerPhone: '',
-        bookingDate: '',
-        bookingTime: '',
-        specialRequests: ''
-      });
-    } else {
-      alert(result.error || 'Booking failed. Please try again.');
+    try {
+      const bookingId = `booking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      if (isFreeBooking) {
+        // Handle free booking without payment
+        console.log('Free booking confirmed:', bookingId);
+        alert(t('common.freeBookingConfirmed'));
+        
+        if (onSuccess) {
+          onSuccess(bookingId);
+        }
+        
+        onClose();
+        
+        // Reset form
+        setFormData({
+          customerName: '',
+          customerEmail: '',
+          customerPhone: '',
+          bookingDate: '',
+          bookingTime: '',
+          specialRequests: '',
+          rentalDays: 1,
+          rentalHours: 1
+        });
+      } else {
+        // Handle paid booking with Razorpay
+        const result = await processRazorpayPayment(
+          totalAmount,
+          `Booking #${bookingId}`,
+          {
+            name: formData.customerName,
+            email: formData.customerEmail,
+            phone: formData.customerPhone
+          },
+          {
+            booking_id: bookingId,
+            booking_date: formData.bookingDate,
+            items: bookingItems.map(item => `${item.title} (${item.quantity}x)`).join(', '),
+            special_requests: formData.specialRequests || 'None'
+          },
+          (response) => {
+            // Payment successful
+            console.log('Payment successful:', response);
+            alert(t('common.bookingConfirmed').replace('{paymentId}', response.razorpay_payment_id));
+            
+            if (onSuccess) {
+              onSuccess(response.razorpay_payment_id || bookingId);
+            }
+            
+            onClose();
+            
+            // Reset form
+            setFormData({
+              customerName: '',
+              customerEmail: '',
+              customerPhone: '',
+              bookingDate: '',
+              bookingTime: '',
+              specialRequests: '',
+              rentalDays: 1,
+              rentalHours: 1
+            });
+          },
+          (error) => {
+            // Payment failed or cancelled
+            console.error('Payment error:', error);
+            alert(t('common.paymentFailed'));
+          }
+        );
+
+        if (!result.success) {
+          alert(result.error || t('common.paymentFailed'));
+        }
+      }
+    } catch (error) {
+      console.error('Booking error:', error);
+      alert(t('common.bookingFailed'));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -72,40 +152,67 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <CreditCard className="text-primary" size={20} />
-            Complete Your Booking
-          </DialogTitle>
+                  <DialogTitle className="flex items-center gap-2">
+                    {isFreeBooking ? (
+                      <Calendar className="text-primary" size={20} />
+                    ) : (
+                      <CreditCard className="text-primary" size={20} />
+                    )}
+                    {isFreeBooking ? t('common.completeYourFreeBooking') : t('common.completeYourBooking')}
+                  </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Booking Summary */}
           <div className="bg-muted/30 p-4 rounded-lg">
-            <h3 className="font-semibold mb-3">Booking Summary</h3>
+            <h3 className="font-semibold mb-3">{t('common.bookingSummary')}</h3>
             <div className="space-y-2">
-              {bookingItems.map((item, index) => (
-                <div key={index} className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs">
-                      {item.type}
-                    </Badge>
-                    <span className="font-medium">{item.title}</span>
-                    {item.quantity > 1 && (
-                      <span className="text-muted-foreground">x{item.quantity}</span>
-                    )}
+              {bookingItems.map((item, index) => {
+                let displayQuantity = item.quantity;
+                let displayDuration = item.duration;
+                
+                // For rentals, show calculated duration and quantity
+                if (item.type === 'rental') {
+                  if (item.duration?.includes('Day')) {
+                    displayQuantity = item.quantity * formData.rentalDays;
+                    displayDuration = `${formData.rentalDays} Day${formData.rentalDays > 1 ? 's' : ''}`;
+                  } else if (item.duration?.includes('Hour')) {
+                    displayQuantity = item.quantity * formData.rentalHours;
+                    displayDuration = `${formData.rentalHours} Hour${formData.rentalHours > 1 ? 's' : ''}`;
+                  }
+                }
+                
+                return (
+                  <div key={index} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                      </Badge>
+                      <span className="font-medium">{item.title}</span>
+                      {displayQuantity > 1 && (
+                        <span className="text-muted-foreground">x{displayQuantity}</span>
+                      )}
+                      {displayDuration && (
+                        <span className="text-muted-foreground text-xs">({displayDuration})</span>
+                      )}
+                    </div>
+                    <div className="flex items-center">
+                      <IndianRupee size={12} className="text-accent" />
+                      <span className="font-medium">
+                        {isNaN(item.price) ? '0' : (item.price * displayQuantity).toLocaleString()}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <IndianRupee size={12} className="text-accent" />
-                    <span className="font-medium">{(item.price * item.quantity).toLocaleString()}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
               <div className="border-t pt-2 mt-2">
-                <div className="flex items-center justify-between font-semibold">
-                  <span>Total:</span>
+                        <div className="flex items-center justify-between font-semibold">
+                          <span>{t('common.total')}:</span>
                   <div className="flex items-center">
                     <IndianRupee size={16} className="text-accent" />
-                    <span className="text-lg text-accent">{totalAmount.toLocaleString()}</span>
+                    <span className="text-lg text-accent">
+                      {isFreeBooking ? '0' : totalAmount.toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -116,13 +223,13 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Customer Details */}
             <div className="space-y-3">
-              <h4 className="font-medium flex items-center gap-2">
-                <User size={16} />
-                Customer Details
-              </h4>
+                      <h4 className="font-medium flex items-center gap-2">
+                        <User size={16} />
+                        {t('common.customerDetails')}
+                      </h4>
               
               <div>
-                <Label htmlFor="customerName">Full Name *</Label>
+                <Label htmlFor="customerName">{t('common.fullName')} *</Label>
                 <Input
                   id="customerName"
                   value={formData.customerName}
@@ -133,7 +240,7 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
               </div>
 
               <div>
-                <Label htmlFor="customerEmail">Email Address *</Label>
+                <Label htmlFor="customerEmail">{t('common.emailAddress')} *</Label>
                 <Input
                   id="customerEmail"
                   type="email"
@@ -145,7 +252,7 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
               </div>
 
               <div>
-                <Label htmlFor="customerPhone">Phone Number *</Label>
+                <Label htmlFor="customerPhone">{t('common.phoneNumber')} *</Label>
                 <Input
                   id="customerPhone"
                   type="tel"
@@ -159,13 +266,13 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
 
             {/* Booking Details */}
             <div className="space-y-3">
-              <h4 className="font-medium flex items-center gap-2">
-                <Calendar size={16} />
-                Booking Details
-              </h4>
+                      <h4 className="font-medium flex items-center gap-2">
+                        <Calendar size={16} />
+                        {t('common.bookingDetails')}
+                      </h4>
               
               <div>
-                <Label htmlFor="bookingDate">Booking Date *</Label>
+                <Label htmlFor="bookingDate">{t('common.bookingDate')} *</Label>
                 <Input
                   id="bookingDate"
                   type="date"
@@ -177,7 +284,7 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
               </div>
 
               <div>
-                <Label htmlFor="bookingTime">Preferred Time</Label>
+                <Label htmlFor="bookingTime">{t('common.preferredTime')}</Label>
                 <Input
                   id="bookingTime"
                   type="time"
@@ -187,15 +294,50 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
               </div>
 
               <div>
-                <Label htmlFor="specialRequests">Special Requests</Label>
+                <Label htmlFor="specialRequests">{t('common.specialRequests')}</Label>
                 <Textarea
                   id="specialRequests"
                   value={formData.specialRequests}
                   onChange={(e) => handleInputChange('specialRequests', e.target.value)}
-                  placeholder="Any special requirements or requests..."
+                  placeholder={t('common.anySpecialRequirements')}
                   rows={3}
                 />
               </div>
+
+              {/* Rental Duration Fields - Only show for rental bookings */}
+              {bookingItems.some(item => item.type === 'rental') && (
+                <>
+                  {bookingItems.some(item => item.duration?.includes('Day')) && (
+                    <div>
+                      <Label htmlFor="rentalDays">Number of Days</Label>
+                      <Input
+                        id="rentalDays"
+                        type="number"
+                        min="1"
+                        max="30"
+                        value={formData.rentalDays}
+                        onChange={(e) => handleInputChange('rentalDays', parseInt(e.target.value) || 1)}
+                        className="mt-1"
+                      />
+                    </div>
+                  )}
+                  
+                  {bookingItems.some(item => item.duration?.includes('Hour')) && (
+                    <div>
+                      <Label htmlFor="rentalHours">Number of Hours</Label>
+                      <Input
+                        id="rentalHours"
+                        type="number"
+                        min="1"
+                        max="24"
+                        value={formData.rentalHours}
+                        onChange={(e) => handleInputChange('rentalHours', parseInt(e.target.value) || 1)}
+                        className="mt-1"
+                      />
+                    </div>
+                  )}
+                </>
+              )}
             </div>
 
             {/* Payment Button */}
@@ -204,17 +346,22 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
               className="w-full bg-primary hover:bg-primary/90 h-12 text-lg font-semibold"
               disabled={isLoading}
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <CreditCard className="mr-2" size={20} />
-                  Pay ₹{totalAmount.toLocaleString()}
-                </>
-              )}
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {t('common.processing')}
+                        </>
+                      ) : isFreeBooking ? (
+                        <>
+                          <Calendar className="mr-2" size={20} />
+                          {t('common.confirmFreeBooking')}
+                        </>
+                      ) : (
+                        <>
+                          <CreditCard className="mr-2" size={20} />
+                          Pay ₹{totalAmount.toLocaleString()}
+                        </>
+                      )}
             </Button>
           </form>
         </div>

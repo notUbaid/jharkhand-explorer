@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ import {
 } from "lucide-react";
 
 export default function ExperienceDetail() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [experience, setExperience] = useState<Experience | null>(null);
@@ -38,11 +40,11 @@ export default function ExperienceDetail() {
     setIsLoading(false);
     
     if (foundExperience) {
-      document.title = `${foundExperience.title} • Discover Jharkhand`;
+      document.title = `${foundExperience.title} • ${t("common.discoverJharkhand")}`;
     } else {
-      document.title = `Experience Not Found • Discover Jharkhand`;
+      document.title = `${t("common.experienceNotFound")} • ${t("common.discoverJharkhand")}`;
     }
-  }, [id]);
+  }, [id, t]);
 
   const handleBookNow = () => {
     if (experience) {
@@ -67,7 +69,7 @@ export default function ExperienceDetail() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading experience details...</p>
+          <p className="mt-4 text-muted-foreground">{t("common.loading")}...</p>
         </div>
       </div>
     );
@@ -77,11 +79,11 @@ export default function ExperienceDetail() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Experience Not Found</h1>
-          <p className="text-muted-foreground mb-6">The experience you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">{t("common.experienceNotFound")}</h1>
+          <p className="text-muted-foreground mb-6">{t("common.experienceNotFoundDesc")}</p>
           <Button onClick={() => navigate("/marketplace")} variant="outline">
             <ArrowLeft className="mr-2" size={16} />
-            Back to Marketplace
+            {t("common.backToMarketplace")}
           </Button>
         </div>
       </div>
@@ -100,7 +102,7 @@ export default function ExperienceDetail() {
             className="text-primary-foreground hover:bg-primary-foreground/10 px-4 py-2"
           >
             <ArrowLeft className="mr-2" size={18} />
-            Back to Marketplace
+            {t("common.backToMarketplace")}
           </Button>
           <LanguageToggle />
         </div>
@@ -152,7 +154,7 @@ export default function ExperienceDetail() {
                     <Star className="text-accent fill-accent" size={16} />
                     <span className="ml-1 font-semibold">{experience.rating}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Rating</p>
+                  <p className="text-xs text-muted-foreground">{t("common.rating")}</p>
                 </div>
                 
                 <div className="text-center">
@@ -160,7 +162,7 @@ export default function ExperienceDetail() {
                     <IndianRupee size={16} className="text-accent" />
                     <span className="ml-1 font-semibold text-lg">{experience.price}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Price</p>
+                  <p className="text-xs text-muted-foreground">{t("common.price")}</p>
                 </div>
               </div>
 
@@ -189,7 +191,7 @@ export default function ExperienceDetail() {
                   className="w-full bg-primary hover:bg-primary/90 h-12 text-lg font-semibold"
                   onClick={handleBookNow}
                 >
-                  Book Now
+                  {t("common.bookNow")}
                 </Button>
                 <Button 
                   variant="outline" 
@@ -231,7 +233,7 @@ export default function ExperienceDetail() {
 
             {/* Highlights */}
             <LuxuryCard className="p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-4">Experience Highlights</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-4">{t("common.experienceHighlights")}</h2>
               <div className="space-y-2">
                 {experience.highlights.map((highlight, index) => (
                   <div key={index} className="flex items-center text-sm text-muted-foreground">
@@ -299,22 +301,22 @@ export default function ExperienceDetail() {
 
             {/* Quick Info */}
             <LuxuryCard className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Quick Info</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">{t("common.quickInfo")}</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Duration</span>
+                  <span className="text-sm text-muted-foreground">{t("common.duration")}</span>
                   <span className="font-semibold">{experience.duration}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Max Participants</span>
+                  <span className="text-sm text-muted-foreground">{t("common.maxParticipants")}</span>
                   <span className="font-semibold">{experience.maxParticipants}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Difficulty</span>
+                  <span className="text-sm text-muted-foreground">{t("common.difficulty")}</span>
                   <span className="font-semibold">{experience.difficulty}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Next Available</span>
+                  <span className="text-sm text-muted-foreground">{t("common.nextAvailable")}</span>
                   <span className="font-semibold text-sm">{experience.nextSlot}</span>
                 </div>
               </div>
