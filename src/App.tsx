@@ -1,9 +1,6 @@
-import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BottomNavigation } from "@/components/ui/bottom-navigation";
 import { DarkModeProvider } from "@/contexts/DarkModeContext";
@@ -11,8 +8,6 @@ import { PackageComparisonProvider } from "@/contexts/PackageComparisonContext";
 import { TransportComparisonProvider } from "@/contexts/TransportComparisonContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import { StayComparisonProvider } from "@/contexts/StayComparisonContext";
-import { enhancedScrollManager } from "@/utils/enhanced-scroll-manager";
-import { ConnectionStatus, ConnectionBanner } from "@/components/ConnectionStatus";
 import Home from "./pages/Home";
 import Destinations from "./pages/Destinations";
 import Packages from "./pages/Packages";
@@ -39,23 +34,9 @@ import EventDetail from "./pages/EventDetail";
 import StayDetail from "./pages/StayDetail";
 import StayCompare from "./pages/StayCompare";
 
-const queryClient = new QueryClient();
-
 const App = () => {
-  useEffect(() => {
-    // Initialize enhanced scroll manager
-    enhancedScrollManager.init();
-    
-    // Cleanup on unmount
-    return () => {
-      enhancedScrollManager.destroy();
-    };
-  }, []);
-
   return (
-  <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <DarkModeProvider>
+    <DarkModeProvider>
         <PackageComparisonProvider>
           <TransportComparisonProvider>
             <StayComparisonProvider>
@@ -65,8 +46,6 @@ const App = () => {
                 <Sonner />
                 <BrowserRouter>
                   <div className="relative min-h-screen bg-background">
-                    <ConnectionBanner />
-                    <ConnectionStatus />
                     <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/destinations" element={<Destinations />} />
@@ -109,8 +88,6 @@ const App = () => {
             </TransportComparisonProvider>
           </PackageComparisonProvider>
         </DarkModeProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
   );
 };
 

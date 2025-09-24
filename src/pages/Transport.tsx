@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -7,15 +7,13 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { BookingModal } from "@/components/BookingModal";
 import { TransportOption, TrainOption, BusOption, FlightOption, City } from "@/types/Transport";
 import { getAllTransportRoutes } from "@/data/transportData";
 import { useTransportComparison } from "@/contexts/TransportComparisonContext";
+import { TransportComparisonModal } from "@/components/TransportComparisonModal";
+import { RentalComparisonModal } from "@/components/RentalComparisonModal";
 import { BookingItem } from "@/hooks/useBooking";
-
-// Lazy load heavy components
-const BookingModal = lazy(() => import("@/components/BookingModal").then(module => ({ default: module.BookingModal })));
-const TransportComparisonModal = lazy(() => import("@/components/TransportComparisonModal").then(module => ({ default: module.TransportComparisonModal })));
-const RentalComparisonModal = lazy(() => import("@/components/RentalComparisonModal").then(module => ({ default: module.RentalComparisonModal })));
 import { 
   Train,
   Bus,
@@ -1848,51 +1846,45 @@ export default function Transport() {
       </div>
       
       {/* Transport Comparison Modal */}
-      <Suspense fallback={<div className="flex justify-center p-4">Loading...</div>}>
-        <TransportComparisonModal />
-      </Suspense>
+      <TransportComparisonModal />
       
       {/* Rental Comparison Modal */}
-      <Suspense fallback={<div className="flex justify-center p-4">Loading...</div>}>
-        <RentalComparisonModal 
-          compareItems={rentalCompareItems}
-          removeFromCompare={removeFromRentalCompare}
-          clearCompare={() => setRentalCompareItems([])}
-          openCompareModal={openRentalCompareModal}
-          setOpenCompareModal={setOpenRentalCompareModal}
-        />
-      </Suspense>
+      <RentalComparisonModal 
+        compareItems={rentalCompareItems}
+        removeFromCompare={removeFromRentalCompare}
+        clearCompare={() => setRentalCompareItems([])}
+        openCompareModal={openRentalCompareModal}
+        setOpenCompareModal={setOpenRentalCompareModal}
+      />
 
       {/* Booking Modal */}
-      <Suspense fallback={<div className="flex justify-center p-4">Loading...</div>}>
-        <BookingModal
-          isOpen={showBookingModal}
-          onClose={() => setShowBookingModal(false)}
-          bookingItems={selectedVehicle ? [{
-            id: selectedVehicle.id.toString(),
-            type: 'rental',
-            title: `${selectedVehicle.model} (${selectedVehicle.type})`,
-            price: rentalType === 'daily' 
-              ? parseFloat(selectedVehicle.pricePerDay.replace(/[₹,]/g, ''))
-              : parseFloat(selectedVehicle.pricePerHour.replace(/[₹,]/g, '')),
-            quantity: 1,
-            duration: rentalType === 'daily' ? '1 Day' : '1 Hour',
-            location: selectedVehicle.pickupLocation,
-            image: selectedVehicle.image,
-            metadata: {
-              vehicleType: selectedVehicle.type,
-              seats: selectedVehicle.seats,
-              fuelType: selectedVehicle.fuelType,
-              mileage: selectedVehicle.mileage,
-              features: selectedVehicle.features,
-              rentalType: rentalType,
-              pricePerDay: selectedVehicle.pricePerDay,
-              pricePerHour: selectedVehicle.pricePerHour
-            }
-          }] : []}
-          onSuccess={handleBookingSuccess}
-        />
-      </Suspense>
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        bookingItems={selectedVehicle ? [{
+          id: selectedVehicle.id.toString(),
+          type: 'rental',
+          title: `${selectedVehicle.model} (${selectedVehicle.type})`,
+          price: rentalType === 'daily' 
+            ? parseFloat(selectedVehicle.pricePerDay.replace(/[₹,]/g, ''))
+            : parseFloat(selectedVehicle.pricePerHour.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: rentalType === 'daily' ? '1 Day' : '1 Hour',
+          location: selectedVehicle.pickupLocation,
+          image: selectedVehicle.image,
+          metadata: {
+            vehicleType: selectedVehicle.type,
+            seats: selectedVehicle.seats,
+            fuelType: selectedVehicle.fuelType,
+            mileage: selectedVehicle.mileage,
+            features: selectedVehicle.features,
+            rentalType: rentalType,
+            pricePerDay: selectedVehicle.pricePerDay,
+            pricePerHour: selectedVehicle.pricePerHour
+          }
+        }] : []}
+        onSuccess={handleBookingSuccess}
+      />
     </div>
   );
 }

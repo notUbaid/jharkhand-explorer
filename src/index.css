@@ -7,53 +7,6 @@ Deep emerald, gold accents, luxurious feel with soft shadows
 All colors MUST be HSL.
 */
 
-/* Performance optimizations */
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  font-feature-settings: "rlig" 1, "calt" 1;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Optimize animations for performance */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* GPU acceleration for smooth animations */
-.gpu-accelerated {
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-/* Optimize image loading */
-img {
-  content-visibility: auto;
-  contain-intrinsic-size: 300px 200px;
-}
-
-/* Optimize scrolling performance */
-.scroll-container {
-  contain: layout style paint;
-  content-visibility: auto;
-}
 
 @layer base {
   :root {
