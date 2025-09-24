@@ -1,8 +1,10 @@
-import Razorpay from 'razorpay';
+import { config, validateEnvironment } from '@/config/environment';
 
-// Razorpay configuration
-const RAZORPAY_KEY_ID = process.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_1DP5mmOlF5G5ag'; // Replace with your actual key
-const RAZORPAY_KEY_SECRET = process.env.VITE_RAZORPAY_KEY_SECRET || 'your_secret_key'; // Replace with your actual secret
+// Validate environment on import
+validateEnvironment();
+
+// Note: Razorpay server-side initialization should be done in your backend
+// This file contains client-side utilities for payment processing
 
 export interface PaymentDetails {
   amount: number;
@@ -39,76 +41,60 @@ export interface OrderDetails {
   createdAt: Date;
 }
 
-// Initialize Razorpay
-const razorpay = new Razorpay({
-  key_id: RAZORPAY_KEY_ID,
-  key_secret: RAZORPAY_KEY_SECRET,
-});
-
-// Create Razorpay order
-export const createRazorpayOrder = async (amount: number, currency: string = 'INR') => {
-  try {
-    const options = {
-      amount: amount * 100, // Razorpay expects amount in paise
-      currency,
-      receipt: `order_${Date.now()}`,
-    };
-
-    const order = await razorpay.orders.create(options);
-    return order;
-  } catch (error) {
-    console.error('Error creating Razorpay order:', error);
-    throw new Error('Failed to create payment order');
-  }
-};
-
-// Verify payment signature
-export const verifyPaymentSignature = (orderId: string, paymentId: string, signature: string): boolean => {
-  try {
-    const crypto = require('crypto');
-    const expectedSignature = crypto
-      .createHmac('sha256', RAZORPAY_KEY_SECRET)
-      .update(`${orderId}|${paymentId}`)
-      .digest('hex');
-    
-    return expectedSignature === signature;
-  } catch (error) {
-    console.error('Error verifying payment signature:', error);
-    return false;
-  }
-};
-
-// Process payment
-export const processPayment = async (
+// Client-side Razorpay options generator
+export const generateRazorpayOptions = (
   amount: number,
-  orderDetails: Omit<OrderDetails, 'orderId' | 'paymentId' | 'status' | 'createdAt'>
-): Promise<PaymentDetails> => {
-  try {
-    // Create Razorpay order
-    const order = await createRazorpayOrder(amount);
-    
-    // For client-side integration, we'll return the order details
-    // The actual payment will be handled by Razorpay's client-side SDK
-    return {
-      amount,
-      currency: 'INR',
-      orderId: order.id,
-      paymentId: '', // Will be filled after payment
-      signature: '', // Will be filled after payment
-      status: 'pending',
-    };
-  } catch (error) {
-    console.error('Error processing payment:', error);
-    throw new Error('Payment processing failed');
+  orderId: string,
+  customerDetails: {
+    name: string;
+    email: string;
+    phone: string;
+  },
+  shippingAddress: {
+    street: string;
+    city: string;
+    state: string;
+    pincode: string;
   }
+) => {
+  return {
+    key: config.razorpay.keyId,
+    amount: amount * 100, // Amount in paise
+    currency: config.payment.currency,
+    name: config.app.name,
+    description: `Order #${orderId}`,
+    image: '/src/assets/Logo.jpg',
+    order_id: orderId,
+    handler: function (response: any) {
+      // Payment successful callback
+      console.log('Payment successful:', response);
+      return response;
+    },
+    prefill: {
+      name: customerDetails.name,
+      email: customerDetails.email,
+      contact: customerDetails.phone,
+    },
+    notes: {
+      address: `${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state} - ${shippingAddress.pincode}`,
+    },
+    theme: {
+      color: '#059669'
+    },
+    modal: {
+      ondismiss: function() {
+        console.log('Payment modal dismissed');
+      }
+    }
+  };
 };
 
 // Save order to localStorage (in a real app, this would be sent to a backend)
 export const saveOrder = (orderDetails: OrderDetails): void => {
   try {
-    const existingOrders = JSON.parse(localStorage.getItem('jharkhand-orders') || '[]');
+    const existingOrders = JSON.parse(localStorage.getItem(config.storage.ordersKey) || '[]');
     existingOrders.push(orderDetails);
-    localStorage.setItem('jharkhand-orders', JSON.stringify(existingOrders));
+    localStorage.setItem(config.storage.ordersKey, JSON.stringify(existingOrders));
   } catch (error) {
     console.error('Error saving order:', error);
   }
@@ -117,7 +103,7 @@ export const saveOrder = (orderDetails: OrderDetails): void => {
 // Get orders from localStorage
 export const getOrders = (): OrderDetails[] => {
   try {
-    const orders = JSON.parse(localStorage.getItem('jharkhand-orders') || '[]');
+    const orders = JSON.parse(localStorage.getItem(config.storage.ordersKey) || '[]');
     return orders.map((order: any) => ({
       ...order,
       createdAt: new Date(order.createdAt)
@@ -135,7 +121,7 @@ export const updateOrderStatus = (orderId: string, status: OrderDetails['status'
     const updatedOrders = orders.map(order =>
       order.orderId === orderId ? { ...order, status } : order
     );
-    localStorage.setItem('jharkhand-orders', JSON.stringify(updatedOrders));
+    localStorage.setItem(config.storage.ordersKey, JSON.stringify(updatedOrders));
   } catch (error) {
     console.error('Error updating order status:', error);
   }

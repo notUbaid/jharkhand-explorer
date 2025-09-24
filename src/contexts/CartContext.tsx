@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product } from '@/data/products';
+import { config } from '@/config/environment';
 
 export interface CartItem {
   id: number;
@@ -39,7 +40,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('jharkhand-cart');
+    const savedCart = localStorage.getItem(config.storage.cartKey);
     if (savedCart) {
       try {
         const parsedCart = JSON.parse(savedCart);
@@ -51,14 +52,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         setItems(cartWithDates);
       } catch (error) {
         console.error('Error loading cart from localStorage:', error);
-        localStorage.removeItem('jharkhand-cart');
+        localStorage.removeItem(config.storage.cartKey);
       }
     }
   }, []);
 
   // Save cart to localStorage whenever items change
   useEffect(() => {
-    localStorage.setItem('jharkhand-cart', JSON.stringify(items));
+    localStorage.setItem(config.storage.cartKey, JSON.stringify(items));
   }, [items]);
 
   const addToCart = (product: Product, quantity: number = 1) => {

@@ -385,6 +385,23 @@ export default function Destinations() {
   const navigate = useNavigate();
 
   // Favorite functions
+  const toggleRestaurantFavorite = (restaurant: typeof restaurants[0]) => {
+    if (isFavorite(restaurant.id.toString(), 'restaurant')) {
+      removeFromFavorites(restaurant.id.toString(), 'restaurant');
+    } else {
+      addToFavorites({
+        id: restaurant.id.toString(),
+        type: 'restaurant',
+        name: restaurant.name,
+        description: restaurant.description,
+        image: restaurant.images[0],
+        location: restaurant.location,
+        rating: restaurant.rating,
+        category: restaurant.category
+      });
+    }
+  };
+
   const toggleDestinationFavorite = (destination: typeof destinations[0]) => {
     if (isFavorite(destination.id.toString(), 'destination')) {
       removeFromFavorites(destination.id.toString(), 'destination');
@@ -398,23 +415,6 @@ export default function Destinations() {
         location: destination.location,
         rating: destination.rating,
         category: destination.category
-      });
-    }
-  };
-
-  const toggleRestaurantFavorite = (restaurant: typeof restaurants[0]) => {
-    if (isFavorite(restaurant.id.toString(), 'destination')) {
-      removeFromFavorites(restaurant.id.toString(), 'destination');
-    } else {
-      addToFavorites({
-        id: restaurant.id.toString(),
-        type: 'destination',
-        name: restaurant.name,
-        description: restaurant.description,
-        image: restaurant.image,
-        location: restaurant.location,
-        rating: restaurant.rating,
-        category: restaurant.cuisine
       });
     }
   };
@@ -764,30 +764,30 @@ export default function Destinations() {
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {crossSearchResults.destinations.slice(0, 3).map((destination) => (
+                  {crossSearchResults.destinations.slice(0, 3).map((dest) => (
                     <LuxuryCard 
-                      key={destination.id}
-                      onClick={() => handleDestinationClick(destination.id)}
+                      key={dest.id}
+                      onClick={() => handleDestinationClick(dest.id)}
                       className="p-0 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
                     >
                       <div className="relative">
                         <div className="aspect-[3/2] bg-muted overflow-hidden relative">
-                          <div className={`flex transition-transform duration-[2000ms] ease-in-out ${
-                            isTransitioning[destination.id] ? '-translate-x-full' : 'translate-x-0'
+                          <div className={`flex transition-transform duration-2000 ease-in-out ${
+                            isTransitioning[dest.id] ? '-translate-x-full' : 'translate-x-0'
                           }`}>
                             <div className="w-full h-full flex-shrink-0">
                               <img 
-                                src={destination.images ? destination.images[imageIndices[destination.id] || 0] : destination.image} 
-                                alt={destination.name}
+                                src={dest.images ? dest.images[imageIndices[dest.id] || 0] : dest.image} 
+                                alt={dest.name}
                                 className="w-full h-full object-cover object-center"
                               />
                             </div>
                             
-                            {destination.images && destination.images.length > 1 && (
+                            {dest.images && dest.images.length > 1 && (
                               <div className="w-full h-full flex-shrink-0">
                                 <img 
-                                  src={destination.images[((imageIndices[destination.id] || 0) + 1) % destination.images.length]} 
-                                  alt={destination.name}
+                                  src={dest.images[((imageIndices[dest.id] || 0) + 1) % dest.images.length]} 
+                                  alt={dest.name}
                                   className="w-full h-full object-cover object-center"
                                 />
                               </div>
@@ -804,26 +804,26 @@ export default function Destinations() {
                         
                         <div className="absolute top-2 right-2 flex items-center space-x-1 bg-white/90 rounded-full px-2 py-1">
                           <Star className="text-yellow-500" size={12} fill="currentColor" />
-                          <span className="text-xs font-medium">{destination.rating}</span>
+                          <span className="text-xs font-medium">{dest.rating}</span>
                         </div>
                       </div>
                       
                       <div className="p-4">
                         <h3 className="font-semibold text-foreground mb-1 line-clamp-1">
-                          {destination.name}
+                          {dest.name}
                         </h3>
                         <p className="text-sm text-muted-foreground mb-2 line-clamp-1">
-                          {destination.location}
+                          {dest.location}
                         </p>
                         <p className="text-xs text-muted-foreground line-clamp-2">
-                          {destination.description}
+                          {dest.description}
                         </p>
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-sm font-medium text-primary">
-                            {destination.category}
+                            {dest.category}
                           </span>
                           <Badge variant="outline" className="text-xs">
-                            {destination.tags[0]}
+                            {dest.tags[0]}
                           </Badge>
                         </div>
                       </div>
@@ -933,33 +933,33 @@ export default function Destinations() {
             {/* Destinations List */}
             {sortedDestinations.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                {sortedDestinations.map((destination) => (
+                {sortedDestinations.map((dest) => (
                 <LuxuryCard 
-                  key={destination.id}
-                  onClick={() => handleDestinationClick(destination.id)}
+                  key={dest.id}
+                  onClick={() => handleDestinationClick(dest.id)}
                   className="p-0 overflow-hidden"
                 >
                   <div className="relative">
                     <div className="aspect-[3/2] bg-muted overflow-hidden relative">
                       {/* Image Container with sliding animation */}
-                      <div className={`flex transition-transform duration-[2000ms] ease-in-out ${
-                        isTransitioning[destination.id] ? '-translate-x-full' : 'translate-x-0'
+                      <div className={`flex transition-transform duration-2000 ease-in-out ${
+                        isTransitioning[dest.id] ? '-translate-x-full' : 'translate-x-0'
                       }`}>
                         {/* Current Image */}
                         <div className="w-full h-full flex-shrink-0">
                           <img 
-                            src={destination.images ? destination.images[imageIndices[destination.id] || 0] : destination.image} 
-                            alt={destination.name}
+                            src={dest.images ? dest.images[imageIndices[dest.id] || 0] : dest.image} 
+                            alt={dest.name}
                             className="w-full h-full object-cover object-center"
                           />
                         </div>
                         
                         {/* Next Image (for sliding) */}
-                        {destination.images && destination.images.length > 1 && (
+                        {dest.images && dest.images.length > 1 && (
                           <div className="w-full h-full flex-shrink-0">
                             <img 
-                              src={destination.images[((imageIndices[destination.id] || 0) + 1) % destination.images.length]} 
-                              alt={destination.name}
+                              src={dest.images[((imageIndices[dest.id] || 0) + 1) % dest.images.length]} 
+                              alt={dest.name}
                               className="w-full h-full object-cover object-center"
                             />
                           </div>
@@ -973,13 +973,13 @@ export default function Destinations() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleDestinationFavorite(destination);
+                        toggleDestinationFavorite(dest);
                       }}
                       className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full"
                     >
                       <Heart 
                         size={14} 
-                        className={isFavorite(destination.id.toString(), 'destination') ? "text-red-500 fill-red-500" : "text-red-500"}
+                        className={isFavorite(dest.id.toString(), 'destination') ? "text-red-500 fill-red-500" : "text-red-500"}
                       />
                     </button>
                   </div>
@@ -989,9 +989,9 @@ export default function Destinations() {
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-semibold text-foreground font-inter">
-                            {destination.name}
+                            {dest.name}
                           </h3>
-                          {destination.isHiddenGem && (
+                          {dest.isHiddenGem && (
                             <Badge variant="secondary" className="bg-accent/10 text-accent text-xs">
                               ✨ Hidden Gem
                             </Badge>
@@ -999,38 +999,38 @@ export default function Destinations() {
                         </div>
                         <p className="text-sm text-muted-foreground flex items-center">
                           <MapPin size={12} className="mr-1" />
-                          {destination.location}
-                          {sortByLocation && userLocation && destinationCoordinates[destination.name] && (
+                          {dest.location}
+                          {sortByLocation && userLocation && destinationCoordinates[dest.name] && (
                             <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
                               {formatDistance(calculateDistance(
                                 userLocation.lat, 
                                 userLocation.lng, 
-                                destinationCoordinates[destination.name].lat, 
-                                destinationCoordinates[destination.name].lng
+                                destinationCoordinates[dest.name].lat, 
+                                destinationCoordinates[dest.name].lng
                               ))}
                             </span>
                           )}
                         </p>
                       </div>
                       <Badge variant="outline" className="text-xs">
-                        {destination.category}
+                        {dest.category}
                       </Badge>
                     </div>
                     
                     <p className="text-sm text-muted-foreground mb-2">
-                      {destination.description}
+                      {dest.description}
                     </p>
                     
                     {/* Tags */}
                     <div className="flex flex-wrap gap-1 mb-2">
-                      {destination.tags.slice(0, 2).map((tag, index) => (
+                      {dest.tags.slice(0, 2).map((tag, index) => (
                         <Badge key={index} variant="secondary" className="text-xs bg-primary/10 text-primary">
                           {tag}
                         </Badge>
                       ))}
-                      {destination.tags.length > 2 && (
+                      {dest.tags.length > 2 && (
                         <Badge variant="secondary" className="text-xs bg-muted">
-                          +{destination.tags.length - 2}
+                          +{dest.tags.length - 2}
                         </Badge>
                       )}
                     </div>
@@ -1038,11 +1038,11 @@ export default function Destinations() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Star className="text-accent fill-accent" size={14} />
-                        <span className="text-sm font-medium ml-1">{destination.rating}</span>
+                        <span className="text-sm font-medium ml-1">{dest.rating}</span>
                       </div>
                       <div className="flex items-center text-xs text-muted-foreground">
                         <IndianRupee size={12} className="mr-1" />
-                        {destination.entryFee}
+                        {dest.entryFee}
                       </div>
                     </div>
                   </div>
@@ -1120,7 +1120,7 @@ export default function Destinations() {
                   <div className="relative">
                     <div className="aspect-[3/2] bg-muted overflow-hidden relative">
                       {/* Image Container with sliding animation */}
-                      <div className={`flex transition-transform duration-[2000ms] ease-in-out ${
+                      <div className={`flex transition-transform duration-2000 ease-in-out ${
                         restaurantIsTransitioning[restaurant.id] ? '-translate-x-full' : 'translate-x-0'
                       }`}>
                         {/* Current Image */}
@@ -1151,13 +1151,13 @@ export default function Destinations() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleDestinationFavorite(destination);
+                        toggleRestaurantFavorite(restaurant);
                       }}
                       className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full"
                     >
                       <Heart 
                         size={14} 
-                        className={isFavorite(destination.id.toString(), 'destination') ? "text-red-500 fill-red-500" : "text-red-500"}
+                        className={isFavorite(restaurant.id.toString(), 'restaurant') ? "text-red-500 fill-red-500" : "text-red-500"}
                       />
                     </button>
                   </div>

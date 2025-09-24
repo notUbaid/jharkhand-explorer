@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 export interface FavoriteItem {
   id: string;
-  type: 'destination' | 'package' | 'stay' | 'product' | 'experience' | 'tourguide' | 'event' | 'transport';
+  type: 'destination' | 'package' | 'stay' | 'product' | 'experience' | 'tourguide' | 'event' | 'transport' | 'restaurant';
   name: string;
   description?: string;
   image?: string;

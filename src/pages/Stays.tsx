@@ -375,7 +375,7 @@ export default function Stays() {
                   <img 
                     src={stay.images ? stay.images[stayImageIndices[stay.id] || 0] : stay.image} 
                     alt={stay.name}
-                    className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-[3000ms] ease-in-out ${
+                    className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-3000 ease-in-out ${
                       stayIsTransitioning[stay.id] ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
                     }`}
                   />
@@ -385,7 +385,7 @@ export default function Stays() {
                     <img 
                       src={stay.images[((stayImageIndices[stay.id] || 0) + 1) % stay.images.length]} 
                       alt={stay.name}
-                      className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-[3000ms] ease-in-out ${
+                      className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-3000 ease-in-out ${
                         stayIsTransitioning[stay.id] ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
                       }`}
                     />

@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BottomNavigation } from "@/components/ui/bottom-navigation";
@@ -40,18 +41,19 @@ import Orders from "./pages/Orders";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <DarkModeProvider>
-      <PackageComparisonProvider>
-        <TransportComparisonProvider>
-          <FavoritesProvider>
-            <CartProvider>
-              <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <div className="relative">
-              <Routes>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <DarkModeProvider>
+        <PackageComparisonProvider>
+          <TransportComparisonProvider>
+            <FavoritesProvider>
+              <CartProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter>
+                    <div className="relative">
+                      <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/destinations" element={<Destinations />} />
                 <Route path="/destinations/:id" element={<DestinationDetail />} />
@@ -85,17 +87,18 @@ const App = () => (
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/orders" element={<Orders />} />
                 <Route path="*" element={<NotFound />} />
-              </Routes>
-              <BottomNavigation />
-            </div>
-          </BrowserRouter>
-          </TooltipProvider>
-            </CartProvider>
-          </FavoritesProvider>
-        </TransportComparisonProvider>
-      </PackageComparisonProvider>
-    </DarkModeProvider>
-  </QueryClientProvider>
+                      </Routes>
+                      <BottomNavigation />
+                    </div>
+                  </BrowserRouter>
+                </TooltipProvider>
+              </CartProvider>
+            </FavoritesProvider>
+          </TransportComparisonProvider>
+        </PackageComparisonProvider>
+      </DarkModeProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
