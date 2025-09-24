@@ -12,6 +12,7 @@ import { TransportComparisonProvider } from "@/contexts/TransportComparisonConte
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import { StayComparisonProvider } from "@/contexts/StayComparisonContext";
 import { enhancedScrollManager } from "@/utils/enhanced-scroll-manager";
+import { ConnectionStatus, ConnectionBanner } from "@/components/ConnectionStatus";
 import Home from "./pages/Home";
 import Destinations from "./pages/Destinations";
 import Packages from "./pages/Packages";
@@ -64,6 +65,8 @@ const App = () => {
                 <Sonner />
                 <BrowserRouter>
                   <div className="relative min-h-screen bg-background">
+                    <ConnectionBanner />
+                    <ConnectionStatus />
                     <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/destinations" element={<Destinations />} />

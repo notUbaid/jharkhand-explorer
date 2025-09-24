@@ -28,6 +28,7 @@ export default defineConfig(({ mode }) => ({
     cssCodeSplit: true,
     // Optimize asset handling
     assetsInlineLimit: 4096, // 4kb
+    // Copy service worker to dist
     rollupOptions: {
       output: {
         manualChunks: (id) => {
@@ -60,10 +61,7 @@ export default defineConfig(({ mode }) => ({
           }
         },
         // Optimize chunk naming
-        chunkFileNames: (chunkInfo) => {
-          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
-          return `assets/[name]-[hash].js`;
-        },
+        chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
       },
