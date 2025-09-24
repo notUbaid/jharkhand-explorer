@@ -42,11 +42,11 @@ const getRestaurantData = (id: string) => {
       bestFor: "Date nights, business dinners, celebrations, coffee lovers, dessert enthusiasts",
       travelTips: "Book rooftop tables in advance, especially for evening dining. Best visited during sunset hours for stunning city views. Dress code is smart casual. Parking available in building basement.",
       accessibility: "Wheelchair accessible with elevator access. Senior-friendly with comfortable seating. Family-friendly with high chairs available. Female-friendly with well-lit parking and security.",
-      image: "/src/assets/Food & Dining/[(Mocha Café-Bar)1].jpg",
+      image: "/assets/Food & Dining/[(Mocha Café-Bar)1].jpg",
       images: [
-        "/src/assets/Food & Dining/[(Mocha Café-Bar)1].jpg",
-        "/src/assets/Food & Dining/[(Mocha Café-Bar)2].jpg",
-        "/src/assets/Food & Dining/[(Mocha Café-Bar)2](1).jpg"
+        "/assets/Food & Dining/[(Mocha Café-Bar)1].jpg",
+        "/assets/Food & Dining/[(Mocha Café-Bar)2].jpg",
+        "/assets/Food & Dining/[(Mocha Café-Bar)2](1).jpg"
       ]
     },
     {
@@ -84,11 +84,11 @@ const getRestaurantData = (id: string) => {
       bestFor: "Family meals, group dining, budget-conscious diners, traditional Indian food lovers",
       travelTips: "Best visited during lunch hours (12-3 PM) for fresh preparations. Rooftop seating recommended for evening dining. Parking available on-site. Popular during weekends, so consider booking ahead.",
       accessibility: "Ground floor accessible. Senior-friendly with comfortable seating. Family-friendly with high chairs and kids' menu. Female-friendly with well-lit premises and security.",
-      image: "/src/assets/Food & Dining/[(Jashn the Restaurant)1].jpg",
+      image: "/assets/Food & Dining/[(Jashn the Restaurant)1].jpg",
       images: [
-        "/src/assets/Food & Dining/[(Jashn the Restaurant)1].jpg",
-        "/src/assets/Food & Dining/[(Jashn the Restaurant)2].jpg",
-        "/src/assets/Food & Dining/[(Jashn the Resturant)3].jpg"
+        "/assets/Food & Dining/[(Jashn the Restaurant)1].jpg",
+        "/assets/Food & Dining/[(Jashn the Restaurant)2].jpg",
+        "/assets/Food & Dining/[(Jashn the Resturant)3].jpg"
       ]
     },
     {
@@ -126,11 +126,11 @@ const getRestaurantData = (id: string) => {
       bestFor: "Group celebrations, family gatherings, corporate events, BBQ enthusiasts, buffet lovers",
       travelTips: "Book tables in advance, especially on weekends and holidays. Arrive hungry to make the most of the buffet. Best visited during lunch hours (12-3 PM) for freshest preparations. Parking available in building basement.",
       accessibility: "Elevator access to 3rd floor. Wheelchair accessible with spacious seating. Senior-friendly with comfortable chairs. Family-friendly with kids' menu and high chairs. Female-friendly with well-lit premises.",
-      image: "/src/assets/Food & Dining/[(Barbeque Nation)1].jpg",
+      image: "/assets/Food & Dining/[(Barbeque Nation)1].jpg",
       images: [
-        "/src/assets/Food & Dining/[(Barbeque Nation)1].jpg",
-        "/src/assets/Food & Dining/[(Barbeque Nation)2].jpg",
-        "/src/assets/Food & Dining/[(Barbeque Nation)3].jpg"
+        "/assets/Food & Dining/[(Barbeque Nation)1].jpg",
+        "/assets/Food & Dining/[(Barbeque Nation)2].jpg",
+        "/assets/Food & Dining/[(Barbeque Nation)3].jpg"
       ]
     },
     {
@@ -168,11 +168,11 @@ const getRestaurantData = (id: string) => {
       bestFor: "Romantic dinners, business meetings, celebrations, fine dining enthusiasts, dessert lovers",
       travelTips: "Reservations recommended, especially for evening dining. Best visited during dinner hours (7-10 PM) for full menu availability. Dress code is smart casual. Parking available in building premises.",
       accessibility: "Ground floor accessible. Senior-friendly with comfortable seating. Family-friendly with high chairs available. Female-friendly with well-lit premises and security.",
-      image: "/src/assets/Food & Dining/[(OONA-The One)1].jpg",
+      image: "/assets/Food & Dining/[(OONA-The One)1].jpg",
       images: [
-        "/src/assets/Food & Dining/[(OONA-The One)1].jpg",
-        "/src/assets/Food & Dining/[(OONA-The One)2].jpg",
-        "/src/assets/Food & Dining/[(OONA-The One)3].jpg"
+        "/assets/Food & Dining/[(OONA-The One)1].jpg",
+        "/assets/Food & Dining/[(OONA-The One)2].jpg",
+        "/assets/Food & Dining/[(OONA-The One)3].jpg"
       ]
     },
     {
@@ -210,11 +210,11 @@ const getRestaurantData = (id: string) => {
       bestFor: "Vegetarian food lovers, budget-conscious diners, quick meals, traditional Indian cuisine enthusiasts",
       travelTips: "Best visited during lunch hours (12-3 PM) for fresh thalis. Avoid peak hours (1-2 PM) for faster service. Parking available on-site. Popular for breakfast dosas and evening snacks.",
       accessibility: "Ground floor accessible. Senior-friendly with comfortable seating. Family-friendly with kids' menu. Female-friendly with well-lit premises and security.",
-      image: "/src/assets/Food & Dining/[(Kaveri Restaurant)1].jpg",
+      image: "/assets/Food & Dining/[(Kaveri Restaurant)1].jpg",
       images: [
-        "/src/assets/Food & Dining/[(Kaveri Restaurant)1].jpg",
-        "/src/assets/Food & Dining/[(Kaveri Restaurant)2].jpg",
-        "/src/assets/Food & Dining/[(Kaveri Restaurant)3].jpg"
+        "/assets/Food & Dining/[(Kaveri Restaurant)1].jpg",
+        "/assets/Food & Dining/[(Kaveri Restaurant)2].jpg",
+        "/assets/Food & Dining/[(Kaveri Restaurant)3].jpg"
       ]
     },
     {
@@ -252,11 +252,11 @@ const getRestaurantData = (id: string) => {
       bestFor: "Evening entertainment, social gatherings, drinks with friends, kebab lovers, music enthusiasts",
       travelTips: "Book tables in advance, especially for weekend evenings. Best visited after 7 PM for full lounge experience. Dress code is smart casual. Parking available in plaza basement.",
       accessibility: "Elevator access to 1st floor. Wheelchair accessible with spacious seating. Senior-friendly with comfortable chairs. Female-friendly with well-lit premises and security.",
-      image: "/src/assets/Food & Dining/[(Oak Tavern Lounge)1].jpg",
+      image: "/assets/Food & Dining/[(Oak Tavern Lounge)1].jpg",
       images: [
-        "/src/assets/Food & Dining/[(Oak Tavern Lounge)1].jpg",
-        "/src/assets/Food & Dining/[(Oak Tavern Lounge)2].jpg",
-        "/src/assets/Food & Dining/[(Oak Tavern Lounge)3].jpg"
+        "/assets/Food & Dining/[(Oak Tavern Lounge)1].jpg",
+        "/assets/Food & Dining/[(Oak Tavern Lounge)2].jpg",
+        "/assets/Food & Dining/[(Oak Tavern Lounge)3].jpg"
       ]
     },
     {
@@ -294,11 +294,11 @@ const getRestaurantData = (id: string) => {
       bestFor: "Family meals, casual dining, business lunches, group gatherings, multi-cuisine lovers",
       travelTips: "Best visited during lunch hours (12-3 PM) for fresh preparations. Popular during weekends, so consider booking ahead. Parking available on-site. Great for large group dining.",
       accessibility: "Ground floor accessible. Senior-friendly with comfortable seating. Family-friendly with high chairs available. Female-friendly with well-lit premises and security.",
-      image: "/src/assets/Food & Dining/[(Zinnia Multi-Cuisine Restaurant)1].jpg",
+      image: "/assets/Food & Dining/[(Zinnia Multi-Cuisine Restaurant)1].jpg",
       images: [
-        "/src/assets/Food & Dining/[(Zinnia Multi-Cuisine Restaurant)1].jpg",
-        "/src/assets/Food & Dining/[(Zinnia Multi-Cuisine Restaurant)2].jpg",
-        "/src/assets/Food & Dining/[(Zinnia Multi-Cuisine Restaurant)3].jpg"
+        "/assets/Food & Dining/[(Zinnia Multi-Cuisine Restaurant)1].jpg",
+        "/assets/Food & Dining/[(Zinnia Multi-Cuisine Restaurant)2].jpg",
+        "/assets/Food & Dining/[(Zinnia Multi-Cuisine Restaurant)3].jpg"
       ]
     },
     {
@@ -336,11 +336,11 @@ const getRestaurantData = (id: string) => {
       bestFor: "Students, young professionals, casual hangouts, quick meals, budget-conscious diners",
       travelTips: "Best visited during evening hours (5-9 PM) for full café experience. Popular among students, so can get crowded during lunch hours. WiFi available for work/study. Parking available on roadside.",
       accessibility: "Ground floor accessible. Student-friendly with casual seating. Family-friendly with kids' menu. Female-friendly with well-lit premises and security.",
-      image: "/src/assets/Food & Dining/[(Taste Ride Café-Restro)1].jpg",
+      image: "/assets/Food & Dining/[(Taste Ride Café-Restro)1].jpg",
       images: [
-        "/src/assets/Food & Dining/[(Taste Ride Café-Restro)1].jpg",
-        "/src/assets/Food & Dining/[(Taste Ride Café-Restro)2].jpg",
-        "/src/assets/Food & Dining/[(Taste Ride Café-Restro)3].jpg"
+        "/assets/Food & Dining/[(Taste Ride Café-Restro)1].jpg",
+        "/assets/Food & Dining/[(Taste Ride Café-Restro)2].jpg",
+        "/assets/Food & Dining/[(Taste Ride Café-Restro)3].jpg"
       ]
     },
     {
@@ -378,11 +378,11 @@ const getRestaurantData = (id: string) => {
       bestFor: "Vegetarian food lovers, family meals, traditional cuisine enthusiasts, budget-conscious diners",
       travelTips: "Best visited during lunch hours (12-3 PM) for fresh thalis. Popular among families, so can get crowded during weekends. Parking available on-site. Great for traditional dining experience.",
       accessibility: "Ground floor accessible. Senior-friendly with comfortable seating. Family-friendly with high chairs available. Female-friendly with well-lit premises and security.",
-      image: "/src/assets/Food & Dining/[(Kailash Pure Veg)1].jpg",
+      image: "/assets/Food & Dining/[(Kailash Pure Veg)1].jpg",
       images: [
-        "/src/assets/Food & Dining/[(Kailash Pure Veg)1].jpg",
-        "/src/assets/Food & Dining/[(Kailash Pure Veg)2].jpg",
-        "/src/assets/Food & Dining/[(Kailash Pure Veg)3].jpg"
+        "/assets/Food & Dining/[(Kailash Pure Veg)1].jpg",
+        "/assets/Food & Dining/[(Kailash Pure Veg)2].jpg",
+        "/assets/Food & Dining/[(Kailash Pure Veg)3].jpg"
       ]
     },
     {

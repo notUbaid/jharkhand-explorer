@@ -225,7 +225,7 @@ export default function PackageDetail() {
         <div className="flex flex-wrap gap-2 pb-4">
           <Button className="bg-primary hover:bg-primary-light" onClick={handleBookNow}>{t("common.bookNow")}</Button>
           <Button variant="outline" onClick={handleComparePackage}>
-            <GitCompare size={14} className="mr-1" /> {t("common.compare")} {t("common.package")}
+            <GitCompare size={14} className="mr-1" /> {t("common.compare")} Package
           </Button>
           <Button variant="outline"><Share2 size={14} className="mr-1" /> {t("common.share")}</Button>
         </div>

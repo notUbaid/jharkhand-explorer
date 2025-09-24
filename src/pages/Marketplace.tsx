@@ -26,7 +26,8 @@ import {
   Users,
   Calendar,
   Share2,
-  Minus
+  Minus,
+  X
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -45,7 +46,49 @@ export default function Marketplace() {
   const [selectedLocation, setSelectedLocation] = useState(t("common.all"));
   const [sortBy, setSortBy] = useState("relevance");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  const [checkoutForm, setCheckoutForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    pincode: '',
+    state: 'Jharkhand'
+  });
   const navigate = useNavigate();
+
+  // Handle checkout form submission
+  const handleCheckoutSubmit = async () => {
+    // Validate form
+    if (!checkoutForm.name || !checkoutForm.email || !checkoutForm.phone || !checkoutForm.address || !checkoutForm.city || !checkoutForm.pincode) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(checkoutForm.email)) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    // Validate phone number
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(checkoutForm.phone)) {
+      alert('Please enter a valid 10-digit phone number');
+      return;
+    }
+
+    // Validate pincode
+    const pincodeRegex = /^\d{6}$/;
+    if (!pincodeRegex.test(checkoutForm.pincode)) {
+      alert('Please enter a valid 6-digit pincode');
+      return;
+    }
+
+    await handleRazorpayCheckout();
+  };
 
   // Razorpay checkout function
   const handleRazorpayCheckout = async () => {
@@ -58,20 +101,32 @@ export default function Marketplace() {
         totalPrice,
         `Order #${orderId}`,
         {
-          name: 'Customer',
-          email: 'customer@example.com',
-          phone: '9876543210',
+          name: checkoutForm.name,
+          email: checkoutForm.email,
+          phone: checkoutForm.phone,
         },
         {
           order_id: orderId,
           items: items.map(item => `${item.product.name} (${item.quantity}x)`).join(', '),
-          total_amount: totalPrice.toString()
+          total_amount: totalPrice.toString(),
+          address: `${checkoutForm.address}, ${checkoutForm.city}, ${checkoutForm.pincode}, ${checkoutForm.state}`
         },
         (response) => {
           // Payment successful
           console.log('Payment successful:', response);
           alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
           clearCart();
+          setShowCheckoutForm(false);
+          // Reset form
+          setCheckoutForm({
+            name: '',
+            email: '',
+            phone: '',
+            address: '',
+            city: '',
+            pincode: '',
+            state: 'Jharkhand'
+          });
         },
         (error) => {
           // Payment failed or cancelled
@@ -641,7 +696,7 @@ export default function Marketplace() {
                         <Button 
                           className="w-full bg-accent hover:bg-accent/90 text-white"
                           disabled={items.length === 0}
-                          onClick={handleRazorpayCheckout}
+                          onClick={() => setShowCheckoutForm(true)}
                         >
                           <ShoppingCart size={16} className="mr-2" />
                           Proceed to Pay
@@ -961,6 +1016,162 @@ export default function Marketplace() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Checkout Form Modal */}
+      {showCheckoutForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b">
+              <h2 className="text-xl font-semibold text-foreground">Checkout Details</h2>
+              <Button variant="ghost" size="sm" onClick={() => setShowCheckoutForm(false)}>
+                <X size={20} />
+              </Button>
+            </div>
+
+            {/* Form Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              {/* Order Summary */}
+              <div className="mb-6 p-4 bg-muted/30 rounded-lg">
+                <h3 className="font-semibold text-foreground mb-3">Order Summary</h3>
+                <div className="space-y-2">
+                  {items.map((item, index) => (
+                    <div key={index} className="flex justify-between text-sm">
+                      <span>{item.product.name} x {item.quantity}</span>
+                      <span>₹{(item.product.price * item.quantity).toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t pt-2 mt-3">
+                  <div className="flex justify-between font-semibold">
+                    <span>Total</span>
+                    <span>₹{totalPrice.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Details Form */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground">Customer Details</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={checkoutForm.name}
+                      onChange={(e) => setCheckoutForm(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      value={checkoutForm.email}
+                      onChange={(e) => setCheckoutForm(prev => ({ ...prev, email: e.target.value }))}
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Enter your email"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      value={checkoutForm.phone}
+                      onChange={(e) => setCheckoutForm(prev => ({ ...prev, phone: e.target.value }))}
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Enter your phone number"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1">
+                      City *
+                    </label>
+                    <input
+                      type="text"
+                      value={checkoutForm.city}
+                      onChange={(e) => setCheckoutForm(prev => ({ ...prev, city: e.target.value }))}
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Enter your city"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1">
+                      Pincode *
+                    </label>
+                    <input
+                      type="text"
+                      value={checkoutForm.pincode}
+                      onChange={(e) => setCheckoutForm(prev => ({ ...prev, pincode: e.target.value }))}
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Enter your pincode"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-1">
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      value={checkoutForm.state}
+                      onChange={(e) => setCheckoutForm(prev => ({ ...prev, state: e.target.value }))}
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Enter your state"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">
+                    Complete Address *
+                  </label>
+                  <textarea
+                    value={checkoutForm.address}
+                    onChange={(e) => setCheckoutForm(prev => ({ ...prev, address: e.target.value }))}
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Enter your complete address"
+                    rows={3}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t bg-muted/30">
+              <div className="flex justify-between items-center">
+                <div className="text-sm text-muted-foreground">
+                  * Required fields
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setShowCheckoutForm(false)}>
+                    Cancel
+                  </Button>
+                  <Button 
+                    className="bg-accent hover:bg-accent/90 text-white"
+                    onClick={handleCheckoutSubmit}
+                  >
+                    <ShoppingCart size={16} className="mr-2" />
+                    Pay ₹{totalPrice.toLocaleString()}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

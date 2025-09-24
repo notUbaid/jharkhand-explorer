@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BookingModal } from "@/components/BookingModal";
 import { useStayComparison } from "@/contexts/StayComparisonContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { MapPin, Star, IndianRupee, Users, Wifi, AirVent, Car, Utensils, Bath, ArrowLeft, GitCompare, ChevronLeft, ChevronRight, Clock, Calendar, Building, Heart } from "lucide-react";
 import { getStayById } from "@/data/stays";
 import { BookingItem } from "@/hooks/useBooking";
@@ -15,6 +16,7 @@ export default function StayDetail() {
   const navigate = useNavigate();
   const [stay] = useState(() => getStayById(id || "1"));
   const { addToCompare, removeFromCompare, isInCompare, canAddMore } = useStayComparison();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -42,6 +44,29 @@ export default function StayDetail() {
       removeFromCompare(stay.id);
     } else if (canAddMore) {
       addToCompare(stay);
+    }
+  };
+
+  const handleFavoriteToggle = () => {
+    if (!stay) return;
+    
+    const stayId = stay.id.toString();
+    if (isFavorite(stayId, 'stay')) {
+      removeFromFavorites(stayId, 'stay');
+      console.log("Removed from favorites:", stay.name);
+    } else {
+      addToFavorites({
+        id: stayId,
+        type: 'stay',
+        name: stay.name,
+        description: stay.description,
+        image: stay.images[0],
+        price: stay.price,
+        location: stay.location,
+        rating: stay.rating,
+        category: stay.category
+      });
+      console.log("Added to favorites:", stay.name);
     }
   };
 
@@ -310,8 +335,13 @@ export default function StayDetail() {
         
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-2 pb-4">
-          <Button variant="outline">
-            <Heart size={16} className="mr-1" /> Add to Favorites
+          <Button 
+            variant="outline" 
+            onClick={handleFavoriteToggle}
+            className={isFavorite(stay?.id?.toString(), 'stay') ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100' : ''}
+          >
+            <Heart size={16} className={`mr-1 ${isFavorite(stay?.id?.toString(), 'stay') ? 'fill-current' : ''}`} /> 
+            {isFavorite(stay?.id?.toString(), 'stay') ? 'Saved' : 'Add to Favorites'}
           </Button>
           <Button 
             variant="outline" 

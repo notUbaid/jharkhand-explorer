@@ -47,13 +47,33 @@ import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const { isDarkMode } = useDarkMode();
-  const { favorites, removeFromFavorites, getFavoritesByType } = useFavorites();
+  const { favorites, removeFromFavorites, getFavoritesByType, clearFavorites } = useFavorites();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("personal");
   const [highContrast, setHighContrast] = useState(false);
   const [voiceAssist, setVoiceAssist] = useState(false);
   const [fontSize, setFontSize] = useState("medium");
   const [selectedLanguage, setSelectedLanguage] = useState("English");
+
+  const handleClearLocalData = () => {
+    // Clear all local storage data
+    localStorage.clear();
+    
+    // Clear favorites
+    clearFavorites();
+    
+    // Reset all local state
+    setHighContrast(false);
+    setVoiceAssist(false);
+    setFontSize("medium");
+    setSelectedLanguage("English");
+    
+    // Show confirmation
+    alert("All local data has been cleared successfully!");
+    
+    // Optionally reload the page to reset everything
+    window.location.reload();
+  };
 
   const userProfile = {
     name: "Ubaid Khan",
@@ -683,7 +703,11 @@ export default function Profile() {
             {/* Data Management */}
             <LuxuryCard>
               <h3 className="font-playfair font-semibold text-foreground mb-4">Data Management</h3>
-              <Button variant="outline" className="w-full text-destructive border-destructive">
+              <Button 
+                variant="outline" 
+                className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+                onClick={handleClearLocalData}
+              >
                 <Trash2 size={16} className="mr-2" />
                 Clear Local Data
               </Button>

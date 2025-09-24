@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { BookingModal } from "@/components/BookingModal";
 import { BookingItem } from "@/hooks/useBooking";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { 
   Calendar, 
   MapPin, 
@@ -315,6 +316,7 @@ const events = [
 export default function EventDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const [event, setEvent] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [isLoading, setIsLoading] = useState(true);
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -347,8 +349,25 @@ export default function EventDetail() {
   };
 
   const handleAddToFavorites = () => {
-    // Implement favorites logic
-    console.log("Adding to favorites:", event?.title);
+    if (event) {
+      const eventId = event.id.toString();
+      if (isFavorite(eventId, 'event')) {
+        removeFromFavorites(eventId, 'event');
+        console.log("Removed from favorites:", event.title);
+      } else {
+        addToFavorites({
+          id: eventId,
+          type: 'event',
+          name: event.title,
+          description: event.description,
+          image: event.image,
+          location: event.location,
+          price: event.entryFee,
+          category: event.category
+        });
+        console.log("Added to favorites:", event.title);
+      }
+    }
   };
 
   const handleShare = () => {
@@ -469,9 +488,10 @@ export default function EventDetail() {
                     variant="outline"
                     size="sm"
                     onClick={handleAddToFavorites}
+                    className={isFavorite(event?.id?.toString(), 'event') ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100' : ''}
                   >
-                    <Heart className="w-4 h-4 mr-1" />
-                    Save
+                    <Heart className={`w-4 h-4 mr-1 ${isFavorite(event?.id?.toString(), 'event') ? 'fill-current' : ''}`} />
+                    {isFavorite(event?.id?.toString(), 'event') ? 'Saved' : 'Save'}
                   </Button>
                   <Button
                     variant="outline"

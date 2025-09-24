@@ -5,7 +5,7 @@ export const config = {
   // Razorpay configuration
   razorpay: {
     keyId: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_RLUAMPaeE93MzD',
-    keySecret: import.meta.env.VITE_RAZORPAY_KEY_SECRET || 'uJyWNmb704GUA2Hx1ahqYKyf',
+    keySecret: import.meta.env.VITE_RAZORPAY_KEY_SECRET || 'uJyWNmb704GUA2Hx1ahqYKyh',
   },
   
   // App configuration
