@@ -55,7 +55,7 @@ const transportData = [
     from: "Ranchi",
     to: "Delhi",
     price: "₹4,500",
-    image: "/src/assets/transport/flight.jpg",
+    image: "/assets/transport/flight.jpg",
     features: ["Direct Flight", "Meals Included", "Entertainment"]
   },
   {
@@ -66,7 +66,7 @@ const transportData = [
     from: "Ranchi",
     to: "Kolkata",
     price: "₹800",
-    image: "/src/assets/transport/train.jpg",
+    image: "/assets/transport/train.jpg",
     features: ["AC Coach", "Food Service", "WiFi"]
   },
   {
@@ -77,7 +77,7 @@ const transportData = [
     from: "Ranchi",
     to: "Mumbai",
     price: "₹1,200",
-    image: "/src/assets/transport/bus.jpg",
+    image: "/assets/transport/bus.jpg",
     features: ["AC Sleeper", "Entertainment", "Refreshments"]
   },
   {
@@ -88,7 +88,7 @@ const transportData = [
     from: "Jamshedpur",
     to: "Kolkata",
     price: "₹600",
-    image: "/src/assets/transport/train.jpg",
+    image: "/assets/transport/train.jpg",
     features: ["Express Service", "AC Coach", "Food Service"]
   },
   {
@@ -99,7 +99,7 @@ const transportData = [
     from: "Ranchi",
     to: "Bangalore",
     price: "₹4,200",
-    image: "/src/assets/transport/flight.jpg",
+    image: "/assets/transport/flight.jpg",
     features: ["Direct Flight", "Meals Included", "Entertainment"]
   }
 ];
@@ -113,7 +113,7 @@ const events = [
     location: "Ranchi",
     category: "Cultural Festival",
     description: "Immerse yourself in the rich cultural heritage of Jharkhand",
-    image: "/src/assets/event/event1/event 1 (1).png"
+    image: "/assets/event/event1/event 1 (1).png"
   },
   {
     id: 2,
@@ -122,7 +122,7 @@ const events = [
     location: "Jamshedpur",
     category: "Food Festival",
     description: "Taste the authentic flavors of Jharkhand cuisine",
-    image: "/src/assets/event/event2/event 2 (1).png"
+    image: "/assets/event/event2/event 2 (1).png"
   },
   {
     id: 3,
@@ -131,7 +131,7 @@ const events = [
     location: "Hazaribagh",
     category: "Cultural Performance",
     description: "Experience the vibrant folk traditions of Jharkhand",
-    image: "/src/assets/event/event3/event 3 (1).png"
+    image: "/assets/event/event3/event 3 (1).png"
   },
   {
     id: 4,
@@ -140,7 +140,7 @@ const events = [
     location: "Netarhat",
     category: "Sports Event",
     description: "Thrilling adventure activities in the hills of Netarhat",
-    image: "/src/assets/event/event4/event 4 (1).png"
+    image: "/assets/event/event4/event 4 (1).png"
   },
   {
     id: 5,
@@ -149,7 +149,7 @@ const events = [
     location: "Deoghar",
     category: "Craft Fair",
     description: "Discover traditional crafts and meet local artisans",
-    image: "/src/assets/event/event5/event 5 (1).png"
+    image: "/assets/event/event5/event 5 (1).png"
   },
   {
     id: 6,
@@ -158,7 +158,7 @@ const events = [
     location: "Baidyanath Temple",
     category: "Religious Event",
     description: "Join the grand celebration at the sacred Baidyanath Temple",
-    image: "/src/assets/event/event6/event 6 (1).png"
+    image: "/assets/event/event6/event 6 (1).png"
   },
   {
     id: 7,
@@ -167,7 +167,7 @@ const events = [
     location: "Betla National Park",
     category: "Educational Workshop",
     description: "Learn wildlife photography in the heart of nature",
-    image: "/src/assets/event/event7/event 7 (1).png"
+    image: "/assets/event/event7/event 7 (1).png"
   },
   {
     id: 8,
@@ -176,7 +176,7 @@ const events = [
     location: "Ranchi",
     category: "Cultural Tour",
     description: "Explore the historical landmarks of Ranchi",
-    image: "/src/assets/event/event8/event 8 (1).png"
+    image: "/assets/event/event8/event 8 (1).png"
   }
 ];
 

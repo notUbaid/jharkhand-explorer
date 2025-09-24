@@ -6,11 +6,11 @@ export const destinations = [
     location: "Betla, Palamu (Latehar/Palamu region)",
     category: "Nature",
     rating: 4.1,
-    image: "/src/assets/Tourist Spots/[(Betla National Park)1].jpg",
+    image: "/assets/Tourist Spots/[(Betla National Park)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Betla National Park)1].jpg",
-      "/src/assets/Tourist Spots/[(Betla National Park)2].jpg",
-      "/src/assets/Tourist Spots/[(Betla National park)3].jpg"
+      "/assets/Tourist Spots/[(Betla National Park)1].jpg",
+      "/assets/Tourist Spots/[(Betla National Park)2].jpg",
+      "/assets/Tourist Spots/[(Betla National park)3].jpg"
     ],
     isHiddenGem: false,
     description: "Jharkhand's premier wildlife sanctuary and national park, home to diverse flora and fauna including tigers, elephants, leopards, and over 200 bird species. Experience thrilling jeep and elephant safaris through dense sal forests, ancient Palamu fort ruins, and pristine wilderness that offers an authentic jungle experience.",
@@ -31,11 +31,11 @@ export const destinations = [
     location: "Netarhat, Latehar district (Chotanagpur plateau)",
     category: "Nature",
     rating: 4.7,
-    image: "/src/assets/Tourist Spots/[(Netarhat)1].jpg",
+    image: "/assets/Tourist Spots/[(Netarhat)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Netarhat)1].jpg",
-      "/src/assets/Tourist Spots/[(Netarhat)2].jpg",
-      "/src/assets/Tourist Spots/[(Netarhat)3].jpg"
+      "/assets/Tourist Spots/[(Netarhat)1].jpg",
+      "/assets/Tourist Spots/[(Netarhat)2].jpg",
+      "/assets/Tourist Spots/[(Netarhat)3].jpg"
     ],
     isHiddenGem: false,
     description: "Known as the 'Queen of Chotanagpur,' Netarhat is Jharkhand's most scenic hill station perched at 1,100 meters above sea level. Famous for its breathtaking sunrise and sunset views, this plateau offers panoramic vistas of rolling hills, pine forests, and cascading waterfalls. A perfect escape for nature lovers and photography enthusiasts.",
@@ -56,11 +56,11 @@ export const destinations = [
     location: "Patratu Valley / Patratu Dam, Ramgarh district (near Ranchi)",
     category: "Nature",
     rating: 4.6,
-    image: "/src/assets/Tourist Spots/[(Patratu Valley)1].jpg",
+    image: "/assets/Tourist Spots/[(Patratu Valley)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Patratu Valley)1].jpg",
-      "/src/assets/Tourist Spots/[(Patratu Valley)2].jpg",
-      "/src/assets/Tourist Spots/[(Patratu Valley)3].jpg"
+      "/assets/Tourist Spots/[(Patratu Valley)1].jpg",
+      "/assets/Tourist Spots/[(Patratu Valley)2].jpg",
+      "/assets/Tourist Spots/[(Patratu Valley)3].jpg"
     ],
     isHiddenGem: false,
     description: "A picturesque valley surrounding the Patratu Dam, offering stunning panoramic views of rolling hills and serene waters. This hidden gem features winding scenic drives, lakeside boating, peaceful picnic spots, and numerous photo opportunities. Perfect for a day trip from Ranchi, offering tranquility and natural beauty away from city life.",
@@ -81,11 +81,11 @@ export const destinations = [
     location: "Hundru Falls, Kanke area, Ranchi district",
     category: "Nature",
     rating: 4.4,
-    image: "/src/assets/Tourist Spots/[(Hundru Falls)1].jpg",
+    image: "/assets/Tourist Spots/[(Hundru Falls)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Hundru Falls)1].jpg",
-      "/src/assets/Tourist Spots/[(Hundru Falls)2].jpg",
-      "/src/assets/Tourist Spots/[(Hundru Falls)3].jpg"
+      "/assets/Tourist Spots/[(Hundru Falls)1].jpg",
+      "/assets/Tourist Spots/[(Hundru Falls)2].jpg",
+      "/assets/Tourist Spots/[(Hundru Falls)3].jpg"
     ],
     isHiddenGem: false,
     description: "One of Jharkhand's most spectacular waterfalls, Hundru Falls cascades 98 meters down rocky cliffs into a deep pool below. Located on the Subarnarekha River, this natural wonder offers breathtaking views from multiple viewpoints, making it a popular destination for picnics, photography, and nature appreciation. The surrounding rocky terrain and lush greenery create a perfect backdrop for memorable experiences.",
@@ -106,11 +106,11 @@ export const destinations = [
     location: "Lodh Falls (Budha Ghagh), Latehar district (Palamau area)",
     category: "Nature",
     rating: 4.5,
-    image: "/src/assets/Tourist Spots/[(Lodh Falls)1].jpg",
+    image: "/assets/Tourist Spots/[(Lodh Falls)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Lodh Falls)1].jpg",
-      "/src/assets/Tourist Spots/[(Lodh Falls)2].jpg",
-      "/src/assets/Tourist Spots/[(Lodh Falls)3].jpg"
+      "/assets/Tourist Spots/[(Lodh Falls)1].jpg",
+      "/assets/Tourist Spots/[(Lodh Falls)2].jpg",
+      "/assets/Tourist Spots/[(Lodh Falls)3].jpg"
     ],
     isHiddenGem: false,
     description: "The tallest waterfall in Jharkhand (multi-tiered plunge) set in dense forest — remote, scenic and dramatic",
@@ -131,11 +131,11 @@ export const destinations = [
     location: "Topchanchi Wildlife Sanctuary area, Dhanbad district",
     category: "Nature",
     rating: 4.3,
-    image: "/src/assets/Tourist Spots/[(Topchanchi Lake)1].jpg",
+    image: "/assets/Tourist Spots/[(Topchanchi Lake)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Topchanchi Lake)1].jpg",
-      "/src/assets/Tourist Spots/[(Topchanchi Lake)2].jpg",
-      "/src/assets/Tourist Spots/[(Topchanchi Lake)3].jpg"
+      "/assets/Tourist Spots/[(Topchanchi Lake)1].jpg",
+      "/assets/Tourist Spots/[(Topchanchi Lake)2].jpg",
+      "/assets/Tourist Spots/[(Topchanchi Lake)3].jpg"
     ],
     isHiddenGem: false,
     description: "Large artificial lake surrounded by forested sanctuary, picnic & boating spot near Dhanbad",
@@ -156,11 +156,11 @@ export const destinations = [
     location: "Maithon, on Barakar River, Dhanbad district (border with West Bengal)",
     category: "Nature",
     rating: 4.5,
-    image: "/src/assets/Tourist Spots/[(Maithon Dam)1].jpg",
+    image: "/assets/Tourist Spots/[(Maithon Dam)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Maithon Dam)1].jpg",
-      "/src/assets/Tourist Spots/[(Maithon Dam)2].jpg",
-      "/src/assets/Tourist Spots/[(Maithon Dam)3].jpg"
+      "/assets/Tourist Spots/[(Maithon Dam)1].jpg",
+      "/assets/Tourist Spots/[(Maithon Dam)2].jpg",
+      "/assets/Tourist Spots/[(Maithon Dam)3].jpg"
     ],
     isHiddenGem: true,
     description: "One of India's largest dams, run by DVC; scenic picnic spot with boating and gardens",
@@ -181,11 +181,11 @@ export const destinations = [
     location: "Usri River, Giridih district",
     category: "Nature",
     rating: 4.4,
-    image: "/src/assets/Tourist Spots/[(Usri Falls)1].jpg",
+    image: "/assets/Tourist Spots/[(Usri Falls)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Usri Falls)1].jpg",
-      "/src/assets/Tourist Spots/[(Usri Falls)2].jpg",
-      "/src/assets/Tourist Spots/[(Usri Falls)3].jpg"
+      "/assets/Tourist Spots/[(Usri Falls)1].jpg",
+      "/assets/Tourist Spots/[(Usri Falls)2].jpg",
+      "/assets/Tourist Spots/[(Usri Falls)3].jpg"
     ],
     isHiddenGem: true,
     description: "Scenic segmented waterfall on Usri river, surrounded by forest & rocky terrain",
@@ -207,11 +207,11 @@ export const destinations = [
     location: "Inside Betla National Park, Latehar district",
     category: "Historic",
     rating: 4.1,
-    image: "/src/assets/Tourist Spots/[(Palamu Fort)1].jpg",
+    image: "/assets/Tourist Spots/[(Palamu Fort)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Palamu Fort)1].jpg",
-      "/src/assets/Tourist Spots/[(Palamu Fort)2].jpg",
-      "/src/assets/Tourist Spots/[(Palamu Fort)3].jpg"
+      "/assets/Tourist Spots/[(Palamu Fort)1].jpg",
+      "/assets/Tourist Spots/[(Palamu Fort)2].jpg",
+      "/assets/Tourist Spots/[(Palamu Fort)3].jpg"
     ],
     isHiddenGem: false,
     description: "Historic twin forts (Old & New Palamu) built by the Chero dynasty, now forest ruins inside the park",
@@ -232,11 +232,11 @@ export const destinations = [
     location: "Kanke Road, Ranchi city",
     category: "Historic",
     rating: 4.1,
-    image: "/src/assets/Tourist Spots/[(Ranchi Rock Garden)1].jpg",
+    image: "/assets/Tourist Spots/[(Ranchi Rock Garden)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Ranchi Rock Garden)1].jpg",
-      "/src/assets/Tourist Spots/[(Ranchi Rock Garden)2].jpg",
-      "/src/assets/Tourist Spots/[(Ranchi Rock Garden)3].jpg"
+      "/assets/Tourist Spots/[(Ranchi Rock Garden)1].jpg",
+      "/assets/Tourist Spots/[(Ranchi Rock Garden)2].jpg",
+      "/assets/Tourist Spots/[(Ranchi Rock Garden)3].jpg"
     ],
     isHiddenGem: true,
     description: "Garden built on Gonda Hill with rock sculptures, hanging bridge, and city views",
@@ -257,11 +257,11 @@ export const destinations = [
     location: "Sakchi, Jamshedpur, East Singhbhum district",
     category: "Historic",
     rating: 4.4,
-    image: "/src/assets/Tourist Spots/[(Jubilee Park)1].jpg",
+    image: "/assets/Tourist Spots/[(Jubilee Park)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Jubilee Park)1].jpg",
-      "/src/assets/Tourist Spots/[(Jubilee Park)2].jpg",
-      "/src/assets/Tourist Spots/[(Jubilee Park)3].jpg"
+      "/assets/Tourist Spots/[(Jubilee Park)1].jpg",
+      "/assets/Tourist Spots/[(Jubilee Park)2].jpg",
+      "/assets/Tourist Spots/[(Jubilee Park)3].jpg"
     ],
     isHiddenGem: false,
     description: "A vast garden built by Tata Steel on the company's 50th anniversary — landscaped lawns, fountains, and children's amusement rides",
@@ -283,11 +283,11 @@ export const destinations = [
     location: "Deoghar town, Deoghar district",
     category: "Religious",
     rating: 4.6,
-    image: "/src/assets/Tourist Spots/[(Baba Baidyanath Temple)1].jpg",
+    image: "/assets/Tourist Spots/[(Baba Baidyanath Temple)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Baba Baidyanath Temple)1].jpg",
-      "/src/assets/Tourist Spots/[(Baba Baidyanath Temple)2].jpg",
-      "/src/assets/Tourist Spots/[(Baba Baidyanath Temple)3].jpg"
+      "/assets/Tourist Spots/[(Baba Baidyanath Temple)1].jpg",
+      "/assets/Tourist Spots/[(Baba Baidyanath Temple)2].jpg",
+      "/assets/Tourist Spots/[(Baba Baidyanath Temple)3].jpg"
     ],
     isHiddenGem: false,
     description: "One of the 12 Jyotirlingas of Lord Shiva, major Hindu pilgrimage destination",
@@ -308,11 +308,11 @@ export const destinations = [
     location: "Giridih district (near Madhuban)",
     category: "Religious",
     rating: 4.6,
-    image: "/src/assets/Tourist Spots/[(Parasnath Hills-Shikharji)1].jpg",
+    image: "/assets/Tourist Spots/[(Parasnath Hills-Shikharji)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Parasnath Hills-Shikharji)1].jpg",
-      "/src/assets/Tourist Spots/[(Parasnath Hills-Shikharji)2].jpg",
-      "/src/assets/Tourist Spots/[(Parasnath Hills-Shikharji)3].jpg"
+      "/assets/Tourist Spots/[(Parasnath Hills-Shikharji)1].jpg",
+      "/assets/Tourist Spots/[(Parasnath Hills-Shikharji)2].jpg",
+      "/assets/Tourist Spots/[(Parasnath Hills-Shikharji)3].jpg"
     ],
     isHiddenGem: false,
     description: "Holiest Jain pilgrimage site — believed that 20 Jain Tirthankaras attained salvation here. Requires 7–8 km trek from Madhuban base",
@@ -333,11 +333,11 @@ export const destinations = [
     location: "Rajrappa, Ramgarh district (at confluence of Damodar & Bhairavi rivers)",
     category: "Religious",
     rating: 4.6,
-    image: "/src/assets/Tourist Spots/[(Rajrappa Temple and Falls)1].jpg",
+    image: "/assets/Tourist Spots/[(Rajrappa Temple and Falls)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Rajrappa Temple and Falls)1].jpg",
-      "/src/assets/Tourist Spots/[(Rajrappa Temple and Falls)2].jpg",
-      "/src/assets/Tourist Spots/[(Rajrappa Temple and Falls)3].jpg"
+      "/assets/Tourist Spots/[(Rajrappa Temple and Falls)1].jpg",
+      "/assets/Tourist Spots/[(Rajrappa Temple and Falls)2].jpg",
+      "/assets/Tourist Spots/[(Rajrappa Temple and Falls)3].jpg"
     ],
     isHiddenGem: false,
     description: "Shaktipeeth dedicated to Goddess Chhinnamastika; also a popular picnic & ritual site at river confluence",
@@ -358,11 +358,11 @@ export const destinations = [
     location: "Near Deoghar town, Deoghar district",
     category: "Religious",
     rating: 4.4,
-    image: "/src/assets/Tourist Spots/[(Trikut Hills)1].jpg",
+    image: "/assets/Tourist Spots/[(Trikut Hills)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Trikut Hills)1].jpg",
-      "/src/assets/Tourist Spots/[(Trikut Hills)2].jpg",
-      "/src/assets/Tourist Spots/[(Trikut Hills)3].jpg"
+      "/assets/Tourist Spots/[(Trikut Hills)1].jpg",
+      "/assets/Tourist Spots/[(Trikut Hills)2].jpg",
+      "/assets/Tourist Spots/[(Trikut Hills)3].jpg"
     ],
     isHiddenGem: false,
     description: "Group of three hill peaks, sacred to Hinduism; offers ropeway ride, temples and trekking",
@@ -383,10 +383,10 @@ export const destinations = [
     location: "Near Taimara village, ~40 km from Ranchi city, Ranchi district",
     category: "Adventure",
     rating: 4.5,
-    image: "/src/assets/Tourist Spots/[(Dassam Falls)2].jpg",
+    image: "/assets/Tourist Spots/[(Dassam Falls)2].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Dassam Falls)2].jpg",
-      "/src/assets/Tourist Spots/[(Dassam Falls)3].jpg"
+      "/assets/Tourist Spots/[(Dassam Falls)2].jpg",
+      "/assets/Tourist Spots/[(Dassam Falls)3].jpg"
     ],
     isHiddenGem: false,
     description: "144 ft waterfall on the Kanchi river, famous for its force and scenic beauty",
@@ -407,10 +407,10 @@ export const destinations = [
     location: "Jonha village, ~40 km from Ranchi city",
     category: "Adventure",
     rating: 4.4,
-    image: "/src/assets/Tourist Spots/[(Jonha Falls)2].jpg",
+    image: "/assets/Tourist Spots/[(Jonha Falls)2].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Jonha Falls)2].jpg",
-      "/src/assets/Tourist Spots/[(Jonha Falls)3].jpg"
+      "/assets/Tourist Spots/[(Jonha Falls)2].jpg",
+      "/assets/Tourist Spots/[(Jonha Falls)3].jpg"
     ],
     isHiddenGem: false,
     description: "Scenic hanging valley falls, also called Gautamdhara due to Buddhist connections",
@@ -432,10 +432,10 @@ export const destinations = [
     location: "Jharia town, Dhanbad district",
     category: "Mining",
     rating: 4.0,
-    image: "/src/assets/Tourist Spots/[(Jharia)1].jpg",
+    image: "/assets/Tourist Spots/[(Jharia)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Jharia)1].jpg",
-      "/src/assets/Tourist Spots/[(Jharia)2].jpg"
+      "/assets/Tourist Spots/[(Jharia)1].jpg",
+      "/assets/Tourist Spots/[(Jharia)2].jpg"
     ],
     isHiddenGem: false,
     description: "One of India's oldest and largest coal mining areas, called the \"Coal Capital of India.\" Known for rich coking coal reserves and unique underground coal fires",
@@ -456,11 +456,11 @@ export const destinations = [
     location: "Urimari, Patratu area, Ramgarh district",
     category: "Mining",
     rating: 3.5,
-    image: "/src/assets/Tourist Spots/[(North Urimari Mines)1].jpg",
+    image: "/assets/Tourist Spots/[(North Urimari Mines)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(North Urimari Mines)1].jpg",
-      "/src/assets/Tourist Spots/[(North Urimari Mines)2].png",
-      "/src/assets/Tourist Spots/[(North Urimari Mines)3].png"
+      "/assets/Tourist Spots/[(North Urimari Mines)1].jpg",
+      "/assets/Tourist Spots/[(North Urimari Mines)2].png",
+      "/assets/Tourist Spots/[(North Urimari Mines)3].png"
     ],
     isHiddenGem: false,
     description: "Jharkhand's first officially launched Mining Tourism Project (2022) at North Urimari Mines, managed by CCL. Visitors are taken on safe mine tours to understand coal extraction and its importance",
@@ -482,11 +482,11 @@ export const destinations = [
     location: "NH-33, near Ramgarh district, ~50 km from Ranchi",
     category: "Nature",
     rating: 4.3,
-    image: "/src/assets/Tourist Spots/[(Chutupalu Valley)1] .jpg",
+    image: "/assets/Tourist Spots/[(Chutupalu Valley)1] .jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Chutupalu Valley)1] .jpg",
-      "/src/assets/Tourist Spots/[(Chutupalu Valley)2]. jpg_",
-      "/src/assets/Tourist Spots/[(Chutupalu Valley)3].jpg"
+      "/assets/Tourist Spots/[(Chutupalu Valley)1] .jpg",
+      "/assets/Tourist Spots/[(Chutupalu Valley)2]. jpg_",
+      "/assets/Tourist Spots/[(Chutupalu Valley)3].jpg"
     ],
     isHiddenGem: true,
     description: "A picturesque valley on the Ranchi–Ramgarh highway, lush green forests and misty views",
@@ -507,11 +507,11 @@ export const destinations = [
     location: "Morabadi, Ranchi city",
     category: "Historic",
     rating: 4.2,
-    image: "/src/assets/Tourist Spots/[(Tagore Hill)1].jpg",
+    image: "/assets/Tourist Spots/[(Tagore Hill)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Tagore Hill)1].jpg",
-      "/src/assets/Tourist Spots/[(Tagore Hill)2].jpg",
-      "/src/assets/Tourist Spots/[(Tagore Hill)3].jpg"
+      "/assets/Tourist Spots/[(Tagore Hill)1].jpg",
+      "/assets/Tourist Spots/[(Tagore Hill)2].jpg",
+      "/assets/Tourist Spots/[(Tagore Hill)3].jpg"
     ],
     isHiddenGem: true,
     description: "A hilltop viewpoint and cultural site linked to Rabindranath Tagore, offering panoramic views of Ranchi",
@@ -532,11 +532,11 @@ export const destinations = [
     location: "Foothills of Dalma Hills, ~13 km from Jamshedpur",
     category: "Nature",
     rating: 4.5,
-    image: "/src/assets/Tourist Spots/[(Dimna Lake)1].jpg",
+    image: "/assets/Tourist Spots/[(Dimna Lake)1].jpg",
     images: [
-      "/src/assets/Tourist Spots/[(Dimna Lake)1].jpg",
-      "/src/assets/Tourist Spots/[(Dimna Lake)2].jpg",
-      "/src/assets/Tourist Spots/[(Dimna Lake)3].jpg"
+      "/assets/Tourist Spots/[(Dimna Lake)1].jpg",
+      "/assets/Tourist Spots/[(Dimna Lake)2].jpg",
+      "/assets/Tourist Spots/[(Dimna Lake)3].jpg"
     ],
     isHiddenGem: true,
     description: "An artificial lake built by Tata Steel, nestled at Dalma foothills — peaceful, scenic picnic and boating spot",

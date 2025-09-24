@@ -20,9 +20,9 @@ import {
 } from "lucide-react";
 import heroImage from "@/assets/jharkhand-hero.jpg";
 import logoImage from "@/assets/Logo.jpg";
-import topDestinationsImage from "@/assets/home/Top Destinations.png";
-import culturalHeritageImage from "@/assets/home/Cultural Heritage.png";
-import naturalWondersImage from "@/assets/home/Natural Wonders.png";
+import topDestinationsImage from "@/assets/Home/Top Destinations.png";
+import culturalHeritageImage from "@/assets/Home/Cultural Heritage.png";
+import naturalWondersImage from "@/assets/Home/Natural Wonders.png";
 import { useNavigate } from "react-router-dom";
 
 const getQuickAccessItems = (t: (key: string) => string) => [

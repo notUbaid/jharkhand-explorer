@@ -30,11 +30,11 @@ export const stays: Stay[] = [
     category: "Luxury",
     rating: 4.6,
     price: "₹8,500",
-    image: "/src/assets/Stays/Radisson Blu Hotel.jpg",
+    image: "/assets/Stays/Radisson Blu Hotel.jpg",
     images: [
-      "/src/assets/Stays/Radisson Blu Hotel.jpg",
-      "/src/assets/Stays/Radisson Blu Hotel2.jpg",
-      "/src/assets/Stays/Radisson Blu Hotel 3.jpg"
+      "/assets/Stays/Radisson Blu Hotel.jpg",
+      "/assets/Stays/Radisson Blu Hotel2.jpg",
+      "/assets/Stays/Radisson Blu Hotel 3.jpg"
     ],
     description: "Experience luxury and comfort at Radisson Blu Hotel Ranchi, featuring modern amenities, elegant rooms, and exceptional service. Located in the heart of the city, this premium hotel offers world-class facilities including fine dining restaurants, spa services, and business centers. Perfect for business travelers and leisure guests seeking a sophisticated stay experience.",
     amenities: ["Free WiFi", "Swimming Pool", "Spa & Wellness", "Fitness Center", "Restaurant", "Room Service", "Concierge", "Parking"],
@@ -57,11 +57,11 @@ export const stays: Stay[] = [
     category: "Premium",
     rating: 4.4,
     price: "₹6,500",
-    image: "/src/assets/Stays/Le Lac Sarovar Portico.jpg",
+    image: "/assets/Stays/Le Lac Sarovar Portico.jpg",
     images: [
-      "/src/assets/Stays/Le Lac Sarovar Portico.jpg",
-      "/src/assets/Stays/Le Lac Sarovar Portico 2.jpg",
-      "/src/assets/Stays/Le Lac Sarovar Portico 3.jpg"
+      "/assets/Stays/Le Lac Sarovar Portico.jpg",
+      "/assets/Stays/Le Lac Sarovar Portico 2.jpg",
+      "/assets/Stays/Le Lac Sarovar Portico 3.jpg"
     ],
     description: "A premium hotel offering comfortable accommodation with modern amenities and excellent service. Le Lac Sarovar Portico provides a perfect blend of comfort and convenience, featuring well-appointed rooms, dining facilities, and recreational amenities. Ideal for both business and leisure travelers.",
     amenities: ["Free WiFi", "Restaurant", "Room Service", "Parking", "Concierge", "Laundry Service"],
@@ -84,11 +84,11 @@ export const stays: Stay[] = [
     category: "Mid-range",
     rating: 4.2,
     price: "₹4,500",
-    image: "/src/assets/Stays/Chanakya BNR Hotel.jpg",
+    image: "/assets/Stays/Chanakya BNR Hotel.jpg",
     images: [
-      "/src/assets/Stays/Chanakya BNR Hotel.jpg",
-      "/src/assets/Stays/Chanakya BNR Hotel2.jpg",
-      "/src/assets/Stays/Chanakya BNR Hotel 3.jpg"
+      "/assets/Stays/Chanakya BNR Hotel.jpg",
+      "/assets/Stays/Chanakya BNR Hotel2.jpg",
+      "/assets/Stays/Chanakya BNR Hotel 3.jpg"
     ],
     description: "A comfortable mid-range hotel offering good value accommodation in Ranchi. Chanakya BNR Hotel provides clean rooms, essential amenities, and friendly service. Perfect for budget-conscious travelers who don't want to compromise on comfort and convenience.",
     amenities: ["Free WiFi", "Restaurant", "Room Service", "Parking", "Laundry Service"],
@@ -111,11 +111,11 @@ export const stays: Stay[] = [
     category: "Mid-range",
     rating: 4.1,
     price: "₹3,500",
-    image: "/src/assets/Stays/Hotel Palash.jpg",
+    image: "/assets/Stays/Hotel Palash.jpg",
     images: [
-      "/src/assets/Stays/Hotel Palash.jpg",
-      "/src/assets/Stays/Hotel palash 2.jpg",
-      "/src/assets/Stays/Hotel palash 3.jpg"
+      "/assets/Stays/Hotel Palash.jpg",
+      "/assets/Stays/Hotel palash 2.jpg",
+      "/assets/Stays/Hotel palash 3.jpg"
     ],
     description: "A reliable mid-range hotel offering comfortable accommodation with essential amenities. Hotel Palash provides clean rooms, friendly service, and good value for money. Perfect for travelers seeking comfortable stay without breaking the budget.",
     amenities: ["Free WiFi", "Restaurant", "Room Service", "Parking"],
@@ -138,11 +138,11 @@ export const stays: Stay[] = [
     category: "Resort",
     rating: 4.5,
     price: "₹5,500",
-    image: "/src/assets/Stays/Angan Resort.jpg",
+    image: "/assets/Stays/Angan Resort.jpg",
     images: [
-      "/src/assets/Stays/Angan Resort.jpg",
-      "/src/assets/Stays/Aangan Resort 2.jpg",
-      "/src/assets/Stays/Aangan Resort 3.jpg"
+      "/assets/Stays/Angan Resort.jpg",
+      "/assets/Stays/Aangan Resort 2.jpg",
+      "/assets/Stays/Aangan Resort 3.jpg"
     ],
     description: "Experience the beauty of Netarhat at Aangan Resort, nestled in the hills with breathtaking views. This resort offers comfortable accommodation surrounded by nature, perfect for those seeking peace and tranquility. Enjoy the cool mountain climate and scenic surroundings.",
     amenities: ["Free WiFi", "Restaurant", "Parking", "Garden", "Mountain Views"],
@@ -165,11 +165,11 @@ export const stays: Stay[] = [
     category: "Eco Resort",
     rating: 4.3,
     price: "₹4,500",
-    image: "/src/assets/Stays/Mountain Eco Resort.jpg",
+    image: "/assets/Stays/Mountain Eco Resort.jpg",
     images: [
-      "/src/assets/Stays/Mountain Eco Resort.jpg",
-      "/src/assets/Stays/Mountain Eco Resort 2.jpg",
-      "/src/assets/Stays/Mountain Eco Resort 3.jpg"
+      "/assets/Stays/Mountain Eco Resort.jpg",
+      "/assets/Stays/Mountain Eco Resort 2.jpg",
+      "/assets/Stays/Mountain Eco Resort 3.jpg"
     ],
     description: "An eco-friendly resort committed to sustainable tourism in the beautiful hills of Netarhat. Mountain Eco Resort offers comfortable accommodation while preserving the natural environment. Perfect for eco-conscious travelers who want to enjoy nature responsibly.",
     amenities: ["Free WiFi", "Restaurant", "Parking", "Garden", "Eco-friendly Facilities"],
@@ -192,11 +192,11 @@ export const stays: Stay[] = [
     category: "Eco Lodge",
     rating: 4.4,
     price: "₹3,500",
-    image: "/src/assets/Stays/Bamboo Grove Eco Lodge.jpg",
+    image: "/assets/Stays/Bamboo Grove Eco Lodge.jpg",
     images: [
-      "/src/assets/Stays/Bamboo Grove Eco Lodge.jpg",
-      "/src/assets/Stays/Bamboo Grove Eco Lodge 2.jpg",
-      "/src/assets/Stays/Bamboo Grove Eco Lodge3.jpg"
+      "/assets/Stays/Bamboo Grove Eco Lodge.jpg",
+      "/assets/Stays/Bamboo Grove Eco Lodge 2.jpg",
+      "/assets/Stays/Bamboo Grove Eco Lodge3.jpg"
     ],
     description: "Immerse yourself in nature at Bamboo Grove Eco Lodge, located near Betla National Park. This eco-friendly accommodation offers a unique jungle experience with comfortable bamboo cottages and sustainable amenities. Perfect for wildlife enthusiasts and nature lovers.",
     amenities: ["Free WiFi", "Restaurant", "Parking", "Garden", "Jungle Views"],
@@ -219,11 +219,11 @@ export const stays: Stay[] = [
     category: "Homestay",
     rating: 4.6,
     price: "₹2,500",
-    image: "/src/assets/Stays/Sikaria Homestay 1.jpg",
+    image: "/assets/Stays/Sikaria Homestay 1.jpg",
     images: [
-      "/src/assets/Stays/Sikaria Homestay 1.jpg",
-      "/src/assets/Stays/Sikaria Homestay 2.jpg",
-      "/src/assets/Stays/Sikaria Homestay 3.jpg"
+      "/assets/Stays/Sikaria Homestay 1.jpg",
+      "/assets/Stays/Sikaria Homestay 2.jpg",
+      "/assets/Stays/Sikaria Homestay 3.jpg"
     ],
     description: "Experience authentic local hospitality at Sikaria Homestay in Hazaribagh. This family-run homestay offers comfortable accommodation with home-cooked meals and cultural experiences. Perfect for travelers seeking authentic local experiences and cultural immersion.",
     amenities: ["Free WiFi", "Home-cooked Meals", "Parking", "Cultural Experiences"],
@@ -246,11 +246,11 @@ export const stays: Stay[] = [
     category: "Homestay",
     rating: 4.5,
     price: "₹2,000",
-    image: "/src/assets/Stays/Simra Homestay 1.jpg",
+    image: "/assets/Stays/Simra Homestay 1.jpg",
     images: [
-      "/src/assets/Stays/Simra Homestay 1.jpg",
-      "/src/assets/Stays/Simra Homestay 2.jpg",
-      "/src/assets/Stays/Simra Homestay 3.jpg"
+      "/assets/Stays/Simra Homestay 1.jpg",
+      "/assets/Stays/Simra Homestay 2.jpg",
+      "/assets/Stays/Simra Homestay 3.jpg"
     ],
     description: "A warm and welcoming homestay near Deoghar offering comfortable accommodation with traditional hospitality. Simra Homestay provides authentic local experiences with home-cooked meals and cultural insights. Perfect for pilgrims and cultural travelers.",
     amenities: ["Free WiFi", "Home-cooked Meals", "Parking", "Cultural Experiences"],
@@ -273,11 +273,11 @@ export const stays: Stay[] = [
     category: "Homestay",
     rating: 4.7,
     price: "₹2,800",
-    image: "/src/assets/Stays/Tribal Heritage Homestay.jpg",
+    image: "/assets/Stays/Tribal Heritage Homestay.jpg",
     images: [
-      "/src/assets/Stays/Tribal Heritage Homestay.jpg",
-      "/src/assets/Stays/Tribal Heritage homestay2.jpg",
-      "/src/assets/Stays/Tribal Heritage Homestay 3.jpg"
+      "/assets/Stays/Tribal Heritage Homestay.jpg",
+      "/assets/Stays/Tribal Heritage homestay2.jpg",
+      "/assets/Stays/Tribal Heritage Homestay 3.jpg"
     ],
     description: "Immerse yourself in tribal culture at Tribal Heritage Homestay in Khunti. This unique accommodation offers authentic tribal experiences with traditional meals, cultural performances, and insights into local customs. Perfect for cultural enthusiasts and those seeking authentic tribal experiences.",
     amenities: ["Free WiFi", "Traditional Meals", "Cultural Performances", "Parking"],

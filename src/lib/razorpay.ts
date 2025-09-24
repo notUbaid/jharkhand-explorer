@@ -63,7 +63,7 @@ export const generateRazorpayOptions = (
     currency: config.payment.currency,
     name: config.app.name,
     description: `Order #${orderId}`,
-    image: '/src/assets/Logo.jpg',
+    image: '/assets/Logo.jpg',
     order_id: orderId,
     handler: function (response: any) {
       // Payment successful callback

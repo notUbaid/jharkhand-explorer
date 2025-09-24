@@ -99,11 +99,11 @@ const restaurants = [
     location: "Lalpur, Ranchi",
     category: "Premium",
     rating: 4.9,
-    image: "/src/assets/Food & Dining/[(Mocha Café-Bar)1].jpg",
+    image: "/assets/Food & Dining/[(Mocha Café-Bar)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Mocha Café-Bar)1].jpg",
-      "/src/assets/Food & Dining/[(Mocha Café-Bar)2].jpg",
-      "/src/assets/Food & Dining/[(Mocha Café-Bar)2](1).jpg"
+      "/assets/Food & Dining/[(Mocha Café-Bar)1].jpg",
+      "/assets/Food & Dining/[(Mocha Café-Bar)2].jpg",
+      "/assets/Food & Dining/[(Mocha Café-Bar)2](1).jpg"
     ],
     isHiddenGem: false,
     description: "Famous for desserts, continental, and coffee with great evening ambience & rooftop seating",
@@ -121,11 +121,11 @@ const restaurants = [
     location: "Lalpur / Purulia Road, Ranchi",
     category: "Budget",
     rating: 4.4,
-    image: "/src/assets/Food & Dining/[(Jashn the Restaurant)1].jpg",
+    image: "/assets/Food & Dining/[(Jashn the Restaurant)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Jashn the Restaurant)1].jpg",
-      "/src/assets/Food & Dining/[(Jashn the Restaurant)2].jpg",
-      "/src/assets/Food & Dining/[(Jashn the Resturant)3].jpg"
+      "/assets/Food & Dining/[(Jashn the Restaurant)1].jpg",
+      "/assets/Food & Dining/[(Jashn the Restaurant)2].jpg",
+      "/assets/Food & Dining/[(Jashn the Resturant)3].jpg"
     ],
     isHiddenGem: false,
     description: "Great for North Indian, Chinese & biryani with rooftop seating & parking available",
@@ -143,11 +143,11 @@ const restaurants = [
     location: "Circular Road / Lalpur, Ranchi",
     category: "Premium",
     rating: 4.4,
-    image: "/src/assets/Food & Dining/[(Barbeque Nation)1].jpg",
+    image: "/assets/Food & Dining/[(Barbeque Nation)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Barbeque Nation)1].jpg",
-      "/src/assets/Food & Dining/[(Barbeque Nation)2].jpg",
-      "/src/assets/Food & Dining/[(Barbeque Nation)3].jpg"
+      "/assets/Food & Dining/[(Barbeque Nation)1].jpg",
+      "/assets/Food & Dining/[(Barbeque Nation)2].jpg",
+      "/assets/Food & Dining/[(Barbeque Nation)3].jpg"
     ],
     isHiddenGem: false,
     description: "Classic live grill buffet experience, very popular on weekends & holidays",
@@ -165,11 +165,11 @@ const restaurants = [
     location: "Kadru / New A.G. Colony, Ranchi",
     category: "Premium",
     rating: 4.3,
-    image: "/src/assets/Food & Dining/[(Oona the One)1].jpg",
+    image: "/assets/Food & Dining/[(Oona the One)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Oona the One)1].jpg",
-      "/src/assets/Food & Dining/[(Oona the One)2].jpg",
-      "/src/assets/Food & Dining/[(Oona the One)3].jpg"
+      "/assets/Food & Dining/[(Oona the One)1].jpg",
+      "/assets/Food & Dining/[(Oona the One)2].jpg",
+      "/assets/Food & Dining/[(Oona the One)3].jpg"
     ],
     isHiddenGem: false,
     description: "Upscale ambience with diverse menu, ideal for dates & celebrations",
@@ -187,11 +187,11 @@ const restaurants = [
     location: "Hindpiri / Ashok Nagar, Ranchi",
     category: "Budget",
     rating: 4.2,
-    image: "/src/assets/Food & Dining/[(Kaveri Restaurant)1].jpg",
+    image: "/assets/Food & Dining/[(Kaveri Restaurant)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Kaveri Restaurant)1].jpg",
-      "/src/assets/Food & Dining/[(Kaveri Restaurant)2].jpg",
-      "/src/assets/Food & Dining/[(Kaveri Restaurant)3].jpg"
+      "/assets/Food & Dining/[(Kaveri Restaurant)1].jpg",
+      "/assets/Food & Dining/[(Kaveri Restaurant)2].jpg",
+      "/assets/Food & Dining/[(Kaveri Restaurant)3].jpg"
     ],
     isHiddenGem: false,
     description: "Famous for pure veg thalis with quick service & budget-friendly prices",
@@ -209,11 +209,11 @@ const restaurants = [
     location: "Doranda / Bara Ghaghra, Ranchi",
     category: "Premium",
     rating: 4.1,
-    image: "/src/assets/Food & Dining/[(Oak Tavern Lounge)1].jpg",
+    image: "/assets/Food & Dining/[(Oak Tavern Lounge)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Oak Tavern Lounge)1].jpg",
-      "/src/assets/Food & Dining/[(Oak Tavern Lounge)2].jpg",
-      "/src/assets/Food & Dining/[(Oak Tavern Lounge)3].jpg"
+      "/assets/Food & Dining/[(Oak Tavern Lounge)1].jpg",
+      "/assets/Food & Dining/[(Oak Tavern Lounge)2].jpg",
+      "/assets/Food & Dining/[(Oak Tavern Lounge)3].jpg"
     ],
     isHiddenGem: false,
     description: "Lounge ambience with drinks & kebabs, live music / DJ nights on weekends",
@@ -231,11 +231,11 @@ const restaurants = [
     location: "Lalpur, Ranchi",
     category: "Mid-range",
     rating: 4.2,
-    image: "/src/assets/Food & Dining/[(Zinnia Multi-Cuisine)1].jpg",
+    image: "/assets/Food & Dining/[(Zinnia Multi-Cuisine)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Zinnia Multi-Cuisine)1].jpg",
-      "/src/assets/Food & Dining/[(Zinnia Multi-Cuisine)2].jpg",
-      "/src/assets/Food & Dining/[(Zinnia Multi-Cuisine)3].jpg"
+      "/assets/Food & Dining/[(Zinnia Multi-Cuisine)1].jpg",
+      "/assets/Food & Dining/[(Zinnia Multi-Cuisine)2].jpg",
+      "/assets/Food & Dining/[(Zinnia Multi-Cuisine)3].jpg"
     ],
     isHiddenGem: false,
     description: "Popular family restaurant with diverse menu and good service & well-maintained ambience",
@@ -253,11 +253,11 @@ const restaurants = [
     location: "Bariatu, Ranchi",
     category: "Budget",
     rating: 4.3,
-    image: "/src/assets/Food & Dining/[(Taste Ride Café & Restro)1].jpg",
+    image: "/assets/Food & Dining/[(Taste Ride Café & Restro)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Taste Ride Café & Restro)1].jpg",
-      "/src/assets/Food & Dining/[(Taste Ride Café & Restro)2].jpg",
-      "/src/assets/Food & Dining/[(Taste Ride Café & Restro)3].jpg"
+      "/assets/Food & Dining/[(Taste Ride Café & Restro)1].jpg",
+      "/assets/Food & Dining/[(Taste Ride Café & Restro)2].jpg",
+      "/assets/Food & Dining/[(Taste Ride Café & Restro)3].jpg"
     ],
     isHiddenGem: false,
     description: "Famous among students & youngsters, known for fast food, shakes, Chinese & snacks",
@@ -275,11 +275,11 @@ const restaurants = [
     location: "Deoghar",
     category: "Budget",
     rating: 4.5,
-    image: "/src/assets/Food & Dining/[(Kailash Pure veg)1].jpg",
+    image: "/assets/Food & Dining/[(Kailash Pure veg)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Kailash Pure veg)1].jpg",
-      "/src/assets/Food & Dining/[(Kailash Pure veg)2].jpg",
-      "/src/assets/Food & Dining/[(Kailash Pure veg)3].jpg"
+      "/assets/Food & Dining/[(Kailash Pure veg)1].jpg",
+      "/assets/Food & Dining/[(Kailash Pure veg)2].jpg",
+      "/assets/Food & Dining/[(Kailash Pure veg)3].jpg"
     ],
     isHiddenGem: true,
     description: "Pure veg restaurant serving local specialties, popular for thalis & sweets",
@@ -297,11 +297,11 @@ const restaurants = [
     location: "Deoghar",
     category: "Budget",
     rating: 4.2,
-    image: "/src/assets/Food & Dining/[(Dine x Divine)1].jpg",
+    image: "/assets/Food & Dining/[(Dine x Divine)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Dine x Divine)1].jpg",
-      "/src/assets/Food & Dining/[(Dine x Divine)2].jpg",
-      "/src/assets/Food & Dining/[(Dine x Divine )3].jpg"
+      "/assets/Food & Dining/[(Dine x Divine)1].jpg",
+      "/assets/Food & Dining/[(Dine x Divine)2].jpg",
+      "/assets/Food & Dining/[(Dine x Divine )3].jpg"
     ],
     isHiddenGem: false,
     description: "Good spot for families and travelers with North Indian & Chinese specialties",
@@ -319,11 +319,11 @@ const restaurants = [
     location: "Bistupur, Jamshedpur",
     category: "Premium",
     rating: 4.6,
-    image: "/src/assets/Food & Dining/[(Mokn Brewery and Restaurant)1].jpg",
+    image: "/assets/Food & Dining/[(Mokn Brewery and Restaurant)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Mokn Brewery and Restaurant)1].jpg",
-      "/src/assets/Food & Dining/[(Moon Brewery and Restaurant)2].jpg",
-      "/src/assets/Food & Dining/[(Moon Brewery and Restaurant)3].jpg"
+      "/assets/Food & Dining/[(Mokn Brewery and Restaurant)1].jpg",
+      "/assets/Food & Dining/[(Moon Brewery and Restaurant)2].jpg",
+      "/assets/Food & Dining/[(Moon Brewery and Restaurant)3].jpg"
     ],
     isHiddenGem: false,
     description: "Known for in-house brewery & fine dining with great ambience for nightlife & celebrations",
@@ -341,11 +341,11 @@ const restaurants = [
     location: "Bistupur, Jamshedpur",
     category: "Budget",
     rating: 4.3,
-    image: "/src/assets/Food & Dining/[(Khana Khazana)1].jpg",
+    image: "/assets/Food & Dining/[(Khana Khazana)1].jpg",
     images: [
-      "/src/assets/Food & Dining/[(Khana Khazana)1].jpg",
-      "/src/assets/Food & Dining/[(Khana Khazana)2].jpg",
-      "/src/assets/Food & Dining/[(Khana Khazana)3].jpg"
+      "/assets/Food & Dining/[(Khana Khazana)1].jpg",
+      "/assets/Food & Dining/[(Khana Khazana)2].jpg",
+      "/assets/Food & Dining/[(Khana Khazana)3].jpg"
     ],
     isHiddenGem: true,
     description: "Specializes in local Jharkhandi & Bihari cuisine with affordable meals and homely taste",
