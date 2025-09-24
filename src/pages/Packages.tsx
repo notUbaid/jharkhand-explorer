@@ -47,16 +47,16 @@ export default function Packages() {
   const { setLeftPackage, setRightPackage, setOpenComparisonModal } = usePackageComparison();
 
   const categories = [
-    t("common.all"), 
-    t("categories.nature"), 
-    t("categories.adventure"), 
-    t("categories.cultural"), 
-    t("categories.religious"), 
-    t("categories.heritage"), 
-    t("categories.comprehensive"), 
-    t("categories.premium"), 
-    t("categories.mining"), 
-    t("categories.backpacking")
+    "All", 
+    "Nature", 
+    "Adventure", 
+    "Cultural", 
+    "Religious", 
+    "Heritage", 
+    "Comprehensive", 
+    "Premium", 
+    "Mining", 
+    "Backpacking"
   ];
   const priceRanges = [
     t("common.all"), 

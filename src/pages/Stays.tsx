@@ -49,13 +49,13 @@ export default function Stays() {
   const navigate = useNavigate();
 
   const categories = [
-    t("common.all"), 
-    t("common.luxury"), 
-    t("common.premium"), 
-    t("common.midRange"), 
-    t("common.resort"), 
-    t("common.ecoLodge"), 
-    t("common.homestay")
+    "All", 
+    "Luxury", 
+    "Premium", 
+    "Mid-Range", 
+    "Resort", 
+    "Eco Lodge", 
+    "Homestay"
   ];
   const priceRanges = [
     t("common.all"), 

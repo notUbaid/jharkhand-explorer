@@ -159,14 +159,14 @@ export default function Events() {
   const navigate = useNavigate();
 
   const categories = [
-    t("common.all"), 
-    t("categories.cultural"), 
-    t("categories.food"), 
-    t("categories.business"), 
-    t("categories.sports"), 
-    t("categories.music"), 
-    t("categories.art"), 
-    t("categories.adventure")
+    "All", 
+    "Cultural", 
+    "Food", 
+    "Business", 
+    "Sports", 
+    "Music", 
+    "Art", 
+    "Adventure"
   ];
   const priceRanges = [
     t("common.all"), 
