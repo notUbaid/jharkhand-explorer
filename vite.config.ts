@@ -31,37 +31,13 @@ export default defineConfig(({ mode }) => ({
     // Copy service worker to dist
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          // Split vendor libraries into separate chunks
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'react-vendor';
-            }
-            if (id.includes('@radix-ui') || id.includes('framer-motion')) {
-              return 'ui-vendor';
-            }
-            if (id.includes('lucide-react') || id.includes('clsx') || id.includes('tailwind')) {
-              return 'utils-vendor';
-            }
-            if (id.includes('i18next') || id.includes('react-i18next')) {
-              return 'i18n-vendor';
-            }
-            if (id.includes('@tanstack')) {
-              return 'query-vendor';
-            }
-            return 'vendor';
-          }
-          
-          // Split pages into separate chunks
-          if (id.includes('/pages/')) {
-            const pageName = id.split('/pages/')[1].split('.')[0];
-            return `page-${pageName}`;
-          }
-          
-          // Split components into separate chunks
-          if (id.includes('/components/')) {
-            return 'components';
-          }
+        manualChunks: {
+          // Keep React and React-DOM together to prevent context issues
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs', '@radix-ui/react-toast'],
+          'utils-vendor': ['lucide-react', 'clsx', 'tailwind-merge'],
+          'i18n-vendor': ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
+          'query-vendor': ['@tanstack/react-query'],
         },
         // Optimize chunk naming
         chunkFileNames: 'assets/[name]-[hash].js',
