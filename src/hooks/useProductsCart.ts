@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import { Product } from '@/data/products';
-import { config } from '@/config/environment';
 
 export interface CartItem {
   id: number;
@@ -21,26 +20,12 @@ export interface CartContextType {
   getCartItemQuantity: (productId: number) => number;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
-
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-};
-
-interface CartProviderProps {
-  children: ReactNode;
-}
-
-export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
+export const useProductsCart = (): CartContextType => {
   const [items, setItems] = useState<CartItem[]>([]);
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem(config.storage.cartKey);
+    const savedCart = localStorage.getItem('products-cart');
     if (savedCart) {
       try {
         const parsedCart = JSON.parse(savedCart);
@@ -52,14 +37,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         setItems(cartWithDates);
       } catch (error) {
         console.error('Error loading cart from localStorage:', error);
-        localStorage.removeItem(config.storage.cartKey);
+        localStorage.removeItem('products-cart');
       }
     }
   }, []);
 
   // Save cart to localStorage whenever items change
   useEffect(() => {
-    localStorage.setItem(config.storage.cartKey, JSON.stringify(items));
+    localStorage.setItem('products-cart', JSON.stringify(items));
   }, [items]);
 
   const addToCart = (product: Product, quantity: number = 1) => {
@@ -122,7 +107,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     return sum + (price * item.quantity);
   }, 0);
 
-  const value: CartContextType = {
+  return {
     items,
     totalItems,
     totalPrice,
@@ -133,10 +118,4 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     isInCart,
     getCartItemQuantity,
   };
-
-  return (
-    <CartContext.Provider value={value}>
-      {children}
-    </CartContext.Provider>
-  );
 };

@@ -2,22 +2,46 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { BookingModal } from "@/components/BookingModal";
+import { useStayComparison } from "@/contexts/StayComparisonContext";
 import { MapPin, Star, IndianRupee, Users, Wifi, AirVent, Car, Utensils, Bath, ArrowLeft, GitCompare, ChevronLeft, ChevronRight, Clock, Calendar, Building, Heart } from "lucide-react";
 import { getStayById } from "@/data/stays";
+import { BookingItem } from "@/hooks/useBooking";
 
 export default function StayDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [stay] = useState(() => getStayById(id || "1"));
+  const { addToCompare, removeFromCompare, isInCompare, canAddMore } = useStayComparison();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
     document.title = `${stay?.name} • Discover Jharkhand`;
     // Scroll to top when component mounts or stay changes
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, [stay?.name, id]);
+
+  const handleBookNow = () => {
+    setShowBookingModal(true);
+  };
+
+  const handleBookingSuccess = (bookingId: string) => {
+    console.log('Booking successful:', bookingId);
+    // You can add additional success handling here
+  };
+
+  const handleCompareToggle = () => {
+    if (!stay) return;
+    
+    if (isInCompare(stay.id)) {
+      removeFromCompare(stay.id);
+    } else if (canAddMore) {
+      addToCompare(stay);
+    }
+  };
 
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
@@ -285,14 +309,43 @@ export default function StayDetail() {
           <Button variant="outline">
             <Heart size={16} className="mr-1" /> Add to Favorites
           </Button>
-          <Button variant="outline">
-            <GitCompare size={16} className="mr-1" /> Compare
+          <Button 
+            variant="outline" 
+            onClick={handleCompareToggle}
+            className={isInCompare(stay?.id || 0) ? "bg-primary text-primary-foreground" : ""}
+          >
+            <GitCompare size={16} className="mr-1" /> 
+            {isInCompare(stay?.id || 0) ? 'Remove from Compare' : 'Compare'}
           </Button>
-          <Button className="bg-primary hover:bg-primary-light">
+          <Button className="bg-primary hover:bg-primary-light" onClick={handleBookNow}>
             Book Now
           </Button>
         </div>
       </main>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        bookingItems={stay ? [{
+          id: stay.id.toString(),
+          type: 'stay',
+          title: stay.name,
+          price: parseFloat(stay.price.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: '1 Night',
+          location: stay.location,
+          image: stay.images[0],
+          metadata: {
+            category: stay.category,
+            rating: stay.rating,
+            amenities: stay.amenities,
+            rooms: stay.rooms,
+            capacity: stay.capacity
+          }
+        }] : []}
+        onSuccess={handleBookingSuccess}
+      />
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { BookingModal } from "@/components/BookingModal";
+import { BookingItem } from "@/hooks/useBooking";
 import { 
   Calendar, 
   MapPin, 
@@ -313,8 +315,9 @@ const events = [
 export default function EventDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [event, setEvent] = useState<any>(null);
+  const [event, setEvent] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [isLoading, setIsLoading] = useState(true);
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
     const foundEvent = events.find(e => e.id === parseInt(id || "0"));
@@ -326,6 +329,17 @@ export default function EventDetail() {
       document.title = `Event Not Found • Discover Jharkhand`;
     }
   }, [id]);
+
+  const handleBookNow = () => {
+    if (event) {
+      setShowBookingModal(true);
+    }
+  };
+
+  const handleBookingSuccess = (bookingId: string) => {
+    console.log('Booking successful:', bookingId);
+    // You can add additional success handling here
+  };
 
   const handleBookTicket = () => {
     // Implement booking logic
@@ -472,7 +486,7 @@ export default function EventDetail() {
 
               <Button
                 className="w-full"
-                onClick={handleBookTicket}
+                onClick={handleBookNow}
               >
                 <Ticket className="mr-2" size={16} />
                 Book Ticket
@@ -576,6 +590,29 @@ export default function EventDetail() {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        bookingItems={event ? [{
+          id: event.id.toString(),
+          type: 'event',
+          title: event.title,
+          price: parseFloat(event.entryFee.replace(/[₹,]/g, '')),
+          quantity: 1,
+          date: event.date,
+          time: event.timings,
+          location: event.location,
+          image: event.image,
+          metadata: {
+            category: event.category,
+            organizer: event.organizer,
+            expectedAttendees: event.expectedAttendees
+          }
+        }] : []}
+        onSuccess={handleBookingSuccess}
+      />
     </div>
   );
 }

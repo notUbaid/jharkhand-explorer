@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { BookingModal } from "@/components/BookingModal";
 import { TransportOption, TrainOption, BusOption, FlightOption, City } from "@/types/Transport";
 import { getAllTransportRoutes } from "@/data/transportData";
 import { useTransportComparison } from "@/contexts/TransportComparisonContext";
 import { TransportComparisonModal } from "@/components/TransportComparisonModal";
 import { RentalComparisonModal } from "@/components/RentalComparisonModal";
+import { BookingItem } from "@/hooks/useBooking";
 import { 
   Train,
   Bus,
@@ -492,6 +494,11 @@ export default function Transport() {
   // Rental comparison state
   const [rentalCompareItems, setRentalCompareItems] = useState<typeof rentalVehicles>([]);
   const [openRentalCompareModal, setOpenRentalCompareModal] = useState(false);
+  
+  // Booking state
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState<typeof rentalVehicles[0] | null>(null);
+  const [rentalType, setRentalType] = useState<'hourly' | 'daily'>('daily');
 
   const addToRentalCompare = (vehicle: typeof rentalVehicles[0]) => {
     if (rentalCompareItems.length >= 3) {
@@ -509,6 +516,17 @@ export default function Transport() {
 
   const isInRentalCompare = (id: number) => {
     return rentalCompareItems.some(item => item.id === id);
+  };
+
+  const handleBookVehicle = (vehicle: typeof rentalVehicles[0], type: 'hourly' | 'daily') => {
+    setSelectedVehicle(vehicle);
+    setRentalType(type);
+    setShowBookingModal(true);
+  };
+
+  const handleBookingSuccess = (bookingId: string) => {
+    console.log('Booking successful:', bookingId);
+    // You can add additional success handling here
   };
 
   const canAddMoreRentals = rentalCompareItems.length < 3;
@@ -1226,14 +1244,14 @@ export default function Transport() {
             </div>
 
             {/* Long Distance Options */}
-            <div className="space-y-4">
+            <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" : "space-y-4"}>
               {paginatedOptions.length > 0 ? (
                 paginatedOptions.map((option) => (
-                  <LuxuryCard key={option.id} className="p-4 hover:shadow-lg transition-shadow">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
+                  <LuxuryCard key={option.id} className={`${viewMode === "list" ? "p-4" : "p-4"} hover:shadow-lg transition-shadow`}>
+                    <div className={`${viewMode === "list" ? "flex items-center justify-between mb-3" : "space-y-3"}`}>
+                      <div className={`${viewMode === "list" ? "flex items-center space-x-3" : "flex items-center space-x-3"}`}>
                         {getModeIcon(option.mode)}
-                        <div>
+                        <div className="flex-1">
                           <h3 className="font-semibold text-foreground">
                             {option.mode === "train" ? (option as TrainOption).trainName :
                              option.mode === "bus" ? (option as BusOption).operator :
@@ -1252,7 +1270,7 @@ export default function Transport() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className={`${viewMode === "list" ? "flex items-center gap-2" : "flex items-center gap-2 mt-2"}`}>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -1648,32 +1666,32 @@ export default function Transport() {
                 </Button>
               )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+            <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6" : "space-y-4 mt-6"}>
               {filteredRentalVehicles.length > 0 ? (
                 filteredRentalVehicles.map((vehicle) => (
-                <LuxuryCard key={vehicle.id} className="p-0 overflow-hidden">
-                  <div className="relative">
-                    <div className="aspect-[3/2] bg-muted">
+                <LuxuryCard key={vehicle.id} className={`${viewMode === "list" ? "p-4" : "p-0"} overflow-hidden`}>
+                  <div className={`${viewMode === "list" ? "flex items-center space-x-4" : "relative"}`}>
+                    <div className={`${viewMode === "list" ? "w-32 h-20 flex-shrink-0" : "aspect-[3/2]"} bg-muted ${viewMode === "list" ? "rounded-lg" : ""}`}>
                       <img 
                         src={vehicle.image} 
                         alt={vehicle.model}
-                        className="w-full h-full object-contain object-center"
+                        className={`w-full h-full object-contain object-center ${viewMode === "list" ? "rounded-lg" : ""}`}
                       />
                     </div>
                     
                     {vehicle.isEco && (
-                      <Badge className="absolute top-2 left-2 bg-success text-success-foreground text-xs">
+                      <Badge className={`${viewMode === "list" ? "absolute top-2 left-2" : "absolute top-2 left-2"} bg-success text-success-foreground text-xs`}>
                         🌱 Eco
                       </Badge>
                     )}
                     {!vehicle.available && (
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <div className={`${viewMode === "list" ? "absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg" : "absolute inset-0 bg-black/50 flex items-center justify-center"}`}>
                         <Badge variant="destructive" className="text-xs">Unavailable</Badge>
                       </div>
                     )}
 
                     {/* Compare Button */}
-                    <div className="absolute top-2 right-2 flex gap-1">
+                    <div className={`${viewMode === "list" ? "absolute top-2 right-2" : "absolute top-2 right-2"} flex gap-1`}>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -1695,8 +1713,8 @@ export default function Transport() {
                     </div>
                   </div>
                   
-                  <div className="p-4">
-                    <div className="flex items-start justify-between mb-2">
+                  <div className={`${viewMode === "list" ? "flex-1" : "p-4"}`}>
+                    <div className={`${viewMode === "list" ? "flex items-center justify-between" : "flex items-start justify-between mb-2"}`}>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           {getVehicleIcon(vehicle.type)}
@@ -1706,7 +1724,7 @@ export default function Transport() {
                           <MapPin size={10} className="mr-1" />
                           {vehicle.pickupLocation}
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className={`${viewMode === "list" ? "flex items-center gap-4" : "flex items-center gap-2"} text-xs text-muted-foreground`}>
                           <div className="flex items-center">
                             <Users size={8} className="mr-1" />
                             {vehicle.seats}
@@ -1743,8 +1761,8 @@ export default function Transport() {
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col">
+                    <div className={`${viewMode === "list" ? "flex items-center justify-between" : "flex items-center justify-between"}`}>
+                      <div className={`${viewMode === "list" ? "flex items-center space-x-4" : "flex flex-col"}`}>
                         <div className="flex items-center">
                           <IndianRupee size={14} className="text-accent" />
                           <span className="font-bold text-base text-accent">{vehicle.pricePerDay}</span>
@@ -1754,13 +1772,25 @@ export default function Transport() {
                           or {vehicle.pricePerHour}/hr
                         </div>
                       </div>
-                      <Button 
-                        size="sm" 
-                        disabled={!vehicle.available}
-                        className="bg-primary hover:bg-primary-light text-xs px-3 py-1"
-                      >
-                        {vehicle.available ? "Book" : "Unavailable"}
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button 
+                          size="sm" 
+                          disabled={!vehicle.available}
+                          className="bg-primary hover:bg-primary-light text-xs px-2 py-1"
+                          onClick={() => handleBookVehicle(vehicle, 'daily')}
+                        >
+                          Book Daily
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          disabled={!vehicle.available}
+                          className="text-xs px-2 py-1"
+                          onClick={() => handleBookVehicle(vehicle, 'hourly')}
+                        >
+                          Book Hourly
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </LuxuryCard>
@@ -1821,6 +1851,35 @@ export default function Transport() {
         clearCompare={() => setRentalCompareItems([])}
         openCompareModal={openRentalCompareModal}
         setOpenCompareModal={setOpenRentalCompareModal}
+      />
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        bookingItems={selectedVehicle ? [{
+          id: selectedVehicle.id.toString(),
+          type: 'rental',
+          title: `${selectedVehicle.model} (${selectedVehicle.type})`,
+          price: rentalType === 'daily' 
+            ? parseFloat(selectedVehicle.pricePerDay.replace(/[₹,]/g, ''))
+            : parseFloat(selectedVehicle.pricePerHour.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: rentalType === 'daily' ? '1 Day' : '1 Hour',
+          location: selectedVehicle.pickupLocation,
+          image: selectedVehicle.image,
+          metadata: {
+            vehicleType: selectedVehicle.type,
+            seats: selectedVehicle.seats,
+            fuelType: selectedVehicle.fuelType,
+            mileage: selectedVehicle.mileage,
+            features: selectedVehicle.features,
+            rentalType: rentalType,
+            pricePerDay: selectedVehicle.pricePerDay,
+            pricePerHour: selectedVehicle.pricePerHour
+          }
+        }] : []}
+        onSuccess={handleBookingSuccess}
       />
     </div>
   );

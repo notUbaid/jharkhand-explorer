@@ -9,7 +9,7 @@ import { DarkModeProvider } from "@/contexts/DarkModeContext";
 import { PackageComparisonProvider } from "@/contexts/PackageComparisonContext";
 import { TransportComparisonProvider } from "@/contexts/TransportComparisonContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
-import { CartProvider } from "@/contexts/CartContext";
+import { StayComparisonProvider } from "@/contexts/StayComparisonContext";
 import Home from "./pages/Home";
 import Destinations from "./pages/Destinations";
 import Packages from "./pages/Packages";
@@ -35,8 +35,6 @@ import TourGuideDetail from "./pages/TourGuideDetail";
 import EventDetail from "./pages/EventDetail";
 import StayDetail from "./pages/StayDetail";
 import StayCompare from "./pages/StayCompare";
-import Checkout from "./pages/Checkout";
-import Orders from "./pages/Orders";
 
 const queryClient = new QueryClient();
 
@@ -46,57 +44,55 @@ const App = () => (
       <DarkModeProvider>
         <PackageComparisonProvider>
           <TransportComparisonProvider>
-            <FavoritesProvider>
-              <CartProvider>
+            <StayComparisonProvider>
+              <FavoritesProvider>
                 <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <BrowserRouter>
-                    <div className="relative">
-                      <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/destinations" element={<Destinations />} />
-                <Route path="/destinations/:id" element={<DestinationDetail />} />
-                <Route path="/restaurants/:id" element={<RestaurantDetail />} />
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <div className="relative">
+                    <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/destinations" element={<Destinations />} />
+              <Route path="/destinations/:id" element={<DestinationDetail />} />
+              <Route path="/restaurants/:id" element={<RestaurantDetail />} />
 
-                <Route path="/packages" element={<Packages />} />
-                <Route path="/packages/:id" element={<PackageDetail />} />
-                <Route path="/packages/compare" element={<PackageCompare />} />
+              <Route path="/packages" element={<Packages />} />
+              <Route path="/packages/:id" element={<PackageDetail />} />
+              <Route path="/packages/compare" element={<PackageCompare />} />
 
-                <Route path="/marketplace" element={<Marketplace />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
-        <Route path="/product-registration" element={<ProductRegistration />} />
-        <Route path="/workshop-registration" element={<WorkshopRegistration />} />
-        <Route path="/tourguide-registration" element={<TourGuideRegistration />} />
-        <Route path="/event-registration" element={<EventRegistration />} />
-        <Route path="/search" element={<SearchResults />} />
-        <Route path="/seller/:sellerId" element={<SellerProfile />} />
-                <Route path="/experiences/:id" element={<ExperienceDetail />} />
-                <Route path="/tourguides/:id" element={<TourGuideDetail />} />
+              <Route path="/marketplace" element={<Marketplace />} />
+      <Route path="/products/:id" element={<ProductDetail />} />
+      <Route path="/product-registration" element={<ProductRegistration />} />
+      <Route path="/workshop-registration" element={<WorkshopRegistration />} />
+      <Route path="/tourguide-registration" element={<TourGuideRegistration />} />
+      <Route path="/event-registration" element={<EventRegistration />} />
+      <Route path="/search" element={<SearchResults />} />
+      <Route path="/seller/:sellerId" element={<SellerProfile />} />
+              <Route path="/experiences/:id" element={<ExperienceDetail />} />
+              <Route path="/tourguides/:id" element={<TourGuideDetail />} />
 
-                <Route path="/events" element={<Events />} />
-                <Route path="/events/:id" element={<EventDetail />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/events/:id" element={<EventDetail />} />
 
-                <Route path="/transport" element={<Transport />} />
+              <Route path="/transport" element={<Transport />} />
 
-                <Route path="/stays" element={<Stays />} />
-                <Route path="/stays/:id" element={<StayDetail />} />
-                <Route path="/stays/compare" element={<StayCompare />} />
+              <Route path="/stays" element={<Stays />} />
+              <Route path="/stays/:id" element={<StayDetail />} />
+              <Route path="/stays/compare" element={<StayCompare />} />
 
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="*" element={<NotFound />} />
-                      </Routes>
-                      <BottomNavigation />
-                    </div>
-                  </BrowserRouter>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="*" element={<NotFound />} />
+                    </Routes>
+                    <BottomNavigation />
+                  </div>
+                </BrowserRouter>
                 </TooltipProvider>
-              </CartProvider>
-            </FavoritesProvider>
-          </TransportComparisonProvider>
-        </PackageComparisonProvider>
-      </DarkModeProvider>
+                </FavoritesProvider>
+              </StayComparisonProvider>
+            </TransportComparisonProvider>
+          </PackageComparisonProvider>
+        </DarkModeProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );

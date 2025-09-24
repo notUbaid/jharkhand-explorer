@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { BookingModal } from "@/components/BookingModal";
 import { tourGuides, TourGuide } from "@/data/tourGuides";
+import { BookingItem } from "@/hooks/useBooking";
 import { 
   ArrowLeft, 
   Star, 
@@ -37,6 +39,7 @@ export default function TourGuideDetail() {
   const { t } = useTranslation();
   const [guide, setGuide] = useState<TourGuide | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
     // Simulate API call
@@ -44,6 +47,17 @@ export default function TourGuideDetail() {
     setGuide(foundGuide);
     setIsLoading(false);
   }, [id]);
+
+  const handleBookNow = () => {
+    if (guide) {
+      setShowBookingModal(true);
+    }
+  };
+
+  const handleBookingSuccess = (bookingId: string) => {
+    console.log('Booking successful:', bookingId);
+    // You can add additional success handling here
+  };
 
   if (isLoading) {
     return (
@@ -171,7 +185,7 @@ export default function TourGuideDetail() {
               </div>
 
               <div className="flex gap-3">
-                <Button className="flex-1">
+                <Button className="flex-1" onClick={handleBookNow}>
                   <Calendar className="mr-2" size={16} />
                   Book Now
                 </Button>
@@ -347,6 +361,29 @@ export default function TourGuideDetail() {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        bookingItems={guide ? [{
+          id: guide.id.toString(),
+          type: 'tourguide',
+          title: guide.name,
+          price: parseFloat(guide.price.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: 'Full Day',
+          location: guide.locations.join(', '),
+          image: guide.image,
+          metadata: {
+            specialization: guide.specialization,
+            languages: guide.languages,
+            experience: guide.experience,
+            specialties: guide.specialties
+          }
+        }] : []}
+        onSuccess={handleBookingSuccess}
+      />
     </div>
   );
 }

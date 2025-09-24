@@ -4,8 +4,8 @@
 export const config = {
   // Razorpay configuration
   razorpay: {
-    keyId: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_1DP5mmOlF5G5ag',
-    keySecret: import.meta.env.VITE_RAZORPAY_KEY_SECRET || 'your_secret_key',
+    keyId: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_RLUAMPaeE93MzD',
+    keySecret: import.meta.env.VITE_RAZORPAY_KEY_SECRET || 'uJyWNmb704GUA2Hx1ahqYKyf',
   },
   
   // App configuration
@@ -34,11 +34,11 @@ export const config = {
 export const validateEnvironment = () => {
   const warnings: string[] = [];
   
-  if (!config.razorpay.keyId || config.razorpay.keyId === 'rzp_test_1DP5mmOlF5G5ag') {
+  if (!config.razorpay.keyId || config.razorpay.keyId === 'rzp_test_RLUAMPaeE93MzD') {
     warnings.push('Razorpay Key ID not configured. Please set VITE_RAZORPAY_KEY_ID in your environment variables.');
   }
   
-  if (!config.razorpay.keySecret || config.razorpay.keySecret === 'your_secret_key') {
+  if (!config.razorpay.keySecret || config.razorpay.keySecret === 'uJyWNmb704GUA2Hx1ahqYKyf') {
     warnings.push('Razorpay Key Secret not configured. Please set VITE_RAZORPAY_KEY_SECRET in your environment variables.');
   }
   

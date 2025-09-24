@@ -4,7 +4,9 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { BookingModal } from "@/components/BookingModal";
 import { experiences, Experience } from "@/data/experiences";
+import { BookingItem } from "@/hooks/useBooking";
 import { 
   Calendar, 
   Clock, 
@@ -27,6 +29,7 @@ export default function ExperienceDetail() {
   const navigate = useNavigate();
   const [experience, setExperience] = useState<Experience | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
     // Find the experience by ID
@@ -43,9 +46,13 @@ export default function ExperienceDetail() {
 
   const handleBookNow = () => {
     if (experience) {
-      // Simulate booking
-      alert(`Booking ${experience.title} for ${experience.price}!`);
+      setShowBookingModal(true);
     }
+  };
+
+  const handleBookingSuccess = (bookingId: string) => {
+    console.log('Booking successful:', bookingId);
+    // You can add additional success handling here
   };
 
   const handleAddToWishlist = () => {
@@ -315,6 +322,28 @@ export default function ExperienceDetail() {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        bookingItems={experience ? [{
+          id: experience.id.toString(),
+          type: 'experience',
+          title: experience.title,
+          price: parseFloat(experience.price.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: experience.duration,
+          location: experience.location,
+          image: experience.image,
+          metadata: {
+            instructor: experience.instructor,
+            difficulty: experience.difficulty,
+            maxParticipants: experience.maxParticipants
+          }
+        }] : []}
+        onSuccess={handleBookingSuccess}
+      />
     </div>
   );
 }

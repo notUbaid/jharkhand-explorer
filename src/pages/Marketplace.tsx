@@ -8,7 +8,7 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { SearchBar } from "@/components/ui/search-bar";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useFavorites } from "@/contexts/FavoritesContext";
-import { useCart } from "@/contexts/CartContext";
+import { useProductsCart } from "@/hooks/useProductsCart";
 import { tourGuides } from "@/data/tourGuides";
 import { products } from "@/data/products";
 import { experiences } from "@/data/experiences";
@@ -23,14 +23,21 @@ import {
   MapPin,
   Users,
   Calendar,
-  Share2
+  Share2,
+  Minus
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+declare global {
+  interface Window {
+    Razorpay: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  }
+}
 
 export default function Marketplace() {
   const { t } = useTranslation();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
-  const { addToCart, isInCart, getCartItemQuantity } = useCart();
+  const { addToCart, isInCart, getCartItemQuantity, totalItems, totalPrice, items, removeFromCart, updateQuantity, clearCart } = useProductsCart();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("products");
   const [searchValue, setSearchValue] = useState("");
@@ -43,6 +50,61 @@ export default function Marketplace() {
   const [sortBy, setSortBy] = useState("relevance");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const navigate = useNavigate();
+
+  // Razorpay checkout function
+  const handleRazorpayCheckout = async () => {
+    if (items.length === 0) return;
+
+    try {
+      // Load Razorpay script if not already loaded
+      if (!window.Razorpay) {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        document.body.appendChild(script);
+        await new Promise((resolve) => {
+          script.onload = resolve;
+        });
+      }
+
+      // Generate order ID
+      const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Razorpay options
+      const options = {
+        key: 'rzp_test_RLUAMPaeE93MzD', // Your Razorpay key
+        amount: totalPrice * 100, // Amount in paise
+        currency: 'INR',
+        name: 'Jharkhand Explorer',
+        description: `Order #${orderId}`,
+        image: '/assets/Logo.jpg',
+        order_id: orderId,
+        handler: function (response: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+          // Payment successful
+          alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
+          clearCart();
+        },
+        prefill: {
+          name: 'Customer',
+          email: 'customer@example.com',
+          contact: '9876543210',
+        },
+        theme: {
+          color: '#059669'
+        },
+        modal: {
+          ondismiss: function() {
+            console.log('Payment modal dismissed');
+          }
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Payment failed. Please try again.');
+    }
+  };
 
   // Favorite functions
   const toggleProductFavorite = (product: typeof products[0]) => {
@@ -331,79 +393,12 @@ export default function Marketplace() {
           placeholder={t("marketplace.searchPlaceholder")}
         />
         
-        {/* Advanced Search Controls */}
+        {/* Advanced Search Controls - Simplified */}
         <div className="flex flex-wrap items-center gap-4 mb-4">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className="text-xs"
-            >
-              {showAdvancedFilters ? "Hide Filters" : "Show Filters"}
-            </Button>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="text-xs px-2 py-1 border rounded bg-background text-foreground"
-            >
-              {sortOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Removed Show Filters button for simplicity */}
         </div>
 
-        {/* Advanced Filters */}
-        {showAdvancedFilters && (
-          <div className="bg-muted/30 p-4 rounded-lg mb-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="text-xs font-medium text-foreground mb-1 block">Price Range</label>
-                <select
-                  value={selectedPriceRange}
-                  onChange={(e) => setSelectedPriceRange(e.target.value)}
-                  className="w-full text-xs px-2 py-1 border rounded bg-background text-foreground"
-                >
-                  {priceRanges.map(range => (
-                    <option key={range} value={range}>{range}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <div>
-                <label className="text-xs font-medium text-foreground mb-1 block">Rating</label>
-                <select
-                  value={selectedRating}
-                  onChange={(e) => setSelectedRating(e.target.value)}
-                  className="w-full text-xs px-2 py-1 border rounded bg-background text-foreground"
-                >
-                  {ratingOptions.map(rating => (
-                    <option key={rating} value={rating}>{rating}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <div>
-                <label className="text-xs font-medium text-foreground mb-1 block">Location</label>
-                <select
-                  value={selectedLocation}
-                  onChange={(e) => setSelectedLocation(e.target.value)}
-                  className="w-full text-xs px-2 py-1 border rounded bg-background text-foreground"
-                >
-                  {locationOptions.map(location => (
-                    <option key={location} value={location}>{location}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Advanced Filters - Removed for simplicity */}
       </div>
 
       <div className="px-6 mt-6 pb-32 relative z-10">
@@ -415,124 +410,220 @@ export default function Marketplace() {
           </TabsList>
 
           <TabsContent value="products" className="space-y-6">
-            {/* Product Categories */}
-            <div className="space-y-4">
-              <h3 className="section-title">{t("marketplace.categories")}</h3>
-              <div className="flex flex-wrap gap-2">
-                {productCategories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(category)}
-                    className="text-xs"
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-              {filteredProducts.map((product) => (
-                <LuxuryCard 
-                  key={product.id}
-                  className="p-0 overflow-hidden"
-                  onClick={() => navigate(`/products/${product.id}`)}
-                >
-                  <div className="relative">
-                    <div className="aspect-[3/2] bg-muted">
-                      <img 
-                        src={product.image} 
-                        alt={product.name}
-                        className="w-full h-full object-contain object-center"
-                      />
-                    </div>
-                    
-                    {!product.inStock && (
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <Badge variant="destructive">Out of Stock</Badge>
-                      </div>
-                    )}
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleProductFavorite(product);
-                      }}
-                      className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full"
-                    >
-                      <Heart 
-                        size={14} 
-                        className={isFavorite(product.id.toString(), 'product') ? 'text-accent fill-accent' : 'text-muted-foreground'} 
-                      />
-                    </button>
-                  </div>
-
-                  <div className="p-4">
-                    <h3 className="font-medium text-foreground text-sm mb-1 line-clamp-2">
-                      {product.name}
-                    </h3>
-                    
-                    <div className="flex items-center text-sm text-muted-foreground mb-2">
-                      <User size={12} className="mr-1" />
-                      {product.seller}
-                    </div>
-
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <Star className="text-accent fill-accent" size={12} />
-                        <span className="text-xs font-medium ml-1">{product.rating}</span>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        {product.category}
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <IndianRupee size={14} className="text-accent" />
-                        <span className="font-bold text-accent">{product.price}</span>
-                      </div>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        disabled={!product.inStock}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          addToCart(product);
-                        }}
-                        className="text-xs px-2 py-1 h-7"
+            <div className="flex gap-6">
+              {/* Products Section */}
+              <div className="flex-1">
+                {/* Product Categories */}
+                <div className="space-y-4">
+                  <h3 className="section-title">{t("marketplace.categories")}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {productCategories.map((category) => (
+                      <Button
+                        key={category}
+                        variant={selectedCategory === category ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedCategory(category)}
+                        className="text-xs"
                       >
-                        <ShoppingCart size={12} className="mr-1" />
-                        {product.inStock ? (isInCart(product.id) ? `In Cart (${getCartItemQuantity(product.id)})` : 'Add') : 'Unavailable'}
+                        {category}
                       </Button>
-                    </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Products Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                  {filteredProducts.map((product) => (
+                    <LuxuryCard 
+                      key={product.id}
+                      className="p-0 overflow-hidden"
+                      onClick={() => navigate(`/products/${product.id}`)}
+                    >
+                      <div className="relative">
+                        <div className="aspect-[3/2] bg-muted">
+                          <img 
+                            src={product.image} 
+                            alt={product.name}
+                            className="w-full h-full object-contain object-center"
+                          />
+                        </div>
+                        
+                        {!product.inStock && (
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                            <Badge variant="destructive">Out of Stock</Badge>
+                          </div>
+                        )}
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleProductFavorite(product);
+                          }}
+                          className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full"
+                        >
+                          <Heart 
+                            size={14} 
+                            className={isFavorite(product.id.toString(), 'product') ? 'text-accent fill-accent' : 'text-muted-foreground'} 
+                          />
+                        </button>
+                      </div>
+
+                      <div className="p-4">
+                        <h3 className="font-medium text-foreground text-sm mb-1 line-clamp-2">
+                          {product.name}
+                        </h3>
+                        
+                        <div className="flex items-center text-sm text-muted-foreground mb-2">
+                          <User size={12} className="mr-1" />
+                          {product.seller}
+                        </div>
+
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center">
+                            <Star className="text-accent fill-accent" size={12} />
+                            <span className="text-xs font-medium ml-1">{product.rating}</span>
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {product.category}
+                          </Badge>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <IndianRupee size={14} className="text-accent" />
+                            <span className="font-bold text-accent">{product.price}</span>
+                          </div>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            disabled={!product.inStock}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addToCart(product);
+                            }}
+                            className="text-xs px-2 py-1 h-7"
+                          >
+                            <ShoppingCart size={12} className="mr-1" />
+                            {product.inStock ? (isInCart(product.id) ? `In Cart (${getCartItemQuantity(product.id)})` : 'Add') : 'Unavailable'}
+                          </Button>
+                        </div>
+                      </div>
+                    </LuxuryCard>
+                  ))}
+                </div>
+
+                {/* List Product Button */}
+                <LuxuryCard className="mt-6 text-center bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
+                  <div className="py-4">
+                    <Plus className="mx-auto text-primary mb-2" size={24} />
+                    <h3 className="font-playfair font-semibold text-foreground mb-1">
+                      Sell Your Products
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Join our marketplace and reach thousands of tourists
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      className="text-primary border-primary"
+                      onClick={() => navigate("/product-registration")}
+                    >
+                      List Your Product
+                    </Button>
                   </div>
                 </LuxuryCard>
-              ))}
-            </div>
-
-            {/* List Product Button */}
-            <LuxuryCard className="mt-6 text-center bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
-              <div className="py-4">
-                <Plus className="mx-auto text-primary mb-2" size={24} />
-                <h3 className="font-playfair font-semibold text-foreground mb-1">
-                  Sell Your Products
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Join our marketplace and reach thousands of tourists
-                </p>
-                <Button 
-                  variant="outline" 
-                  className="text-primary border-primary"
-                  onClick={() => navigate("/product-registration")}
-                >
-                  List Your Product
-                </Button>
               </div>
-            </LuxuryCard>
+
+              {/* Cart Sidebar */}
+              <div className="w-80 flex-shrink-0">
+                <LuxuryCard className="sticky top-6 p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-bold text-foreground flex items-center">
+                      <ShoppingCart size={20} className="mr-2" />
+                      Cart ({totalItems})
+                    </h3>
+                    {items.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={clearCart}
+                        className="text-xs text-red-500"
+                      >
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+
+                  {items.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <ShoppingCart size={48} className="mx-auto mb-4 opacity-30" />
+                      <p className="text-sm">Your cart is empty</p>
+                      <p className="text-xs mt-1">Add products to get started</p>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Cart Items */}
+                      <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
+                        {items.map((item) => (
+                          <div key={item.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+                            <img 
+                              src={item.product.image} 
+                              alt={item.product.name}
+                              className="w-12 h-12 object-cover rounded"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm truncate">{item.product.name}</p>
+                              <p className="text-xs text-muted-foreground">{item.product.price}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                className="h-6 w-6 p-0"
+                              >
+                                <Minus size={12} />
+                              </Button>
+                              <span className="text-sm w-8 text-center">{item.quantity}</span>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                className="h-6 w-6 p-0"
+                              >
+                                <Plus size={12} />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Cart Total */}
+                      <div className="border-t pt-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="font-bold">Total:</span>
+                          <div className="flex items-center">
+                            <IndianRupee size={16} className="text-accent" />
+                            <span className="font-bold text-lg text-accent">
+                              {totalPrice.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Checkout Button */}
+                        <Button 
+                          className="w-full bg-accent hover:bg-accent/90 text-white"
+                          disabled={items.length === 0}
+                          onClick={handleRazorpayCheckout}
+                        >
+                          <ShoppingCart size={16} className="mr-2" />
+                          Proceed to Pay
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                </LuxuryCard>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="experiences" className="space-y-6">

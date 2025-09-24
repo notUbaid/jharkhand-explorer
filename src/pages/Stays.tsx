@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useFavorites } from "@/contexts/FavoritesContext";
+import { useStayComparison } from "@/contexts/StayComparisonContext";
+import { StayComparisonModal } from "@/components/StayComparisonModal";
 import { 
   Building, 
   Home, 
@@ -32,11 +34,11 @@ import { stays } from "@/data/stays";
 export default function Stays() {
   const { t } = useTranslation();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const { compareItems, addToCompare, removeFromCompare, isInCompare, canAddMore, setOpenCompareModal } = useStayComparison();
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPriceRange, setSelectedPriceRange] = useState("All");
   const [sortBy, setSortBy] = useState("popularity");
-  const [comparing, setComparing] = useState<number[]>([]);
   const [stayImageIndices, setStayImageIndices] = useState<Record<number, number>>({});
   const [stayIsTransitioning, setStayIsTransitioning] = useState<Record<number, boolean>>({});
   const navigate = useNavigate();
@@ -156,16 +158,12 @@ export default function Stays() {
     }
   };
 
-  const toggleCompare = (id: number) => {
-    setComparing(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(comp => comp !== id);
-      }
-      if (prev.length < 2) {
-        return [...prev, id];
-      }
-      return prev;
-    });
+  const toggleCompare = (stay: typeof stays[0]) => {
+    if (isInCompare(stay.id)) {
+      removeFromCompare(stay.id);
+    } else if (canAddMore) {
+      addToCompare(stay);
+    }
   };
 
   // Image rotation for stays
@@ -413,10 +411,10 @@ export default function Stays() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleCompare(stay.id);
+                      toggleCompare(stay);
                     }}
                     className={`p-2 rounded-full backdrop-blur-sm transition-all ${
-                      comparing.includes(stay.id) 
+                      isInCompare(stay.id) 
                         ? 'bg-primary text-primary-foreground' 
                         : 'bg-white/20 text-white hover:bg-white/30'
                     }`}
@@ -522,6 +520,22 @@ export default function Stays() {
           </div>
         )}
       </div>
+
+      {/* Compare Button */}
+      {compareItems.length > 0 && (
+        <div className="fixed bottom-20 right-4 z-40">
+          <Button
+            onClick={() => setOpenCompareModal(true)}
+            className="bg-primary hover:bg-primary/90 shadow-lg"
+          >
+            <GitCompare size={16} className="mr-2" />
+            Compare ({compareItems.length})
+          </Button>
+        </div>
+      )}
+
+      {/* Comparison Modal */}
+      <StayComparisonModal />
     </div>
   );
 }

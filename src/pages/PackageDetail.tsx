@@ -4,18 +4,21 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { BookingModal } from "@/components/BookingModal";
 import { Clock, IndianRupee, Star, ArrowLeft, Share2, GitCompare, Users, MapPin, Calendar, Building, Utensils } from "lucide-react";
 import { getPackageById } from "@/data/packages";
 import { Package } from "@/types/Package";
 import { usePackageComparison } from "@/contexts/PackageComparisonContext";
 import { PackageSelectionModal } from "@/components/PackageSelectionModal";
 import { PackageComparison } from "@/components/PackageComparison";
+import { BookingItem } from "@/hooks/useBooking";
 
 export default function PackageDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [packageData, setPackageData] = useState(getPackageById(id || "1"));
   const [showSelectionModal, setShowSelectionModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
   const { setLeftPackage, setRightPackage, isComparing, setOpenComparisonModal } = usePackageComparison();
 
   useEffect(() => {
@@ -35,6 +38,15 @@ export default function PackageDetail() {
   const handlePackageSelect = (selectedPackage: Package) => {
     setRightPackage(selectedPackage);
     setOpenComparisonModal(true);
+  };
+
+  const handleBookNow = () => {
+    setShowBookingModal(true);
+  };
+
+  const handleBookingSuccess = (bookingId: string) => {
+    console.log('Booking successful:', bookingId);
+    // You can add additional success handling here
   };
 
 
@@ -208,7 +220,7 @@ export default function PackageDetail() {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-2 pb-4">
-          <Button className="bg-primary hover:bg-primary-light">Book Now</Button>
+          <Button className="bg-primary hover:bg-primary-light" onClick={handleBookNow}>Book Now</Button>
           <Button variant="outline" onClick={handleComparePackage}>
             <GitCompare size={14} className="mr-1" /> Compare Package
           </Button>
@@ -226,6 +238,30 @@ export default function PackageDetail() {
 
       {/* Package Comparison Modal */}
       <PackageComparison />
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        bookingItems={packageData ? [{
+          id: packageData.id.toString(),
+          type: 'package',
+          title: packageData.title,
+          price: parseFloat(packageData.price.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: packageData.duration,
+          location: packageData.destinations?.join(', ') || packageData.location || 'Jharkhand',
+          image: packageData.image,
+          metadata: {
+            category: packageData.category,
+            type: packageData.type,
+            groupSize: packageData.groupSize,
+            bestTime: packageData.bestTime,
+            rating: packageData.rating
+          }
+        }] : []}
+        onSuccess={handleBookingSuccess}
+      />
     </div>
   );
 }

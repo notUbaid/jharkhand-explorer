@@ -276,66 +276,12 @@ export default function Events() {
           placeholder={t("events.searchPlaceholder")}
         />
         
-        {/* Advanced Search Controls */}
+        {/* Advanced Search Controls - Simplified */}
         <div className="flex flex-wrap items-center gap-4 mb-4">
-          <div className="flex items-center gap-2">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="text-xs px-2 py-1 border rounded bg-background text-foreground"
-            >
-              {sortOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Removed Most Relevant dropdown for simplicity */}
         </div>
 
-        {/* Advanced Filters */}
-        <div className="bg-muted/30 p-4 rounded-lg mb-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs font-medium text-foreground mb-1 block">Price Range</label>
-              <select
-                value={selectedPriceRange}
-                onChange={(e) => setSelectedPriceRange(e.target.value)}
-                className="w-full text-xs px-2 py-1 border rounded bg-background text-foreground"
-              >
-                {priceRanges.map(range => (
-                  <option key={range} value={range}>{range}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="text-xs font-medium text-foreground mb-1 block">Location</label>
-              <select
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="w-full text-xs px-2 py-1 border rounded bg-background text-foreground"
-              >
-                {locationOptions.map(location => (
-                  <option key={location} value={location}>{location}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="text-xs font-medium text-foreground mb-1 block">Category</label>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full text-xs px-2 py-1 border rounded bg-background text-foreground"
-              >
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
+        {/* Advanced Filters - Removed for simplicity */}
       </div>
 
       <div className="px-6 mt-6 pb-32 relative z-10">
@@ -441,20 +387,8 @@ export default function Events() {
               <Calendar className="mx-auto text-muted-foreground mb-4" size={48} />
               <h3 className="text-lg font-semibold text-foreground mb-2">No events found</h3>
               <p className="text-muted-foreground mb-4">
-                Try adjusting your search criteria or filters
+                Try adjusting your search criteria
               </p>
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setSearchValue("");
-                  setSelectedCategory("All");
-                  setSelectedPriceRange("All");
-                  setSelectedLocation("All");
-                  setSortBy("relevance");
-                }}
-              >
-                Clear Filters
-              </Button>
             </div>
           )}
         </div>
