@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { BookingModal } from "@/components/BookingModal";
+import { ShareModal } from "@/components/ShareModal";
+import { useShare } from "@/hooks/useShare";
 import ItineraryMap from "@/components/ItineraryMap";
 import { Clock, IndianRupee, Star, ArrowLeft, Share2, GitCompare, Users, MapPin, Calendar, Building, Utensils } from "lucide-react";
 import { getPackageById } from "@/data/packages";
@@ -31,6 +33,7 @@ export default function PackageDetail() {
   const [showSelectionModal, setShowSelectionModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const { setLeftPackage, setRightPackage, isComparing, setOpenComparisonModal } = usePackageComparison();
+  const { shareContent, showShareModal, shareData, closeShareModal } = useShare();
 
   useEffect(() => {
     const pkg = getPackageById(id || "1");
@@ -58,6 +61,12 @@ export default function PackageDetail() {
   const handleBookingSuccess = (bookingId: string) => {
     console.log('Booking successful:', bookingId);
     // You can add additional success handling here
+  };
+
+  const handleShare = () => {
+    if (packageData) {
+      shareContent('package', packageData);
+    }
   };
 
 
@@ -241,7 +250,9 @@ export default function PackageDetail() {
           <Button variant="outline" onClick={handleComparePackage}>
             <GitCompare size={14} className="mr-1" /> Compare Package
           </Button>
-          <Button variant="outline"><Share2 size={14} className="mr-1" /> {t("common.share")}</Button>
+          <Button variant="outline" onClick={handleShare}>
+            <Share2 size={14} className="mr-1" /> {t("common.share")}
+          </Button>
         </div>
       </main>
 
@@ -279,6 +290,15 @@ export default function PackageDetail() {
         }] : []}
         onSuccess={handleBookingSuccess}
       />
+
+      {/* Share Modal */}
+      {shareData && (
+        <ShareModal
+          isOpen={showShareModal}
+          onClose={closeShareModal}
+          shareData={shareData}
+        />
+      )}
     </div>
   );
 }

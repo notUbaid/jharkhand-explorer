@@ -10,6 +10,9 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useProductsCart } from "@/hooks/useProductsCart";
+import { BookingModal } from "@/components/BookingModal";
+import { ShareModal } from "@/components/ShareModal";
+import { useShare } from "@/hooks/useShare";
 import { processRazorpayPayment } from "@/lib/razorpay";
 import { tourGuides } from "@/data/tourGuides";
 import { products } from "@/data/products";
@@ -27,14 +30,23 @@ import {
   Calendar,
   Share2,
   Minus,
-  X
+  X,
+  Lock,
+  Info
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Marketplace() {
   const { t } = useTranslation();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { addToCart, isInCart, getCartItemQuantity, totalItems, totalPrice, items, removeFromCart, updateQuantity, clearCart } = useProductsCart();
+  
+  // Helper function to parse price string to number
+  const parsePrice = (priceString: string): number => {
+    const price = parseFloat(priceString.replace(/[₹,]/g, ''));
+    return isNaN(price) ? 0 : price;
+  };
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("products");
   const [searchValue, setSearchValue] = useState("");
@@ -56,7 +68,11 @@ export default function Marketplace() {
     pincode: '',
     state: 'Jharkhand'
   });
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedGuide, setSelectedGuide] = useState<typeof tourGuides[0] | null>(null);
+  const [selectedExperience, setSelectedExperience] = useState<typeof experiences[0] | null>(null);
   const navigate = useNavigate();
+  const { shareContent, showShareModal, shareData, closeShareModal } = useShare();
 
   // Handle checkout form submission
   const handleCheckoutSubmit = async () => {
@@ -142,6 +158,36 @@ export default function Marketplace() {
       console.error('Checkout error:', error);
       alert('Payment failed. Please try again.');
     }
+  };
+
+  // Tour guide booking handlers
+  const handleBookGuide = (guide: typeof tourGuides[0]) => {
+    setSelectedGuide(guide);
+    setShowBookingModal(true);
+  };
+
+  const handleBookingSuccess = (bookingId: string) => {
+    console.log('Tour guide booking successful:', bookingId);
+    alert(`Booking confirmed! Booking ID: ${bookingId}`);
+    setShowBookingModal(false);
+    setSelectedGuide(null);
+  };
+
+  // Experience booking handlers
+  const handleBookExperience = (experience: typeof experiences[0]) => {
+    setSelectedExperience(experience);
+    setShowBookingModal(true);
+  };
+
+  const handleExperienceBookingSuccess = (bookingId: string) => {
+    console.log('Experience booking successful:', bookingId);
+    alert(`Booking confirmed! Booking ID: ${bookingId}`);
+    setShowBookingModal(false);
+    setSelectedExperience(null);
+  };
+
+  const handleShareExperience = (experience: typeof experiences[0]) => {
+    shareContent('experience', experience);
   };
 
   // Favorite functions
@@ -825,7 +871,7 @@ export default function Marketplace() {
                         className="flex-1 bg-primary hover:bg-primary/90"
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Handle booking
+                          handleBookExperience(experience);
                         }}
                       >
                         Book Now
@@ -835,7 +881,7 @@ export default function Marketplace() {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Handle sharing
+                          handleShareExperience(experience);
                         }}
                       >
                         <Share2 size={14} />
@@ -982,7 +1028,7 @@ export default function Marketplace() {
                         variant="outline"
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Handle booking
+                          handleBookGuide(guide);
                         }}
                         className="text-xs px-2 py-1 h-7"
                       >
@@ -1020,7 +1066,7 @@ export default function Marketplace() {
       {/* Checkout Form Modal */}
       {showCheckoutForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b">
               <h2 className="text-xl font-semibold text-foreground">Checkout Details</h2>
@@ -1030,7 +1076,7 @@ export default function Marketplace() {
             </div>
 
             {/* Form Content */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+            <div className="flex-1 overflow-y-auto p-6">
               {/* Order Summary */}
               <div className="mb-6 p-4 bg-muted/30 rounded-lg">
                 <h3 className="font-semibold text-foreground mb-3">Order Summary</h3>
@@ -1038,7 +1084,7 @@ export default function Marketplace() {
                   {items.map((item, index) => (
                     <div key={index} className="flex justify-between text-sm">
                       <span>{item.product.name} x {item.quantity}</span>
-                      <span>₹{(item.product.price * item.quantity).toLocaleString()}</span>
+                      <span>₹{(parsePrice(item.product.price) * item.quantity).toLocaleString()}</span>
                     </div>
                   ))}
                 </div>
@@ -1171,6 +1217,65 @@ export default function Marketplace() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => {
+          setShowBookingModal(false);
+          setSelectedGuide(null);
+          setSelectedExperience(null);
+        }}
+        bookingItems={selectedGuide ? [{
+          id: selectedGuide.id.toString(),
+          type: 'tourguide',
+          title: selectedGuide.name,
+          price: parseFloat(selectedGuide.price.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: 'Full Day Tour',
+          location: selectedGuide.locations.join(', '),
+          image: selectedGuide.image,
+          metadata: {
+            specialization: selectedGuide.specialization,
+            languages: selectedGuide.languages,
+            experience: selectedGuide.experience,
+            rating: selectedGuide.rating,
+            verified: selectedGuide.verified
+          }
+        }] : selectedExperience ? [{
+          id: selectedExperience.id.toString(),
+          type: 'experience',
+          title: selectedExperience.title,
+          price: parseFloat(selectedExperience.price.replace(/[₹,]/g, '')),
+          quantity: 1,
+          duration: selectedExperience.duration,
+          location: selectedExperience.location,
+          image: selectedExperience.image,
+          metadata: {
+            instructor: selectedExperience.instructor,
+            category: selectedExperience.category,
+            difficulty: selectedExperience.difficulty,
+            maxParticipants: selectedExperience.maxParticipants,
+            rating: selectedExperience.rating
+          }
+        }] : []}
+        onSuccess={(bookingId) => {
+          if (selectedGuide) {
+            handleBookingSuccess(bookingId);
+          } else if (selectedExperience) {
+            handleExperienceBookingSuccess(bookingId);
+          }
+        }}
+      />
+
+      {/* Share Modal */}
+      {shareData && (
+        <ShareModal
+          isOpen={showShareModal}
+          onClose={closeShareModal}
+          shareData={shareData}
+        />
       )}
     </div>
   );

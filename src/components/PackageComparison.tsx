@@ -126,7 +126,7 @@ export const PackageComparison = () => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-background rounded-lg shadow-xl max-w-7xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-background rounded-lg shadow-xl max-w-7xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold text-foreground">Package Comparison</h2>
@@ -136,7 +136,7 @@ export const PackageComparison = () => {
         </div>
 
         {/* Comparison Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+        <div className="flex-1 overflow-y-auto p-6">
           <div className="flex gap-8">
             {/* Left Package */}
             <div className="flex-1">

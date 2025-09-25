@@ -6,6 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { LuxuryCard } from "@/components/ui/luxury-card";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { BookingModal } from "@/components/BookingModal";
+import { MessagingModal } from "@/components/MessagingModal";
+import { ShareModal } from "@/components/ShareModal";
+import { useShare } from "@/hooks/useShare";
 import { tourGuides, TourGuide } from "@/data/tourGuides";
 import { BookingItem } from "@/hooks/useBooking";
 import { 
@@ -40,6 +43,8 @@ export default function TourGuideDetail() {
   const [guide, setGuide] = useState<TourGuide | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showMessagingModal, setShowMessagingModal] = useState(false);
+  const { shareContent, showShareModal, shareData, closeShareModal } = useShare();
 
   useEffect(() => {
     // Simulate API call
@@ -57,6 +62,16 @@ export default function TourGuideDetail() {
   const handleBookingSuccess = (bookingId: string) => {
     console.log('Booking successful:', bookingId);
     // You can add additional success handling here
+  };
+
+  const handleMessageGuide = () => {
+    setShowMessagingModal(true);
+  };
+
+  const handleShare = () => {
+    if (guide) {
+      shareContent('guide', guide);
+    }
   };
 
   if (isLoading) {
@@ -144,7 +159,7 @@ export default function TourGuideDetail() {
                   <Button variant="outline" size="sm">
                     <Heart size={16} />
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={handleShare}>
                     <Share2 size={16} />
                   </Button>
                 </div>
@@ -189,7 +204,7 @@ export default function TourGuideDetail() {
                   <Calendar className="mr-2" size={16} />
                   Book Now
                 </Button>
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleMessageGuide}>
                   <MessageCircle className="mr-2" size={16} />
                   Message
                 </Button>
@@ -384,6 +399,26 @@ export default function TourGuideDetail() {
         }] : []}
         onSuccess={handleBookingSuccess}
       />
+
+      {/* Messaging Modal */}
+      <MessagingModal
+        isOpen={showMessagingModal}
+        onClose={() => setShowMessagingModal(false)}
+        guideName={guide.name}
+        guideImage={guide.image}
+        guideSpecialization={guide.specialization}
+        guidePhone={guide.contactInfo?.phone}
+        guideEmail={guide.contactInfo?.email}
+      />
+
+      {/* Share Modal */}
+      {shareData && (
+        <ShareModal
+          isOpen={showShareModal}
+          onClose={closeShareModal}
+          shareData={shareData}
+        />
+      )}
     </div>
   );
 }

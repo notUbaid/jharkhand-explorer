@@ -1110,6 +1110,142 @@ export const packages = [
       "Best for couples, photographers, and explorers wanting something exclusive",
       "Carry jackets for Netarhat & Betla evenings"
     ]
+  },
+  {
+    id: 14,
+    title: "👴 Senior Citizens' Comfortable Jharkhand Explorer",
+    duration: "6 Days / 5 Nights",
+    price: "₹24,999",
+    category: "Senior-Friendly",
+    rating: 4.9,
+    image: "/assets/Packages/Senior Citizens Comfortable Explorer.png",
+    highlights: ["Minimal Walking Required", "Comfortable AC Transport", "Senior-Friendly Accommodations", "Easy Access Attractions", "Cultural Experiences", "Relaxed Pace"],
+    difficulty: "Easy",
+    type: "Senior-Friendly · Comfort · Cultural · Relaxed",
+    description: "Specially designed for senior citizens and those with mobility concerns. This package offers the best of Jharkhand with minimal walking, comfortable transportation, and easy-access attractions. Experience the rich culture, heritage, and natural beauty of Jharkhand at a relaxed pace with maximum comfort and convenience.",
+    groupSize: "2-8 people",
+    bestTime: "October to March",
+    departureCity: "Ranchi",
+    itinerary: [
+      {
+        day: 1,
+        title: "Arrival & Ranchi City Tour",
+        activities: [
+          "08:00 AM - Airport/Station pickup with comfortable AC vehicle",
+          "10:00 AM - Hotel check-in at luxury 4★ hotel with senior-friendly amenities",
+          "11:30 AM - Relaxed lunch at hotel restaurant",
+          "02:00 PM - Visit Rock Garden (vehicle access to main areas)",
+          "04:00 PM - Drive to Kanke Dam viewpoint (no walking required)",
+          "06:00 PM - Return to hotel for rest",
+          "08:00 PM - Welcome dinner with traditional Jharkhand cuisine"
+        ]
+      },
+      {
+        day: 2,
+        title: "Patratu Valley & Lake Experience",
+        activities: [
+          "08:00 AM - Comfortable breakfast at hotel",
+          "09:30 AM - Drive to Patratu Valley (scenic route with stops)",
+          "11:00 AM - Lakeside viewing with vehicle access",
+          "12:30 PM - Traditional lunch at lakeside restaurant",
+          "02:00 PM - Optional boat ride (with assistance)",
+          "04:00 PM - Scenic drive through valley viewpoints",
+          "06:00 PM - Return to Ranchi",
+          "08:00 PM - Dinner at hotel"
+        ]
+      },
+      {
+        day: 3,
+        title: "Jamshedpur - Steel City Heritage",
+        activities: [
+          "08:00 AM - Early breakfast and departure to Jamshedpur",
+          "10:30 AM - Visit Jubilee Park (wheelchair accessible paths)",
+          "12:00 PM - Lunch at heritage restaurant",
+          "02:00 PM - Drive through Tata Steel heritage areas",
+          "03:30 PM - Visit Dimna Lake (vehicle access to viewpoints)",
+          "05:00 PM - Cultural show at hotel",
+          "07:00 PM - Dinner at luxury hotel in Jamshedpur"
+        ]
+      },
+      {
+        day: 4,
+        title: "Deoghar Spiritual Journey",
+        activities: [
+          "08:00 AM - Breakfast and departure to Deoghar",
+          "11:00 AM - Arrival at Deoghar luxury hotel",
+          "12:00 PM - Traditional lunch",
+          "02:00 PM - Visit Baba Baidyanath Temple (VIP darshan arranged)",
+          "04:00 PM - Drive to Trikut Hills (ropeway option available)",
+          "06:00 PM - Return to hotel",
+          "08:00 PM - Cultural dinner with local performances"
+        ]
+      },
+      {
+        day: 5,
+        title: "Hazaribagh & Cultural Experiences",
+        activities: [
+          "08:00 AM - Breakfast and departure to Hazaribagh",
+          "10:30 AM - Visit Hazaribagh Lake (vehicle access)",
+          "12:00 PM - Traditional tribal lunch",
+          "02:00 PM - Cultural workshop (seated activities)",
+          "04:00 PM - Drive to Rajrappa Temple (easy access)",
+          "06:00 PM - Return to Ranchi",
+          "08:00 PM - Farewell dinner with cultural performances"
+        ]
+      },
+      {
+        day: 6,
+        title: "Departure",
+        activities: [
+          "08:00 AM - Relaxed breakfast",
+          "10:00 AM - Last-minute shopping assistance",
+          "12:00 PM - Traditional farewell lunch",
+          "02:00 PM - Airport/Station drop with assistance"
+        ]
+      }
+    ],
+    accommodation: [
+      "Ranchi – Hotel Capitol Residency (2N) - 4★ luxury with senior-friendly amenities, elevators, and ground-floor rooms available",
+      "Jamshedpur – Hotel Sonnet (1N) - 4★ business hotel with modern facilities and easy access",
+      "Deoghar – Hotel Shivam (1N) - 3★ hotel near temple with senior-friendly features",
+      "Ranchi – Hotel Capitol Residency (1N) - Final night with departure assistance"
+    ],
+    meals: [
+      "5 breakfasts (continental & Indian buffet with senior-friendly options)",
+      "6 lunches (traditional Jharkhand cuisine with mild spices)",
+      "5 dinners (multi-cuisine with cultural performances)",
+      "1 cultural dinner with traditional Jharkhand cuisine and tribal dance performance"
+    ],
+    transport: "Premium AC transport throughout with experienced drivers and senior-friendly features",
+    inclusions: [
+      "Premium AC transport throughout with senior-friendly features",
+      "All accommodation on twin sharing basis with senior amenities",
+      "VIP darshan arrangements at temples",
+      "Cultural workshops and performances",
+      "Professional tour escort (English/Hindi speaking)",
+      "Medical assistance and emergency support",
+      "Wheelchair assistance where required",
+      "All monument entry fees and permits",
+      "Bottled water and refreshments during sightseeing",
+      "Traditional welcome and farewell ceremonies"
+    ],
+    exclusions: [
+      "Flights/trains to and from Jharkhand",
+      "Personal expenses and shopping",
+      "Optional activities and upgrades",
+      "Travel insurance (recommended for seniors)",
+      "Medical expenses and medications"
+    ],
+    travelTips: [
+      "Perfect for senior citizens and those with mobility concerns",
+      "All attractions selected for easy access and minimal walking",
+      "Comfortable pace with adequate rest periods",
+      "Medical assistance available throughout the journey",
+      "Wheelchair assistance provided where needed",
+      "Traditional cuisine with mild spices suitable for seniors",
+      "Cultural experiences designed for seated participation",
+      "Emergency contact numbers provided for family members"
+    ]
   }
 ];
 

@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { BookingModal } from "@/components/BookingModal";
+import { ShareModal } from "@/components/ShareModal";
+import { useShare } from "@/hooks/useShare";
 import { BookingItem } from "@/hooks/useBooking";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { 
@@ -320,6 +322,7 @@ export default function EventDetail() {
   const [event, setEvent] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [isLoading, setIsLoading] = useState(true);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const { shareContent, showShareModal, shareData, closeShareModal } = useShare();
 
   useEffect(() => {
     const foundEvent = events.find(e => e.id === parseInt(id || "0"));
@@ -371,8 +374,9 @@ export default function EventDetail() {
   };
 
   const handleShare = () => {
-    // Implement share logic
-    console.log("Sharing event:", event?.title);
+    if (event) {
+      shareContent('event', event);
+    }
   };
 
   const getCategoryIcon = (category: string) => {
@@ -633,6 +637,15 @@ export default function EventDetail() {
         }] : []}
         onSuccess={handleBookingSuccess}
       />
+
+      {/* Share Modal */}
+      {shareData && (
+        <ShareModal
+          isOpen={showShareModal}
+          onClose={closeShareModal}
+          shareData={shareData}
+        />
+      )}
     </div>
   );
 }

@@ -44,7 +44,7 @@ export const TransportComparisonModal = () => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-background rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-background rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-2">
@@ -74,7 +74,7 @@ export const TransportComparisonModal = () => {
         </div>
 
         {/* Comparison Content */}
-        <div className="p-4 overflow-y-auto max-h-[calc(90vh-80px)]">
+        <div className="flex-1 overflow-y-auto p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {compareItems.map((option) => (
               <LuxuryCard key={option.id} className="p-4 relative">

@@ -4,6 +4,8 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { ShareModal } from "@/components/ShareModal";
+import { useShare } from "@/hooks/useShare";
 import { useProductsCart } from "@/hooks/useProductsCart";
 import { products, Product } from "@/data/products";
 import { 
@@ -28,6 +30,7 @@ export default function ProductDetail() {
   const { addToCart, isInCart, getCartItemQuantity } = useProductsCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const { shareContent, showShareModal, shareData, closeShareModal } = useShare();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -61,6 +64,12 @@ export default function ProductDetail() {
     if (product) {
       // Simulate adding to wishlist
       alert(`Added ${product.name} to wishlist!`);
+    }
+  };
+
+  const handleShare = () => {
+    if (product) {
+      shareContent('product', product);
     }
   };
 
@@ -148,7 +157,7 @@ export default function ProductDetail() {
                   <Button variant="outline" size="sm">
                     <Heart size={16} />
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={handleShare}>
                     <Share2 size={16} />
                   </Button>
                 </div>
@@ -327,6 +336,15 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* Share Modal */}
+      {shareData && (
+        <ShareModal
+          isOpen={showShareModal}
+          onClose={closeShareModal}
+          shareData={shareData}
+        />
+      )}
     </div>
   );
 }

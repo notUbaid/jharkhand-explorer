@@ -28,7 +28,16 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
     bookingTime: '',
     specialRequests: '',
     rentalDays: 1,
-    rentalHours: 1
+    rentalHours: 1,
+    // Tour guide specific
+    tourDuration: 'full-day',
+    pickupLocation: '',
+    // Experience specific
+    experienceSlot: '',
+    groupSize: 1,
+    // Package specific
+    departureDate: '',
+    groupMembers: 1
   });
 
   // Calculate total amount with proper handling of NaN values and rental duration
@@ -51,10 +60,68 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
   // Check if this is a free booking
   const isFreeBooking = totalAmount === 0;
 
+  // Determine booking type from the first item
+  const bookingType = bookingItems.length > 0 ? bookingItems[0].type : 'general';
+  
+  // Get relevant fields based on booking type
+  const getBookingTypeFields = () => {
+    switch (bookingType) {
+      case 'tourguide':
+        return {
+          title: 'Tour Guide Booking',
+          icon: <User size={16} />,
+          fields: ['bookingDate', 'tourDuration', 'pickupLocation', 'specialRequests']
+        };
+      case 'experience':
+        return {
+          title: 'Experience Booking',
+          icon: <Calendar size={16} />,
+          fields: ['bookingDate', 'experienceSlot', 'groupSize', 'specialRequests']
+        };
+      case 'package':
+        return {
+          title: 'Package Booking',
+          icon: <Calendar size={16} />,
+          fields: ['departureDate', 'groupMembers', 'specialRequests']
+        };
+      case 'stay':
+        return {
+          title: 'Accommodation Booking',
+          icon: <Calendar size={16} />,
+          fields: ['bookingDate', 'bookingTime', 'specialRequests']
+        };
+      case 'rental':
+        return {
+          title: 'Rental Booking',
+          icon: <Calendar size={16} />,
+          fields: ['bookingDate', 'rentalDays', 'rentalHours', 'specialRequests']
+        };
+      default:
+        return {
+          title: 'Booking Details',
+          icon: <Calendar size={16} />,
+          fields: ['bookingDate', 'bookingTime', 'specialRequests']
+        };
+    }
+  };
+
+  const bookingTypeInfo = getBookingTypeFields();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.customerName || !formData.customerEmail || !formData.customerPhone || !formData.bookingDate) {
+    // Dynamic validation based on booking type
+    const requiredFields = ['customerName', 'customerEmail', 'customerPhone'];
+    
+    if (bookingTypeInfo.fields.includes('bookingDate')) {
+      requiredFields.push('bookingDate');
+    } else if (bookingTypeInfo.fields.includes('departureDate')) {
+      requiredFields.push('departureDate');
+    }
+    
+    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
+    
+    if (missingFields.length > 0) {
       alert(t('common.pleaseFillRequiredFields'));
       return;
     }
@@ -84,7 +151,13 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
           bookingTime: '',
           specialRequests: '',
           rentalDays: 1,
-          rentalHours: 1
+          rentalHours: 1,
+          tourDuration: 'full-day',
+          pickupLocation: '',
+          experienceSlot: '',
+          groupSize: 1,
+          departureDate: '',
+          groupMembers: 1
         });
       } else {
         // Handle paid booking with Razorpay
@@ -122,7 +195,13 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
               bookingTime: '',
               specialRequests: '',
               rentalDays: 1,
-              rentalHours: 1
+              rentalHours: 1,
+              tourDuration: 'full-day',
+              pickupLocation: '',
+              experienceSlot: '',
+              groupSize: 1,
+              departureDate: '',
+              groupMembers: 1
             });
           },
           (error) => {
@@ -158,7 +237,7 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
                     ) : (
                       <CreditCard className="text-primary" size={20} />
                     )}
-                    {isFreeBooking ? t('common.completeYourFreeBooking') : t('common.completeYourBooking')}
+                    {isFreeBooking ? `${bookingTypeInfo.title} (Free)` : bookingTypeInfo.title}
                   </DialogTitle>
         </DialogHeader>
 
@@ -266,78 +345,185 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
 
             {/* Booking Details */}
             <div className="space-y-3">
-                      <h4 className="font-medium flex items-center gap-2">
-                        <Calendar size={16} />
-                        {t('common.bookingDetails')}
-                      </h4>
+              <h4 className="font-medium flex items-center gap-2">
+                {bookingTypeInfo.icon}
+                {bookingTypeInfo.title}
+              </h4>
               
-              <div>
-                <Label htmlFor="bookingDate">{t('common.bookingDate')} *</Label>
-                <Input
-                  id="bookingDate"
-                  type="date"
-                  value={formData.bookingDate}
-                  onChange={(e) => handleInputChange('bookingDate', e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="bookingTime">{t('common.preferredTime')}</Label>
-                <Input
-                  id="bookingTime"
-                  type="time"
-                  value={formData.bookingTime}
-                  onChange={(e) => handleInputChange('bookingTime', e.target.value)}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="specialRequests">{t('common.specialRequests')}</Label>
-                <Textarea
-                  id="specialRequests"
-                  value={formData.specialRequests}
-                  onChange={(e) => handleInputChange('specialRequests', e.target.value)}
-                  placeholder={t('common.anySpecialRequirements')}
-                  rows={3}
-                />
-              </div>
-
-              {/* Rental Duration Fields - Only show for rental bookings */}
-              {bookingItems.some(item => item.type === 'rental') && (
-                <>
-                  {bookingItems.some(item => item.duration?.includes('Day')) && (
-                    <div>
-                      <Label htmlFor="rentalDays">Number of Days</Label>
-                      <Input
-                        id="rentalDays"
-                        type="number"
-                        min="1"
-                        max="30"
-                        value={formData.rentalDays}
-                        onChange={(e) => handleInputChange('rentalDays', parseInt(e.target.value) || 1)}
-                        className="mt-1"
-                      />
-                    </div>
-                  )}
+              {/* Dynamic fields based on booking type */}
+              {bookingTypeInfo.fields.map((field) => {
+                switch (field) {
+                  case 'bookingDate':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Booking Date *</Label>
+                        <Input
+                          id={field}
+                          type="date"
+                          value={formData.bookingDate}
+                          onChange={(e) => handleInputChange('bookingDate', e.target.value)}
+                          min={new Date().toISOString().split('T')[0]}
+                          required
+                        />
+                      </div>
+                    );
                   
-                  {bookingItems.some(item => item.duration?.includes('Hour')) && (
-                    <div>
-                      <Label htmlFor="rentalHours">Number of Hours</Label>
-                      <Input
-                        id="rentalHours"
-                        type="number"
-                        min="1"
-                        max="24"
-                        value={formData.rentalHours}
-                        onChange={(e) => handleInputChange('rentalHours', parseInt(e.target.value) || 1)}
-                        className="mt-1"
-                      />
-                    </div>
-                  )}
-                </>
-              )}
+                  case 'departureDate':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Departure Date *</Label>
+                        <Input
+                          id={field}
+                          type="date"
+                          value={formData.departureDate}
+                          onChange={(e) => handleInputChange('departureDate', e.target.value)}
+                          min={new Date().toISOString().split('T')[0]}
+                          required
+                        />
+                      </div>
+                    );
+                  
+                  case 'bookingTime':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Preferred Time</Label>
+                        <Input
+                          id={field}
+                          type="time"
+                          value={formData.bookingTime}
+                          onChange={(e) => handleInputChange('bookingTime', e.target.value)}
+                        />
+                      </div>
+                    );
+                  
+                  case 'tourDuration':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Tour Duration</Label>
+                        <select
+                          id={field}
+                          value={formData.tourDuration}
+                          onChange={(e) => handleInputChange('tourDuration', e.target.value)}
+                          className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                          <option value="half-day">Half Day (4-6 hours)</option>
+                          <option value="full-day">Full Day (8-10 hours)</option>
+                          <option value="multi-day">Multi Day Tour</option>
+                        </select>
+                      </div>
+                    );
+                  
+                  case 'pickupLocation':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Pickup Location</Label>
+                        <Input
+                          id={field}
+                          value={formData.pickupLocation}
+                          onChange={(e) => handleInputChange('pickupLocation', e.target.value)}
+                          placeholder="Enter pickup location"
+                        />
+                      </div>
+                    );
+                  
+                  case 'experienceSlot':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Preferred Time Slot</Label>
+                        <select
+                          id={field}
+                          value={formData.experienceSlot}
+                          onChange={(e) => handleInputChange('experienceSlot', e.target.value)}
+                          className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                          <option value="">Select time slot</option>
+                          <option value="morning">Morning (9:00 AM - 12:00 PM)</option>
+                          <option value="afternoon">Afternoon (1:00 PM - 4:00 PM)</option>
+                          <option value="evening">Evening (5:00 PM - 8:00 PM)</option>
+                        </select>
+                      </div>
+                    );
+                  
+                  case 'groupSize':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Group Size</Label>
+                        <Input
+                          id={field}
+                          type="number"
+                          min="1"
+                          max="20"
+                          value={formData.groupSize}
+                          onChange={(e) => handleInputChange('groupSize', parseInt(e.target.value) || 1)}
+                          placeholder="Number of participants"
+                        />
+                      </div>
+                    );
+                  
+                  case 'groupMembers':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Number of Travelers</Label>
+                        <Input
+                          id={field}
+                          type="number"
+                          min="1"
+                          max="20"
+                          value={formData.groupMembers}
+                          onChange={(e) => handleInputChange('groupMembers', parseInt(e.target.value) || 1)}
+                          placeholder="Number of travelers"
+                        />
+                      </div>
+                    );
+                  
+                  case 'rentalDays':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Number of Days</Label>
+                        <Input
+                          id={field}
+                          type="number"
+                          min="1"
+                          max="30"
+                          value={formData.rentalDays}
+                          onChange={(e) => handleInputChange('rentalDays', parseInt(e.target.value) || 1)}
+                        />
+                      </div>
+                    );
+                  
+                  case 'rentalHours':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Number of Hours</Label>
+                        <Input
+                          id={field}
+                          type="number"
+                          min="1"
+                          max="24"
+                          value={formData.rentalHours}
+                          onChange={(e) => handleInputChange('rentalHours', parseInt(e.target.value) || 1)}
+                        />
+                      </div>
+                    );
+                  
+                  case 'specialRequests':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Special Requests</Label>
+                        <Textarea
+                          id={field}
+                          value={formData.specialRequests}
+                          onChange={(e) => handleInputChange('specialRequests', e.target.value)}
+                          placeholder="Any special requests or requirements"
+                          rows={3}
+                        />
+                      </div>
+                    );
+                  
+                  default:
+                    return null;
+                }
+              })}
             </div>
 
             {/* Payment Button */}

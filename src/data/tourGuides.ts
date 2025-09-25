@@ -83,7 +83,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43210",
-      email: "rajesh.singh@jharkhandtours.com",
+      email: "rajesh.singh@jharkhandexplorer.com",
       whatsapp: "+91 98765 43210"
     }
   },
@@ -127,7 +127,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43211",
-      email: "priya.devi@wildlifejharkhand.com",
+      email: "priya.devi@jharkhandexplorer.com",
       whatsapp: "+91 98765 43211"
     }
   },
@@ -171,7 +171,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43212",
-      email: "amit.munda@tribalculture.com",
+      email: "amit.munda@jharkhandexplorer.com",
       whatsapp: "+91 98765 43212"
     }
   },
@@ -215,7 +215,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43213",
-      email: "arjun.singh@adventurejharkhand.com",
+      email: "arjun.singh@jharkhandexplorer.com",
       whatsapp: "+91 98765 43213"
     }
   },
@@ -259,7 +259,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43214",
-      email: "sunita.sharma@edu.jharkhand.com",
+      email: "sunita.sharma@jharkhandexplorer.com",
       whatsapp: "+91 98765 43214"
     }
   },
@@ -303,7 +303,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43215",
-      email: "babulal.murmu@tribalcrafts.com",
+      email: "babulal.murmu@jharkhandexplorer.com",
       whatsapp: "+91 98765 43215"
     }
   },
@@ -347,7 +347,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43216",
-      email: "ranjali.dutta@wellnessjharkhand.com",
+      email: "ranjali.dutta@jharkhandexplorer.com",
       whatsapp: "+91 98765 43216"
     }
   },
@@ -391,7 +391,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43217",
-      email: "kiran.tudu@spiritualjharkhand.com",
+      email: "kiran.tudu@jharkhandexplorer.com",
       whatsapp: "+91 98765 43217"
     }
   },
@@ -435,7 +435,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43218",
-      email: "lakshmi.devi@womentoursjharkhand.com",
+      email: "lakshmi.devi@jharkhandexplorer.com",
       whatsapp: "+91 98765 43218"
     }
   },
@@ -479,7 +479,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43219",
-      email: "meera.kumari@familytoursjharkhand.com",
+      email: "meera.kumari@jharkhandexplorer.com",
       whatsapp: "+91 98765 43219"
     }
   },
@@ -523,7 +523,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43220",
-      email: "naresh.kumar@businesstoursjharkhand.com",
+      email: "naresh.kumar@jharkhandexplorer.com",
       whatsapp: "+91 98765 43220"
     }
   },
@@ -567,7 +567,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43221",
-      email: "ravi.kumar@photographytoursjharkhand.com",
+      email: "ravi.kumar@jharkhandexplorer.com",
       whatsapp: "+91 98765 43221"
     }
   },
@@ -611,7 +611,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43222",
-      email: "rita.kumari@culturaltoursjharkhand.com",
+      email: "rita.kumari@jharkhandexplorer.com",
       whatsapp: "+91 98765 43222"
     }
   },
@@ -655,7 +655,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43223",
-      email: "suresh.kumar@nighttoursjharkhand.com",
+      email: "suresh.kumar@jharkhandexplorer.com",
       whatsapp: "+91 98765 43223"
     }
   },
@@ -699,7 +699,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43224",
-      email: "sushila.devi@seniortoursjharkhand.com",
+      email: "sushila.devi@jharkhandexplorer.com",
       whatsapp: "+91 98765 43224"
     }
   },
@@ -743,7 +743,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43225",
-      email: "vikram.singh@luxurytoursjharkhand.com",
+      email: "vikram.singh@jharkhandexplorer.com",
       whatsapp: "+91 98765 43225"
     }
   },
@@ -787,7 +787,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43226",
-      email: "poonam.devi@foodtoursjharkhand.com",
+      email: "poonam.devi@jharkhandexplorer.com",
       whatsapp: "+91 98765 43226"
     }
   },
@@ -831,7 +831,7 @@ export const tourGuides: TourGuide[] = [
     ],
     contactInfo: {
       phone: "+91 98765 43227",
-      email: "manoj.singh@instagramtoursjharkhand.com",
+      email: "manoj.singh@jharkhandexplorer.com",
       whatsapp: "+91 98765 43227"
     }
   }

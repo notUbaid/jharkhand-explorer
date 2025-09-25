@@ -11,6 +11,7 @@ import { BookingModal } from "@/components/BookingModal";
 import { TransportOption, TrainOption, BusOption, FlightOption, City } from "@/types/Transport";
 import { getAllTransportRoutes } from "@/data/transportData";
 import { useTransportComparison } from "@/contexts/TransportComparisonContext";
+import { useViewMode } from "@/contexts/ViewModeContext";
 import { TransportComparisonModal } from "@/components/TransportComparisonModal";
 import { RentalComparisonModal } from "@/components/RentalComparisonModal";
 import { BookingItem } from "@/hooks/useBooking";
@@ -630,7 +631,7 @@ export default function Transport() {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const { viewMode, toggleViewMode } = useViewMode();
   
   // Pagination and lazy loading states
   const [currentPage, setCurrentPage] = useState(1);
@@ -946,7 +947,7 @@ export default function Transport() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+              onClick={toggleViewMode}
               className="text-primary-foreground hover:bg-primary-foreground/20"
             >
               {viewMode === "grid" ? <List size={16} /> : <Grid size={16} />}
@@ -1238,7 +1239,7 @@ export default function Transport() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+                  onClick={toggleViewMode}
                   className="text-xs"
                 >
                   {viewMode === "grid" ? <List size={12} /> : <Grid size={12} />}

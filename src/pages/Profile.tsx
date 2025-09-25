@@ -6,6 +6,7 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Switch } from "@/components/ui/switch";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { RecommendationsModal } from "@/components/RecommendationsModal";
 import { useDarkMode } from "@/contexts/DarkModeContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { 
@@ -54,6 +55,7 @@ export default function Profile() {
   const [voiceAssist, setVoiceAssist] = useState(false);
   const [fontSize, setFontSize] = useState("medium");
   const [selectedLanguage, setSelectedLanguage] = useState("English");
+  const [showRecommendations, setShowRecommendations] = useState(false);
 
   const handleClearLocalData = () => {
     // Clear all local storage data
@@ -73,6 +75,10 @@ export default function Profile() {
     
     // Optionally reload the page to reset everything
     window.location.reload();
+  };
+
+  const handleViewRecommendations = () => {
+    setShowRecommendations(true);
   };
 
   const userProfile = {
@@ -324,7 +330,7 @@ export default function Profile() {
               <p className="text-sm text-muted-foreground mb-3">
                 Since you saved Betla Safari, check out Netarhat Eco Retreat for your next adventure!
               </p>
-              <Button variant="outline" size="sm" className="text-primary border-primary">
+              <Button variant="outline" size="sm" className="text-primary border-primary" onClick={handleViewRecommendations}>
                 View Recommendations
               </Button>
             </LuxuryCard>
@@ -715,6 +721,14 @@ export default function Profile() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Recommendations Modal */}
+      <RecommendationsModal
+        isOpen={showRecommendations}
+        onClose={() => setShowRecommendations(false)}
+        userInterests={userProfile.interests}
+        userFavorites={favorites}
+      />
     </div>
   );
 }

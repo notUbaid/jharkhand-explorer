@@ -4,6 +4,7 @@ import { LuxuryCard } from "@/components/ui/luxury-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { MessagingModal } from "@/components/MessagingModal";
 import { products } from "@/data/products";
 import { SellerProfile } from "@/data/products";
 import { 
@@ -30,8 +31,9 @@ export default function SellerProfilePage() {
   const { sellerId } = useParams<{ sellerId: string }>();
   const navigate = useNavigate();
   const [sellerProfile, setSellerProfile] = useState<SellerProfile | null>(null);
-  const [sellerProducts, setSellerProducts] = useState<any[]>([]);
+  const [sellerProducts, setSellerProducts] = useState<typeof products>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showMessagingModal, setShowMessagingModal] = useState(false);
 
   useEffect(() => {
     // Find seller profile by sellerId (which is the business name)
@@ -52,10 +54,7 @@ export default function SellerProfilePage() {
   }, [sellerId]);
 
   const handleContactSeller = () => {
-    if (sellerProfile) {
-      // Simulate contacting seller
-      alert(`Contacting ${sellerProfile.name} at ${sellerProfile.phone}`);
-    }
+    setShowMessagingModal(true);
   };
 
   const handleFollowSeller = () => {
@@ -384,6 +383,19 @@ export default function SellerProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Messaging Modal */}
+      {sellerProfile && (
+        <MessagingModal
+          isOpen={showMessagingModal}
+          onClose={() => setShowMessagingModal(false)}
+          guideName={sellerProfile.name}
+          guideImage="/assets/Logo.jpg"
+          guideSpecialization={sellerProfile.businessName}
+          guidePhone={sellerProfile.phone}
+          guideEmail={sellerProfile.email}
+        />
+      )}
     </div>
   );
 }

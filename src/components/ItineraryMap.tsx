@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import React, { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import { MapPin, Route, Calendar, Clock, Star, ArrowLeft, ArrowRight, Plane, Hotel, Utensils, Camera, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import L from 'leaflet';
@@ -10,6 +10,113 @@ const decodeHtmlEntities = (text: string): string => {
   const textarea = document.createElement('textarea');
   textarea.innerHTML = text;
   return textarea.value;
+};
+
+// Types for map components
+interface RouteSegment {
+  from: {
+    name: string;
+    position: [number, number];
+    type: "airport" | "hotel" | "attraction" | "restaurant" | "destination";
+    icon: string;
+  };
+  to: {
+    name: string;
+    position: [number, number];
+    type: "airport" | "hotel" | "attraction" | "restaurant" | "destination";
+    icon: string;
+  };
+  day: number;
+  time: string;
+  description: string;
+  duration: string;
+  activities: string[];
+}
+
+// Component to handle map updates and auto-zoom
+const MapUpdater: React.FC<{
+  currentSegment: RouteSegment;
+  routeSegments: RouteSegment[];
+  currentStep: number;
+  onTransitionStart: () => void;
+  onTransitionEnd: () => void;
+}> = ({ currentSegment, routeSegments, currentStep, onTransitionStart, onTransitionEnd }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (currentSegment && map) {
+      onTransitionStart();
+      
+      // Calculate bounds for the current route segment
+      const bounds = L.latLngBounds([
+        currentSegment.from.position,
+        currentSegment.to.position
+      ]);
+
+      // Add padding based on the distance for better visualization
+      const distance = map.distance(
+        L.latLng(currentSegment.from.position[0], currentSegment.from.position[1]),
+        L.latLng(currentSegment.to.position[0], currentSegment.to.position[1])
+      );
+
+      // Dynamic padding based on distance
+      let padding = 0.1;
+      if (distance < 2000) { // Very short distance
+        padding = 0.05;
+      } else if (distance < 10000) { // Short distance
+        padding = 0.08;
+      } else if (distance < 50000) { // Medium distance
+        padding = 0.12;
+      } else { // Long distance
+        padding = 0.15;
+      }
+
+      const paddedBounds = bounds.pad(padding);
+
+      // Calculate optimal zoom level based on distance with more granular control
+      let optimalZoom = 11;
+      if (distance < 1000) { // Less than 1km - very close
+        optimalZoom = 15;
+      } else if (distance < 3000) { // Less than 3km - close
+        optimalZoom = 14;
+      } else if (distance < 8000) { // Less than 8km - nearby
+        optimalZoom = 13;
+      } else if (distance < 20000) { // Less than 20km - regional
+        optimalZoom = 12;
+      } else if (distance < 50000) { // Less than 50km - state level
+        optimalZoom = 10;
+      } else if (distance < 100000) { // Less than 100km - country level
+        optimalZoom = 9;
+      } else { // More than 100km - very wide
+        optimalZoom = 8;
+      }
+
+      // Smoothly fit bounds with enhanced animation
+      map.fitBounds(paddedBounds, {
+        padding: [30, 30], // Add more padding for better visual
+        animate: true,
+        duration: 2.0, // Slightly longer animation for smoother effect
+        easeLinearity: 0.05, // Smoother easing
+        maxZoom: optimalZoom // Prevent over-zooming
+      });
+
+      // Set optimal zoom level with a smooth transition
+      setTimeout(() => {
+        map.setZoom(optimalZoom, {
+          animate: true,
+          duration: 1.2, // Smooth zoom transition
+          easeLinearity: 0.1
+        });
+        
+        // End transition after zoom completes
+        setTimeout(() => {
+          onTransitionEnd();
+        }, 1200);
+      }, 500); // Slightly longer delay for better coordination
+    }
+  }, [currentSegment, map, currentStep, onTransitionStart, onTransitionEnd]);
+
+  return null;
 };
 
 // Fix for default markers in react-leaflet
@@ -184,6 +291,7 @@ interface ItineraryMapProps {
 
 export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [routeSegments, setRouteSegments] = useState<RouteSegment[]>([]);
 
   // Create route segments based on itinerary
@@ -3176,7 +3284,7 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
     }
 
     setRouteSegments(segments);
-  }, [itinerary]);
+  }, [itinerary, packageTitle]);
 
   // Create custom icons for different location types
   const createCustomIcon = (type: string, name: string) => {
@@ -3258,6 +3366,14 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
   const centerLat = (currentSegment.from.position[0] + currentSegment.to.position[0]) / 2;
   const centerLng = (currentSegment.from.position[1] + currentSegment.to.position[1]) / 2;
 
+  // Calculate distance for visual feedback
+  const distance = Math.round(
+    Math.sqrt(
+      Math.pow((currentSegment.to.position[0] - currentSegment.from.position[0]) * 111, 2) +
+      Math.pow((currentSegment.to.position[1] - currentSegment.from.position[1]) * 111, 2)
+    )
+  );
+
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <div className="flex items-center gap-2 mb-4">
@@ -3268,7 +3384,16 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Interactive Map */}
         <div className="lg:col-span-2">
-          <div className="h-96 w-full rounded-lg overflow-hidden border border-gray-200 shadow-lg">
+          <div className="h-96 w-full rounded-lg overflow-hidden border border-gray-200 shadow-lg relative">
+            {/* Loading overlay during transitions */}
+            {isTransitioning && (
+              <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
+                <div className="flex items-center space-x-2">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                  <span className="text-sm text-gray-600">Adjusting map view...</span>
+                </div>
+              </div>
+            )}
             <MapContainer
               center={[centerLat, centerLng]}
               zoom={11}
@@ -3278,6 +3403,15 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              
+              {/* Map updater for auto-zoom and centering */}
+              <MapUpdater 
+                currentSegment={currentSegment}
+                routeSegments={routeSegments}
+                currentStep={currentStep}
+                onTransitionStart={() => setIsTransitioning(true)}
+                onTransitionEnd={() => setIsTransitioning(false)}
               />
               
               {/* Current route segment */}
@@ -3320,7 +3454,7 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
           <div className="mt-4 flex items-center justify-between">
             <Button
               onClick={handlePrev}
-              disabled={currentStep === 0}
+              disabled={currentStep === 0 || isTransitioning}
               variant="outline"
               className="flex items-center gap-2"
             >
@@ -3346,7 +3480,7 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
             
             <Button
               onClick={handleNext}
-              disabled={currentStep === routeSegments.length - 1}
+              disabled={currentStep === routeSegments.length - 1 || isTransitioning}
               variant="outline"
               className="flex items-center gap-2"
             >
@@ -3369,6 +3503,11 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
             <div className="flex items-center gap-2 mb-3">
               <Clock className="w-4 h-4 text-blue-600" />
               <span className="text-sm text-blue-700">Duration: {currentSegment.duration}</span>
+            </div>
+            
+            <div className="flex items-center gap-2 mb-3">
+              <Route className="w-4 h-4 text-blue-600" />
+              <span className="text-sm text-blue-700">Distance: ~{distance} km</span>
             </div>
             
             <div className="space-y-2">

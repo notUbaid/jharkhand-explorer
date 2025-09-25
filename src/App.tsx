@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BottomNavigation } from "@/components/ui/bottom-navigation";
 import { DarkModeProvider } from "@/contexts/DarkModeContext";
+import { ViewModeProvider } from "@/contexts/ViewModeContext";
 import { PackageComparisonProvider } from "@/contexts/PackageComparisonContext";
 import { TransportComparisonProvider } from "@/contexts/TransportComparisonContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
@@ -37,6 +38,7 @@ import StayCompare from "./pages/StayCompare";
 const App = () => {
   return (
     <DarkModeProvider>
+      <ViewModeProvider>
         <PackageComparisonProvider>
           <TransportComparisonProvider>
             <StayComparisonProvider>
@@ -87,7 +89,8 @@ const App = () => {
               </StayComparisonProvider>
             </TransportComparisonProvider>
           </PackageComparisonProvider>
-        </DarkModeProvider>
+        </ViewModeProvider>
+      </DarkModeProvider>
   );
 };
 

@@ -104,7 +104,7 @@ export const useProductsCart = (): CartContextType => {
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => {
     const price = parseFloat(item.product.price.replace(/[₹,]/g, ''));
-    return sum + (price * item.quantity);
+    return sum + (isNaN(price) ? 0 : price * item.quantity);
   }, 0);
 
   return {
