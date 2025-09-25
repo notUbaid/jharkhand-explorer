@@ -53,10 +53,11 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
   });
 
   // Determine booking type from the first item (needed for pricing calc below)
-  const bookingType = bookingItems.length > 0 ? bookingItems[0].type : 'general';
+  const bookingType = bookingItems && bookingItems.length > 0 ? bookingItems[0].type : 'general';
 
   // Helpers for package-specific pricing
   const getPackageMinPeople = () => {
+    if (!bookingItems || bookingItems.length === 0) return 1;
     const groupSizeStr = (bookingItems[0]?.metadata as any)?.groupSize as string | undefined; // eslint-disable-line @typescript-eslint/no-explicit-any
     if (!groupSizeStr) return 1;
     const match = groupSizeStr.match(/(\d+)/);
@@ -65,8 +66,8 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
 
   // Mock, hyper-realistic room options based on stay price and category
   const getStayRoomOptions = () => {
-    if (bookingType !== 'stay' || bookingItems.length === 0) return [] as Array<{ key: string; label: string; multiplier: number; occupancyAdults: number; freeChildrenPerRoom: number; description: string }>;
-    const category = ((bookingItems[0].metadata as any)?.category as string | undefined) || 'Mid-range'; // eslint-disable-line @typescript-eslint/no-explicit-any
+    if (bookingType !== 'stay' || !bookingItems || bookingItems.length === 0) return [] as Array<{ key: string; label: string; multiplier: number; occupancyAdults: number; freeChildrenPerRoom: number; description: string }>;
+    const category = ((bookingItems[0]?.metadata as any)?.category as string | undefined) || 'Mid-range'; // eslint-disable-line @typescript-eslint/no-explicit-any
     const catBoost = category.toLowerCase().includes('luxury') ? 1.15 : category.toLowerCase().includes('premium') ? 1.08 : 1.0;
     return [
       { key: 'deluxe', label: 'Deluxe Room (King/Twin)', multiplier: 1.0 * catBoost, occupancyAdults: 2, freeChildrenPerRoom: 1, description: 'Ideal for 2 adults, 1 child shares bed' },
@@ -77,8 +78,8 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
 
   // Compute stay pricing with rooms, extra beds, taxes
   const computeStayPricing = () => {
-    if (bookingType !== 'stay' || bookingItems.length === 0) return { rooms: 0, extraChildren: 0, perNightRate: 0, basePerNight: 0, gst: 0, subtotal: 0, total: 0, meals: 0 };
-    const basePerNight = isNaN(bookingItems[0].price) ? 0 : bookingItems[0].price; // per night baseline from stay card
+    if (bookingType !== 'stay' || !bookingItems || bookingItems.length === 0) return { rooms: 0, extraChildren: 0, perNightRate: 0, basePerNight: 0, gst: 0, subtotal: 0, total: 0, meals: 0 };
+    const basePerNight = isNaN(bookingItems[0]?.price) ? 0 : bookingItems[0].price; // per night baseline from stay card
     const options = getStayRoomOptions();
     const selected = options.find(o => o.key === formData.roomType) || options[0];
     const perNightRate = Math.round(basePerNight * selected.multiplier);
@@ -103,11 +104,11 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
 
   // Helpers for package pricing with add-ons
   const computePackagePricing = () => {
-    if (bookingType !== 'package' || bookingItems.length === 0) return { base: 0, addons: 0, subtotal: 0, gst: 0, total: 0 };
-    const perPerson = isNaN(bookingItems[0].price) ? 0 : bookingItems[0].price;
+    if (bookingType !== 'package' || !bookingItems || bookingItems.length === 0) return { base: 0, addons: 0, subtotal: 0, gst: 0, total: 0 };
+    const perPerson = isNaN(bookingItems[0]?.price) ? 0 : bookingItems[0].price;
     const travelers = Math.max(formData.adults + formData.children, getPackageMinPeople());
     // Derive days from duration like "6 Days / 5 Nights" or "5 Days"
-    const durationText = bookingItems[0].duration || '';
+    const durationText = bookingItems[0]?.duration || '';
     const daysMatch = durationText.match(/(\d+)\s*Day/);
     const days = daysMatch ? Math.max(1, parseInt(daysMatch[1])) : 1;
     const base = perPerson * travelers;
@@ -130,12 +131,14 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
 
   // Calculate total amount with proper handling of NaN values and rental duration
   const totalAmount = (() => {
-    if (bookingType === 'package' && bookingItems.length > 0) {
+    if (bookingType === 'package' && bookingItems && bookingItems.length > 0) {
       return computePackagePricing().total;
     }
     if (bookingType === 'stay') {
       return computeStayPricing().total;
     }
+
+    if (!bookingItems || bookingItems.length === 0) return 0;
 
     return bookingItems.reduce((sum, item) => {
       const price = isNaN(item.price) ? 0 : item.price;
