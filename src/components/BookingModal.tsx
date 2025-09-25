@@ -37,31 +37,124 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
     groupSize: 1,
     // Package specific
     departureDate: '',
-    groupMembers: 1
+    groupMembers: 1,
+    // Package & Stay travelers
+    adults: 2,
+    children: 0,
+    nights: 1,
+    roomType: 'deluxe',
+    lunch: false,
+    dinner: false,
+    // Package add-ons
+    pkgAllMeals: false,
+    pkgPrivateTransport: false,
+    pkgAirportPickup: false,
+    pkgInsurance: false
   });
 
+  // Determine booking type from the first item (needed for pricing calc below)
+  const bookingType = bookingItems.length > 0 ? bookingItems[0].type : 'general';
+
+  // Helpers for package-specific pricing
+  const getPackageMinPeople = () => {
+    const groupSizeStr = (bookingItems[0]?.metadata as any)?.groupSize as string | undefined; // eslint-disable-line @typescript-eslint/no-explicit-any
+    if (!groupSizeStr) return 1;
+    const match = groupSizeStr.match(/(\d+)/);
+    return match ? Math.max(1, parseInt(match[1])) : 1;
+  };
+
+  // Mock, hyper-realistic room options based on stay price and category
+  const getStayRoomOptions = () => {
+    if (bookingType !== 'stay' || bookingItems.length === 0) return [] as Array<{ key: string; label: string; multiplier: number; occupancyAdults: number; freeChildrenPerRoom: number; description: string }>;
+    const category = ((bookingItems[0].metadata as any)?.category as string | undefined) || 'Mid-range'; // eslint-disable-line @typescript-eslint/no-explicit-any
+    const catBoost = category.toLowerCase().includes('luxury') ? 1.15 : category.toLowerCase().includes('premium') ? 1.08 : 1.0;
+    return [
+      { key: 'deluxe', label: 'Deluxe Room (King/Twin)', multiplier: 1.0 * catBoost, occupancyAdults: 2, freeChildrenPerRoom: 1, description: 'Ideal for 2 adults, 1 child shares bed' },
+      { key: 'premium', label: 'Premium Room with Balcony', multiplier: 1.3 * catBoost, occupancyAdults: 2, freeChildrenPerRoom: 1, description: 'Spacious room, better view & amenities' },
+      { key: 'suite', label: 'Club Suite + Lounge Access', multiplier: 1.8 * catBoost, occupancyAdults: 2, freeChildrenPerRoom: 1, description: 'Separate living, priority check-in, lounge' }
+    ];
+  };
+
+  // Compute stay pricing with rooms, extra beds, taxes
+  const computeStayPricing = () => {
+    if (bookingType !== 'stay' || bookingItems.length === 0) return { rooms: 0, extraChildren: 0, perNightRate: 0, basePerNight: 0, gst: 0, subtotal: 0, total: 0, meals: 0 };
+    const basePerNight = isNaN(bookingItems[0].price) ? 0 : bookingItems[0].price; // per night baseline from stay card
+    const options = getStayRoomOptions();
+    const selected = options.find(o => o.key === formData.roomType) || options[0];
+    const perNightRate = Math.round(basePerNight * selected.multiplier);
+    const adults = Math.max(1, formData.adults);
+    const children = Math.max(0, formData.children);
+    const nights = Math.max(1, formData.nights);
+    const rooms = Math.max(1, Math.ceil(adults / selected.occupancyAdults));
+    const freeChildren = rooms * selected.freeChildrenPerRoom;
+    const extraChildren = Math.max(0, children - freeChildren);
+    const extraBedPerNight = Math.round(perNightRate * 0.3);
+    const subtotalPerNight = rooms * perNightRate + extraChildren * extraBedPerNight;
+    // Meal add-ons: Breakfast included (₹0). Optional Lunch/Dinner charged per person per night
+    const MEAL_LUNCH_RATE = 350; // per person per night
+    const MEAL_DINNER_RATE = 550; // per person per night
+    const chargeablePersons = adults + children; // meals for all occupants
+    const meals = nights * chargeablePersons * ((formData.lunch ? MEAL_LUNCH_RATE : 0) + (formData.dinner ? MEAL_DINNER_RATE : 0));
+    const subtotal = subtotalPerNight * nights + meals;
+    const gst = Math.round(subtotal * 0.12);
+    const total = subtotal + gst;
+    return { rooms, extraChildren, perNightRate, basePerNight, gst, subtotal, total, meals };
+  };
+
+  // Helpers for package pricing with add-ons
+  const computePackagePricing = () => {
+    if (bookingType !== 'package' || bookingItems.length === 0) return { base: 0, addons: 0, subtotal: 0, gst: 0, total: 0 };
+    const perPerson = isNaN(bookingItems[0].price) ? 0 : bookingItems[0].price;
+    const travelers = Math.max(formData.adults + formData.children, getPackageMinPeople());
+    // Derive days from duration like "6 Days / 5 Nights" or "5 Days"
+    const durationText = bookingItems[0].duration || '';
+    const daysMatch = durationText.match(/(\d+)\s*Day/);
+    const days = daysMatch ? Math.max(1, parseInt(daysMatch[1])) : 1;
+    const base = perPerson * travelers;
+    // Add-ons
+    const ADDON_ALL_MEALS_PER_TRAVELER_PER_DAY = 900; // All meals upgrade
+    const ADDON_PRIVATE_TRANSPORT_PER_TRAVELER_PER_DAY = 500; // Private vehicle comfort upgrade
+    const ADDON_AIRPORT_PICKUP_FLAT = 1500; // per booking
+    const ADDON_INSURANCE_PER_TRAVELER = 249; // per traveler
+    const addons = (
+      (formData.pkgAllMeals ? travelers * days * ADDON_ALL_MEALS_PER_TRAVELER_PER_DAY : 0) +
+      (formData.pkgPrivateTransport ? travelers * days * ADDON_PRIVATE_TRANSPORT_PER_TRAVELER_PER_DAY : 0) +
+      (formData.pkgAirportPickup ? ADDON_AIRPORT_PICKUP_FLAT : 0) +
+      (formData.pkgInsurance ? travelers * ADDON_INSURANCE_PER_TRAVELER : 0)
+    );
+    const subtotal = base + addons;
+    const gst = Math.round(subtotal * 0.05); // 5% GST typical for bundled tour services (mock)
+    const total = subtotal + gst;
+    return { base, addons, subtotal, gst, total };
+  };
+
   // Calculate total amount with proper handling of NaN values and rental duration
-  const totalAmount = bookingItems.reduce((sum, item) => {
-    const price = isNaN(item.price) ? 0 : item.price;
-    let quantity = item.quantity;
-    
-    // For rentals, multiply by days or hours based on duration
-    if (item.type === 'rental') {
-      if (item.duration?.includes('Day')) {
-        quantity = item.quantity * formData.rentalDays;
-      } else if (item.duration?.includes('Hour')) {
-        quantity = item.quantity * formData.rentalHours;
-      }
+  const totalAmount = (() => {
+    if (bookingType === 'package' && bookingItems.length > 0) {
+      return computePackagePricing().total;
     }
-    
-    return sum + (price * quantity);
-  }, 0);
+    if (bookingType === 'stay') {
+      return computeStayPricing().total;
+    }
+
+    return bookingItems.reduce((sum, item) => {
+      const price = isNaN(item.price) ? 0 : item.price;
+      let quantity = item.quantity;
+      
+      if (item.type === 'rental') {
+        if (item.duration?.includes('Day')) {
+          quantity = item.quantity * formData.rentalDays;
+        } else if (item.duration?.includes('Hour')) {
+          quantity = item.quantity * formData.rentalHours;
+        }
+      }
+      
+      return sum + (price * quantity);
+    }, 0);
+  })();
 
   // Check if this is a free booking
   const isFreeBooking = totalAmount === 0;
-
-  // Determine booking type from the first item
-  const bookingType = bookingItems.length > 0 ? bookingItems[0].type : 'general';
   
   // Get relevant fields based on booking type
   const getBookingTypeFields = () => {
@@ -88,7 +181,7 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
         return {
           title: 'Accommodation Booking',
           icon: <Calendar size={16} />,
-          fields: ['bookingDate', 'bookingTime', 'specialRequests']
+          fields: ['bookingDate', 'nights', 'adults', 'children', 'roomType', 'specialRequests']
         };
       case 'rental':
         return {
@@ -117,6 +210,10 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
       requiredFields.push('bookingDate');
     } else if (bookingTypeInfo.fields.includes('departureDate')) {
       requiredFields.push('departureDate');
+    }
+
+    if (bookingType === 'package') {
+      requiredFields.push('adults');
     }
     
     const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
@@ -157,7 +254,17 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
           experienceSlot: '',
           groupSize: 1,
           departureDate: '',
-          groupMembers: 1
+          groupMembers: 1,
+          adults: 2,
+          children: 0,
+          nights: 1,
+          roomType: 'deluxe',
+          lunch: false,
+          dinner: false,
+          pkgAllMeals: false,
+          pkgPrivateTransport: false,
+          pkgAirportPickup: false,
+          pkgInsurance: false
         });
       } else {
         // Handle paid booking with Razorpay
@@ -172,7 +279,9 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
           {
             booking_id: bookingId,
             booking_date: formData.bookingDate,
-            items: bookingItems.map(item => `${item.title} (${item.quantity}x)`).join(', '),
+            items: bookingType === 'package'
+              ? `${bookingItems[0].title} (${Math.max(formData.adults + formData.children, getPackageMinPeople())} travelers)`
+              : bookingItems.map(item => `${item.title} (${item.quantity}x)`).join(', '),
             special_requests: formData.specialRequests || 'None'
           },
           (response) => {
@@ -201,7 +310,17 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
               experienceSlot: '',
               groupSize: 1,
               departureDate: '',
-              groupMembers: 1
+              groupMembers: 1,
+              adults: 2,
+              children: 0,
+              nights: 1,
+              roomType: 'deluxe',
+              lunch: false,
+              dinner: false,
+              pkgAllMeals: false,
+              pkgPrivateTransport: false,
+              pkgAirportPickup: false,
+              pkgInsurance: false
             });
           },
           (error) => {
@@ -278,7 +397,11 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
                     <div className="flex items-center">
                       <IndianRupee size={12} className="text-accent" />
                       <span className="font-medium">
-                        {isNaN(item.price) ? '0' : (item.price * displayQuantity).toLocaleString()}
+                        {bookingType === 'package'
+                          ? computePackagePricing().subtotal.toLocaleString()
+                          : bookingType === 'stay'
+                            ? computeStayPricing().subtotal.toLocaleString()
+                            : (isNaN(item.price) ? '0' : (item.price * displayQuantity).toLocaleString())}
                       </span>
                     </div>
                   </div>
@@ -349,10 +472,143 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
                 {bookingTypeInfo.icon}
                 {bookingTypeInfo.title}
               </h4>
+              {/* Package traveler questions */}
+              {bookingType === 'package' && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label htmlFor="adults">Adults *</Label>
+                    <Input
+                      id="adults"
+                      type="number"
+                      min={getPackageMinPeople()}
+                      value={formData.adults}
+                      onChange={(e) => {
+                        const min = getPackageMinPeople();
+                        const val = parseInt(e.target.value) || 0;
+                        handleInputChange('adults', Math.max(val, min));
+                      }}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Minimum {getPackageMinPeople()} people required</p>
+                  </div>
+                  <div>
+                    <Label htmlFor="children">Children</Label>
+                    <Input
+                      id="children"
+                      type="number"
+                      min={0}
+                      value={formData.children}
+                      onChange={(e) => handleInputChange('children', Math.max(parseInt(e.target.value) || 0, 0))}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Package add-ons */}
+              {bookingType === 'package' && (
+                <div className="space-y-2">
+                  <h5 className="font-medium">Package Add-ons</h5>
+                  <div className="grid grid-cols-1 gap-2">
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={formData.pkgAllMeals as unknown as boolean}
+                        onChange={(e) => handleInputChange('pkgAllMeals', e.target.checked ? 1 : 0)}
+                      />
+                      <span>All Meals Upgrade (+₹900 per traveler per day)</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={formData.pkgPrivateTransport as unknown as boolean}
+                        onChange={(e) => handleInputChange('pkgPrivateTransport', e.target.checked ? 1 : 0)}
+                      />
+                      <span>Private Transport (+₹500 per traveler per day)</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={formData.pkgAirportPickup as unknown as boolean}
+                        onChange={(e) => handleInputChange('pkgAirportPickup', e.target.checked ? 1 : 0)}
+                      />
+                      <span>Airport Pickup (+₹1,500 one-time)</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={formData.pkgInsurance as unknown as boolean}
+                        onChange={(e) => handleInputChange('pkgInsurance', e.target.checked ? 1 : 0)}
+                      />
+                      <span>Travel Insurance (+₹249 per traveler)</span>
+                    </label>
+                  </div>
+                </div>
+              )}
               
               {/* Dynamic fields based on booking type */}
               {bookingTypeInfo.fields.map((field) => {
                 switch (field) {
+                  case 'nights':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Nights *</Label>
+                        <Input
+                          id={field}
+                          type="number"
+                          min={1}
+                          max={30}
+                          value={formData.nights}
+                          onChange={(e) => handleInputChange('nights', Math.max(parseInt(e.target.value) || 1, 1))}
+                          required
+                        />
+                      </div>
+                    );
+                  case 'adults':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Adults *</Label>
+                        <Input
+                          id={field}
+                          type="number"
+                          min={1}
+                          max={12}
+                          value={formData.adults}
+                          onChange={(e) => handleInputChange('adults', Math.max(parseInt(e.target.value) || 1, 1))}
+                          required
+                        />
+                      </div>
+                    );
+                  case 'children':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Children</Label>
+                        <Input
+                          id={field}
+                          type="number"
+                          min={0}
+                          max={12}
+                          value={formData.children}
+                          onChange={(e) => handleInputChange('children', Math.max(parseInt(e.target.value) || 0, 0))}
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">1 child per room stays free without extra bed</p>
+                      </div>
+                    );
+                  case 'roomType':
+                    return (
+                      <div key={field}>
+                        <Label htmlFor={field}>Room Type</Label>
+                        <select
+                          id={field}
+                          value={formData.roomType}
+                          onChange={(e) => handleInputChange('roomType', e.target.value)}
+                          className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                          {getStayRoomOptions().map(opt => (
+                            <option key={opt.key} value={opt.key}>{opt.label}</option>
+                          ))}
+                        </select>
+                        <p className="text-xs text-muted-foreground mt-1">{getStayRoomOptions().find(o => o.key === formData.roomType)?.description}</p>
+                      </div>
+                    );
                   case 'bookingDate':
                     return (
                       <div key={field}>
@@ -524,6 +780,32 @@ export const BookingModal = ({ isOpen, onClose, bookingItems, onSuccess }: Booki
                     return null;
                 }
               })}
+
+              {/* Stay meal add-ons */}
+              {bookingType === 'stay' && (
+                <div className="space-y-2">
+                  <h5 className="font-medium">Meal Add-ons (Breakfast included)</h5>
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={formData.lunch as unknown as boolean}
+                        onChange={(e) => handleInputChange('lunch', e.target.checked ? 1 : 0)}
+                      />
+                      <span>Lunch (+₹350 per person per night)</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={formData.dinner as unknown as boolean}
+                        onChange={(e) => handleInputChange('dinner', e.target.checked ? 1 : 0)}
+                      />
+                      <span>Dinner (+₹550 per person per night)</span>
+                    </label>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Breakfast is included in all stays.</p>
+                </div>
+              )}
             </div>
 
             {/* Payment Button */}

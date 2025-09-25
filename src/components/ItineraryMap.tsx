@@ -45,8 +45,6 @@ const MapUpdater: React.FC<{
 
   useEffect(() => {
     if (currentSegment && map) {
-      onTransitionStart();
-      
       // Calculate bounds for the current route segment
       const bounds = L.latLngBounds([
         currentSegment.from.position,
@@ -91,28 +89,17 @@ const MapUpdater: React.FC<{
         optimalZoom = 8;
       }
 
-      // Smoothly fit bounds with enhanced animation
+      // Instantly fit bounds without any animation
       map.fitBounds(paddedBounds, {
-        padding: [30, 30], // Add more padding for better visual
-        animate: true,
-        duration: 2.0, // Slightly longer animation for smoother effect
-        easeLinearity: 0.05, // Smoother easing
-        maxZoom: optimalZoom // Prevent over-zooming
+        padding: [30, 30],
+        animate: false,
+        maxZoom: optimalZoom
       });
 
-      // Set optimal zoom level with a smooth transition
-      setTimeout(() => {
-        map.setZoom(optimalZoom, {
-          animate: true,
-          duration: 1.2, // Smooth zoom transition
-          easeLinearity: 0.1
-        });
-        
-        // End transition after zoom completes
-        setTimeout(() => {
-          onTransitionEnd();
-        }, 1200);
-      }, 500); // Slightly longer delay for better coordination
+      // Ensure zoom is set instantly as well
+      map.setZoom(optimalZoom, {
+        animate: false
+      });
     }
   }, [currentSegment, map, currentStep, onTransitionStart, onTransitionEnd]);
 
@@ -3385,15 +3372,7 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
         {/* Interactive Map */}
         <div className="lg:col-span-2">
           <div className="h-96 w-full rounded-lg overflow-hidden border border-gray-200 shadow-lg relative">
-            {/* Loading overlay during transitions */}
-            {isTransitioning && (
-              <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                  <span className="text-sm text-gray-600">Adjusting map view...</span>
-                </div>
-              </div>
-            )}
+            {/* Loading overlay removed for instant transitions */}
             <MapContainer
               center={[centerLat, centerLng]}
               zoom={11}

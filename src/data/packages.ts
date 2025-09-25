@@ -1118,7 +1118,8 @@ export const packages = [
     price: "₹24,999",
     category: "Senior-Friendly",
     rating: 4.9,
-    image: "/assets/Packages/Senior Citizens Comfortable Explorer.png",
+    // File with spaces may 404 or not exist; point to a valid existing image
+    image: "/assets/Packages/Grand Jharkhand Explorer.png",
     highlights: ["Minimal Walking Required", "Comfortable AC Transport", "Senior-Friendly Accommodations", "Easy Access Attractions", "Cultural Experiences", "Relaxed Pace"],
     difficulty: "Easy",
     type: "Senior-Friendly · Comfort · Cultural · Relaxed",
