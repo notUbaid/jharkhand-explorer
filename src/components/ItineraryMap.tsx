@@ -44,7 +44,7 @@ const MapUpdater: React.FC<{
   const map = useMap();
 
   useEffect(() => {
-    if (currentSegment && map) {
+    if (currentSegment && currentSegment.from?.position && currentSegment.to?.position && map) {
       // Calculate bounds for the current route segment
       const bounds = L.latLngBounds([
         currentSegment.from.position,
@@ -3331,12 +3331,12 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
     });
   };
 
-  const currentSegment = routeSegments[currentStep];
-  const nextSegment = routeSegments[currentStep + 1];
-  const prevSegment = routeSegments[currentStep - 1];
+  const currentSegment = routeSegments && routeSegments.length > 0 ? routeSegments[currentStep] : null;
+  const nextSegment = routeSegments && routeSegments.length > currentStep + 1 ? routeSegments[currentStep + 1] : null;
+  const prevSegment = routeSegments && currentStep > 0 ? routeSegments[currentStep - 1] : null;
 
   const handleNext = () => {
-    if (currentStep < routeSegments.length - 1) {
+    if (routeSegments && currentStep < routeSegments.length - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -3347,7 +3347,7 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
     }
   };
 
-  if (!currentSegment) return null;
+  if (!currentSegment || !currentSegment.from?.position || !currentSegment.to?.position) return null;
 
   // Calculate center point for current segment
   const centerLat = (currentSegment.from.position[0] + currentSegment.to.position[0]) / 2;
@@ -3503,12 +3503,12 @@ export default function ItineraryMap({ itinerary, packageTitle }: ItineraryMapPr
             <div className="space-y-2 mt-3">
               <h5 className="font-medium text-blue-900 text-sm">Activities:</h5>
               <ul className="space-y-1">
-                {currentSegment.activities.map((activity, index) => (
+                {currentSegment.activities?.map((activity, index) => (
                   <li key={index} className="flex items-start gap-2 text-sm text-blue-700">
                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                     <span>{activity}</span>
                   </li>
-                ))}
+                )) || <li className="text-sm text-gray-500">No activities listed</li>}
               </ul>
             </div>
           </div>
