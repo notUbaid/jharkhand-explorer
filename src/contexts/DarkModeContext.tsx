@@ -21,12 +21,9 @@ interface DarkModeProviderProps {
 
 export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check localStorage first, then default to light mode
-    const saved = localStorage.getItem('darkMode');
-    if (saved !== null) {
-      return JSON.parse(saved);
-    }
-    // Default to light mode instead of system preference
+    // Always default to light mode (false)
+    // Clear any existing localStorage preference to ensure light mode
+    localStorage.removeItem('darkMode');
     return false;
   });
 
@@ -41,6 +38,11 @@ export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) 
       document.documentElement.classList.remove('dark');
     }
   }, [isDarkMode]);
+
+  // Ensure light mode on initial load
+  useEffect(() => {
+    document.documentElement.classList.remove('dark');
+  }, []);
 
   const toggleDarkMode = () => {
     setIsDarkMode(prev => !prev);
