@@ -78,7 +78,7 @@ export default function TourGuideDetail() {
           <p className="text-muted-foreground mb-6">{t("common.guideNotFoundDesc")}</p>
           <Button onClick={() => navigate("/marketplace")} variant="outline">
             <ArrowLeft className="mr-2" size={16} />
-            {t("common.backToMarketplace")}
+            Back to Marketplace
           </Button>
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function TourGuideDetail() {
             className="text-primary-foreground hover:bg-primary-foreground/10"
           >
             <ArrowLeft className="mr-2" size={16} />
-            {t("common.backToMarketplace")}
+            Back to Marketplace
           </Button>
           <LanguageToggle />
         </div>
@@ -156,7 +156,7 @@ export default function TourGuideDetail() {
                     <Star className="text-accent fill-accent" size={16} />
                     <span className="ml-1 font-semibold">{guide.rating}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{t("common.rating")}</p>
+                  <p className="text-xs text-muted-foreground">Rating</p>
                 </div>
                 
                 <div className="text-center">
@@ -164,7 +164,7 @@ export default function TourGuideDetail() {
                     <Clock size={16} className="text-primary" />
                     <span className="ml-1 font-semibold">{guide.experience}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{t("common.experience")}</p>
+                  <p className="text-xs text-muted-foreground">Experience</p>
                 </div>
                 
                 <div className="text-center">
@@ -187,7 +187,7 @@ export default function TourGuideDetail() {
               <div className="flex gap-3">
                 <Button className="flex-1" onClick={handleBookNow}>
                   <Calendar className="mr-2" size={16} />
-                  {t("common.bookNow")}
+                  Book Now
                 </Button>
                 <Button variant="outline">
                   <MessageCircle className="mr-2" size={16} />
@@ -204,7 +204,7 @@ export default function TourGuideDetail() {
           <div className="lg:col-span-2 space-y-6">
             {/* About */}
             <LuxuryCard className="p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-4">{t("common.about")} {guide.name}</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-4">About {guide.name}</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 {guide.bio}
               </p>
@@ -240,7 +240,7 @@ export default function TourGuideDetail() {
 
             {/* Reviews */}
             <LuxuryCard className="p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-4">{t("common.recentReviews")}</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-4">Recent Reviews</h2>
               <div className="space-y-4">
                 {guide.reviews.map((review: { name: string; rating: number; comment: string; date: string }, index: number) => (
                   <div key={index} className="border-b border-border pb-4 last:border-b-0">
@@ -310,7 +310,7 @@ export default function TourGuideDetail() {
 
             {/* Contact Information */}
             <LuxuryCard className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">{t("common.contactInformation")}</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">Contact Information</h3>
               <div className="space-y-3">
                 <div className="flex items-center">
                   <Phone size={16} className="mr-3 text-primary" />
@@ -329,7 +329,7 @@ export default function TourGuideDetail() {
 
             {/* Languages */}
             <LuxuryCard className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">{t("common.languages")}</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">Languages</h3>
               <div className="flex flex-wrap gap-2">
                 {guide.languages.map((language: string, index: number) => (
                   <Badge key={index} variant="outline" className="text-sm">
@@ -342,7 +342,7 @@ export default function TourGuideDetail() {
 
             {/* Availability */}
             <LuxuryCard className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">{t("common.availability")}</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">Availability</h3>
               <div className="space-y-2">
                 <div className="flex items-center">
                   <Clock3 size={16} className="mr-2 text-green-500" />

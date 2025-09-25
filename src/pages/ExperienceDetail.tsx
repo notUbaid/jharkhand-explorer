@@ -83,7 +83,7 @@ export default function ExperienceDetail() {
           <p className="text-muted-foreground mb-6">{t("common.experienceNotFoundDesc")}</p>
           <Button onClick={() => navigate("/marketplace")} variant="outline">
             <ArrowLeft className="mr-2" size={16} />
-            {t("common.backToMarketplace")}
+            Back to Marketplace
           </Button>
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function ExperienceDetail() {
             className="text-primary-foreground hover:bg-primary-foreground/10 px-4 py-2"
           >
             <ArrowLeft className="mr-2" size={18} />
-            {t("common.backToMarketplace")}
+            Back to Marketplace
           </Button>
           <LanguageToggle />
         </div>
@@ -154,7 +154,7 @@ export default function ExperienceDetail() {
                     <Star className="text-accent fill-accent" size={16} />
                     <span className="ml-1 font-semibold">{experience.rating}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{t("common.rating")}</p>
+                  <p className="text-xs text-muted-foreground">Rating</p>
                 </div>
                 
                 <div className="text-center">
@@ -191,7 +191,7 @@ export default function ExperienceDetail() {
                   className="w-full bg-primary hover:bg-primary/90 h-12 text-lg font-semibold"
                   onClick={handleBookNow}
                 >
-                  {t("common.bookNow")}
+                  Book Now
                 </Button>
                 <Button 
                   variant="outline" 
@@ -233,7 +233,7 @@ export default function ExperienceDetail() {
 
             {/* Highlights */}
             <LuxuryCard className="p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-4">{t("common.experienceHighlights")}</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-4">Experience Highlights</h2>
               <div className="space-y-2">
                 {experience.highlights.map((highlight, index) => (
                   <div key={index} className="flex items-center text-sm text-muted-foreground">
@@ -301,14 +301,14 @@ export default function ExperienceDetail() {
 
             {/* Quick Info */}
             <LuxuryCard className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">{t("common.quickInfo")}</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">Quick Info</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">{t("common.duration")}</span>
+                  <span className="text-sm text-muted-foreground">Duration</span>
                   <span className="font-semibold">{experience.duration}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">{t("common.maxParticipants")}</span>
+                  <span className="text-sm text-muted-foreground">Max Participants</span>
                   <span className="font-semibold">{experience.maxParticipants}</span>
                 </div>
                 <div className="flex justify-between items-center">
@@ -316,7 +316,7 @@ export default function ExperienceDetail() {
                   <span className="font-semibold">{experience.difficulty}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">{t("common.nextAvailable")}</span>
+                  <span className="text-sm text-muted-foreground">Next Available</span>
                   <span className="font-semibold text-sm">{experience.nextSlot}</span>
                 </div>
               </div>

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { BookingModal } from "@/components/BookingModal";
+import ItineraryMap from "@/components/ItineraryMap";
 import { Clock, IndianRupee, Star, ArrowLeft, Share2, GitCompare, Users, MapPin, Calendar, Building, Utensils } from "lucide-react";
 import { getPackageById } from "@/data/packages";
 import { Package } from "@/types/Package";
@@ -14,6 +15,13 @@ import { PackageSelectionModal } from "@/components/PackageSelectionModal";
 import { PackageComparison } from "@/components/PackageComparison";
 import { BookingItem } from "@/hooks/useBooking";
 import { scrollManager } from "@/utils/scrollManager";
+
+// Utility function to decode HTML entities
+const decodeHtmlEntities = (text: string): string => {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+};
 
 export default function PackageDetail() {
   const { t } = useTranslation();
@@ -62,7 +70,7 @@ export default function PackageDetail() {
           </Button>
           <Badge variant="secondary">{packageData.category}</Badge>
         </div>
-        <h1 className="text-2xl font-playfair font-bold">{packageData.title}</h1>
+        <h1 className="text-2xl font-playfair font-bold">{decodeHtmlEntities(packageData.title)}</h1>
         <p className="text-primary-foreground/80 text-sm mt-1">{packageData.type}</p>
       </header>
 
@@ -87,7 +95,7 @@ export default function PackageDetail() {
             <div className="flex items-center">
               <Calendar size={16} className="mr-2 text-primary" />
               <div>
-                <div className="text-muted-foreground text-xs">{t("common.bestTime")}</div>
+                <div className="text-muted-foreground text-xs">Best Time</div>
                 <div className="font-semibold">{packageData.bestTime}</div>
               </div>
             </div>
@@ -128,6 +136,12 @@ export default function PackageDetail() {
             ))}
           </div>
         </section>
+
+        {/* Interactive Itinerary Map */}
+        <ItineraryMap 
+          itinerary={packageData.itinerary} 
+          packageTitle={packageData.title}
+        />
 
         {/* Itinerary Section */}
         <section>

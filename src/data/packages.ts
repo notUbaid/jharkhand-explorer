@@ -2,7 +2,7 @@ export const packages = [
   {
     id: 1,
     title: "🌿 Discover Jharkhand: Nature & Culture Tour",
-    duration: "5 Days / 4 Nights",
+    duration: "8 Days / 7 Nights",
     price: "₹18,999",
     category: "Nature",
     rating: 4.8,
@@ -17,28 +17,107 @@ export const packages = [
     itinerary: [
       {
         day: 1,
-        title: "Arrival at Ranchi",
-        activities: ["Airport/Railway pickup", "Rock Garden and Kanke Dam", "Firayalal Market shopping"]
+        title: "Arrival at Ranchi - Welcome to Jharkhand",
+        activities: [
+          "08:00 AM - Airport/Railway station pickup with traditional welcome",
+          "09:30 AM - Check-in at Hotel Capital Residency (4★) with city views",
+          "11:00 AM - Visit Rock Garden (Tagore Hill) - 300+ rock sculptures",
+          "12:30 PM - Explore Kanke Dam - boating and photography",
+          "02:00 PM - Traditional lunch at local restaurant (Litti Chokha)",
+          "03:30 PM - Shopping at Firayalal Market - handicrafts and souvenirs",
+          "05:00 PM - Evening tea at Ranchi Lake with sunset views",
+          "07:00 PM - Welcome dinner with cultural dance performance"
+        ]
       },
       {
         day: 2,
-        title: "Ranchi Waterfall Trail",
-        activities: ["Dassam Falls", "Jonha Falls (Gautamdhara)", "Hundru Falls"]
+        title: "Ranchi Waterfall Circuit - Nature's Symphony",
+        activities: [
+          "06:30 AM - Early breakfast and departure",
+          "08:00 AM - Dassam Falls (40m height) - photography and nature walk",
+          "10:30 AM - Jonha Falls (Gautamdhara) - temple visit and waterfall",
+          "12:30 PM - Picnic lunch by the falls",
+          "02:00 PM - Hundru Falls (98m height) - the 'Niagara of Jharkhand'",
+          "04:00 PM - Visit nearby tribal village for cultural interaction",
+          "06:00 PM - Return to hotel with scenic drive",
+          "08:00 PM - Dinner at hotel with local cuisine"
+        ]
       },
       {
         day: 3,
-        title: "Netarhat 'Queen of Chotanagpur'",
-        activities: ["Upper Ghaghri Falls", "Netarhat Dam", "Sunset Point"]
+        title: "Netarhat 'Queen of Chotanagpur' - Hill Station Paradise",
+        activities: [
+          "06:00 AM - Early departure to Netarhat (3-hour scenic drive)",
+          "09:30 AM - Check-in at Netarhat Tourist Lodge",
+          "11:00 AM - Upper Ghaghri Falls - trekking and photography",
+          "01:00 PM - Traditional lunch at hill station",
+          "03:00 PM - Netarhat Dam - boating and scenic views",
+          "04:30 PM - Koel View Point - panoramic valley views",
+          "06:00 PM - Sunset Point - witness spectacular sunset",
+          "08:00 PM - Bonfire dinner with local music"
+        ]
       },
       {
         day: 4,
-        title: "Betla National Park and Palamu Fort",
-        activities: ["Jungle Safari", "Palamu Fort Ruins", "Wildlife Viewing"]
+        title: "Betla National Park & Palamu Fort - Wildlife & History",
+        activities: [
+          "05:30 AM - Early morning jungle safari in Betla National Park",
+          "08:00 AM - Wildlife spotting (tigers, elephants, deer, birds)",
+          "10:00 AM - Breakfast at forest rest house",
+          "11:30 AM - Visit Palamu Fort ruins (16th century)",
+          "01:00 PM - Traditional forest lunch",
+          "03:00 PM - Nature walk and bird watching",
+          "05:00 PM - Return to Ranchi (4-hour drive)",
+          "09:00 PM - Dinner at hotel"
+        ]
       },
       {
         day: 5,
-        title: "Religious and Departure",
-        activities: ["Baidyanath Temple or Jagannath Temple", "Checkout and Departure"]
+        title: "Spiritual Journey & Departure",
+        activities: [
+          "07:00 AM - Breakfast and checkout",
+          "09:00 AM - Visit Baidyanath Temple (Jyotirlinga) - spiritual experience",
+          "11:00 AM - Jagannath Temple - architectural marvel",
+          "12:30 PM - Final shopping at local markets",
+          "02:00 PM - Traditional farewell lunch",
+          "04:00 PM - Airport/station drop with memories to cherish"
+        ]
+      },
+      {
+        day: 6,
+        title: "Cultural Heritage Exploration",
+        activities: [
+          "08:00 AM - Breakfast and departure to Hazaribagh",
+          "10:30 AM - Visit Hazaribagh Wildlife Sanctuary",
+          "12:30 PM - Traditional lunch at local restaurant",
+          "02:00 PM - Explore Hazaribagh Rock Art and Canary Hill",
+          "04:00 PM - Visit Rajrappa Temple complex",
+          "06:00 PM - Return to Ranchi",
+          "08:00 PM - Dinner at hotel"
+        ]
+      },
+      {
+        day: 7,
+        title: "Industrial Heritage & Modern Jharkhand",
+        activities: [
+          "07:00 AM - Early breakfast and departure to Jamshedpur",
+          "09:30 AM - Visit Tata Steel Museum and company heritage",
+          "11:30 AM - Explore Jubilee Park and Dimna Lake",
+          "01:00 PM - Lunch at local restaurant",
+          "03:00 PM - Visit Tribal Cultural Centre",
+          "05:00 PM - Return journey to Ranchi",
+          "08:00 PM - Farewell dinner with cultural performance"
+        ]
+      },
+      {
+        day: 8,
+        title: "Final Departure",
+        activities: [
+          "08:00 AM - Breakfast and final packing",
+          "10:00 AM - Visit local handicraft emporium for last-minute shopping",
+          "12:00 PM - Traditional farewell lunch",
+          "02:00 PM - Airport/station drop with unforgettable memories"
+        ]
       }
     ],
     accommodation: [
@@ -79,19 +158,19 @@ export const packages = [
   },
   {
     id: 2,
-    title: "🟢 खनन खोज यात्रा (कोयला क्षेत्र और खुले खनन)",
-    duration: "3 दिन / 2 रातें",
+    title: "🟢 Mining Exploration Journey (Coal Fields & Open-Cast Mining)",
+    duration: "3 Days / 2 Nights",
     price: "₹6,499",
-    category: "खनन",
+    category: "Mining",
     rating: 4.6,
     image: "/assets/Packages/mining.png",
-    highlights: ["झरिया कोयला क्षेत्र विरासत", "उत्तर उरिमारी खुला खनन", "आईएसएम भूवैज्ञानिक संग्रहालय", "एआर/वीआर खनन सिमुलेशन", "पत्रातू घाटी"],
-    difficulty: "मध्यम",
-    type: "शैक्षिक · रोमांच · विरासत",
-    description: "झारखंड में कोयला खनन के आकर्षक दुनिया की खोज करें, जो भारत की कोयला राजधानी है। यह शैक्षिक यात्रा आपको ऐतिहासिक कोयला क्षेत्रों, आधुनिक खुले खनन संचालन और भूवैज्ञानिक संग्रहालयों के माध्यम से ले जाती है। भारत की अर्थव्यवस्था को शक्ति प्रदान करने वाले उद्योग के बारे में जानें और खनन समुदायों की अनूठी विरासत का अनुभव करें।",
-    groupSize: "4-20 लोग",
-    bestTime: "अक्टूबर से अप्रैल",
-    departureCity: "धनबाद",
+    highlights: ["Jharia Coal Field Heritage", "North Urimari Open-Cast Mining", "ISM Geological Museum", "AR/VR Mining Simulation", "Patratu Valley"],
+    difficulty: "Moderate",
+    type: "Educational · Adventure · Heritage",
+    description: "Explore the fascinating world of coal mining in Jharkhand, India's coal capital. This educational journey takes you through historic coal fields, modern open-cast mining operations, and geological museums. Learn about the industry that powers India's economy and experience the unique heritage of mining communities.",
+    groupSize: "4-20 people",
+    bestTime: "October to March",
+    departureCity: "Dhanbad",
     itinerary: [
       {
         day: 1,
@@ -164,28 +243,73 @@ export const packages = [
     itinerary: [
       {
         day: 1,
-        title: "Arrival at Jamshedpur",
-        activities: ["Hotel check-in", "Welcome dinner", "Mining industry orientation"]
+        title: "Arrival at Jamshedpur - Steel City Welcome",
+        activities: [
+          "02:00 PM - Airport/station pickup with industry briefing",
+          "03:30 PM - Check-in at Hotel Sonnet (4★) with city views",
+          "05:00 PM - Welcome tea with Tata Steel executives",
+          "06:30 PM - Visit Tata Steel Museum - company history and innovations",
+          "08:00 PM - Welcome dinner with industry professionals",
+          "09:30 PM - Mining industry orientation and safety briefing"
+        ]
       },
       {
         day: 2,
-        title: "Tata Steel Noamundi Iron Ore Mine",
-        activities: ["Iron ore mine operations", "Sustainability practices", "Heavy machinery visit", "Company guest house lunch"]
+        title: "Tata Steel Noamundi Iron Ore Mine - Industrial Excellence",
+        activities: [
+          "06:00 AM - Early breakfast and departure to Noamundi",
+          "08:30 AM - Arrival at Noamundi Iron Ore Mine (100+ years old)",
+          "09:00 AM - Safety briefing and PPE distribution",
+          "09:30 AM - Surface mine tour - heavy machinery demonstration",
+          "11:00 AM - Underground mine simulation experience",
+          "12:30 PM - Lunch at company guest house with engineers",
+          "02:00 PM - Sustainability practices workshop",
+          "03:30 PM - Iron ore processing plant visit",
+          "05:00 PM - Return to Jamshedpur with industry insights",
+          "08:00 PM - Dinner with mining engineers"
+        ]
       },
       {
         day: 3,
-        title: "Transfer to Dhanbad & Jharia Heritage",
-        activities: ["Scenic drive to Dhanbad", "Jharia Coalfield heritage zone", "ISM Museum visit"]
+        title: "Transfer to Dhanbad & Jharia Heritage - Coal Capital",
+        activities: [
+          "07:00 AM - Breakfast and checkout",
+          "08:30 AM - Scenic drive to Dhanbad (3-hour journey)",
+          "11:30 AM - Check-in at Hotel Clarks Inn (4★)",
+          "01:00 PM - Traditional lunch at local restaurant",
+          "03:00 PM - Jharia Coalfield heritage zone visit",
+          "04:30 PM - ISM (Indian School of Mines) Museum tour",
+          "06:00 PM - Coal mining history presentation",
+          "08:00 PM - Dinner with coal industry experts"
+        ]
       },
       {
         day: 4,
         title: "North Urimari Open-Cast Mine & Materials Science",
-        activities: ["Open-cast mine tour with PPE", "AR/VR experience", "Materials Lab Workshop", "Engineer interaction"]
+        activities: [
+          "06:30 AM - Early breakfast and departure",
+          "08:00 AM - Arrival at North Urimari Open-Cast Mine",
+          "08:30 AM - Safety briefing and advanced PPE fitting",
+          "09:00 AM - Open-cast mine tour with expert guides",
+          "11:00 AM - AR/VR mining simulation experience",
+          "12:30 PM - Lunch at mine canteen with workers",
+          "02:00 PM - Materials Science Lab Workshop",
+          "03:30 PM - Engineer interaction session",
+          "05:00 PM - Return to Dhanbad",
+          "08:00 PM - Farewell dinner with industry leaders"
+        ]
       },
       {
         day: 5,
         title: "Ranchi Sightseeing & Departure",
-        activities: ["Rock Garden", "Jagannath Temple", "Airport/Railway drop"]
+        activities: [
+          "07:00 AM - Breakfast and checkout",
+          "09:00 AM - Drive to Ranchi (2-hour journey)",
+          "11:30 AM - Visit Steel Authority of India (SAIL) office",
+          "01:00 PM - Traditional farewell lunch",
+          "03:00 PM - Final industry insights session",
+          "05:00 PM - Airport/station drop with certificates"
+        ]
       }
     ],
     accommodation: [
@@ -306,33 +430,81 @@ export const packages = [
     itinerary: [
       {
         day: 1,
-        title: "Arrival at Ranchi",
-        activities: ["Pick-up from Ranchi Airport", "Check-in at hotel", "Rock Garden & Kanke Dam"]
+        title: "Arrival at Ranchi - Adventure Begins",
+        activities: [
+          "02:00 PM - Pick-up from Ranchi Airport with adventure briefing",
+          "03:30 PM - Check-in at Hotel Radisson Blu (4★) with city views",
+          "05:00 PM - Adventure gear distribution and safety briefing",
+          "06:00 PM - Visit Rock Garden (Tagore Hill) - 300+ sculptures",
+          "07:30 PM - Explore Kanke Dam - sunset photography",
+          "09:00 PM - Welcome dinner with adventure team",
+          "10:30 PM - Equipment check and next day preparation"
+        ]
       },
       {
         day: 2,
-        title: "Waterfall Adventure Day",
-        activities: ["Hundru Falls", "Dassam Falls & Jonha Falls", "Picnic-style lunch", "Optional short treks"]
+        title: "Waterfall Adventure Day - Nature's Power",
+        activities: [
+          "06:00 AM - Early breakfast and departure",
+          "08:00 AM - Hundru Falls (98m) - rappelling and photography",
+          "10:30 AM - Dassam Falls (40m) - rock climbing basics",
+          "12:30 PM - Jonha Falls (Gautamdhara) - temple visit",
+          "02:00 PM - Picnic lunch by the falls",
+          "03:30 PM - Optional short treks and nature walks",
+          "05:30 PM - Return to hotel with adventure stories",
+          "08:00 PM - Dinner with fellow adventurers"
+        ]
       },
       {
         day: 3,
-        title: "Netarhat Hill Station",
-        activities: ["Drive to Netarhat", "Upper Ghaghri Falls and Koel View Point", "Sunset Point"]
+        title: "Netarhat Hill Station - Queen of Chotanagpur",
+        activities: [
+          "06:30 AM - Breakfast and checkout",
+          "08:00 AM - Drive to Netarhat (3-hour scenic journey)",
+          "11:00 AM - Check-in at Netarhat Tourist Lodge",
+          "12:00 PM - Upper Ghaghri Falls - trekking and photography",
+          "02:00 PM - Traditional lunch at hill station",
+          "03:30 PM - Koel View Point - panoramic valley views",
+          "05:00 PM - Sunset Point - witness spectacular sunset",
+          "07:00 PM - Bonfire dinner with local music",
+          "09:00 PM - Stargazing session"
+        ]
       },
       {
         day: 4,
-        title: "Betla National Park Safari",
-        activities: ["Drive to Betla National Park", "Afternoon jungle safari", "Palamu Fort ruins"]
+        title: "Betla National Park Safari - Wildlife Encounter",
+        activities: [
+          "05:30 AM - Early morning jungle safari in Betla NP",
+          "08:00 AM - Wildlife spotting (tigers, elephants, deer)",
+          "10:00 AM - Breakfast at forest rest house",
+          "11:30 AM - Visit Palamu Fort ruins (16th century)",
+          "01:00 PM - Traditional forest lunch",
+          "03:00 PM - Nature walk and bird watching",
+          "05:00 PM - Return to Netarhat",
+          "08:00 PM - Dinner with wildlife stories"
+        ]
       },
       {
         day: 5,
-        title: "Parasnath Trek",
-        activities: ["Drive to Giridih", "Trek to Parasnath Hills", "Packed lunch during trek"]
+        title: "Parasnath Trek - Spiritual Adventure",
+        activities: [
+          "05:00 AM - Early breakfast and departure",
+          "07:00 AM - Drive to Giridih (2-hour journey)",
+          "09:00 AM - Begin Parasnath trek (1350m elevation)",
+          "12:00 PM - Reach summit - temple visit and packed lunch",
+          "02:00 PM - Descend with scenic photography",
+          "05:00 PM - Return to Ranchi",
+          "08:00 PM - Celebration dinner with adventure team"
+        ]
       },
       {
         day: 6,
-        title: "Departure",
-        activities: ["Return to Ranchi / Dhanbad", "Onward journey"]
+        title: "Departure - Adventure Memories",
+        activities: [
+          "08:00 AM - Breakfast and checkout",
+          "10:00 AM - Final adventure briefing and certificates",
+          "12:00 PM - Airport drop with unforgettable memories"
+        ]
       }
     ],
     accommodation: [
@@ -435,18 +607,46 @@ export const packages = [
     itinerary: [
       {
         day: 1,
-        title: "Arrival at Ranchi & Patratu Valley",
-        activities: ["Airport/Station pickup", "Scenic drive to Patratu Valley", "Lake Resort check-in", "Boat ride", "Candlelight dinner"]
+        title: "Arrival at Ranchi & Patratu Valley - Luxury Begins",
+        activities: [
+          "11:00 AM - Airport/Station pickup with luxury vehicle",
+          "12:30 PM - Welcome lunch at premium restaurant (multi-cuisine)",
+          "02:00 PM - Scenic drive to Patratu Valley (2-hour journey)",
+          "04:00 PM - Check-in at Patratu Lake Resort (5★ luxury)",
+          "05:00 PM - Welcome tea with lake views",
+          "06:00 PM - Private boat ride on Patratu Lake",
+          "07:30 PM - Spa session (couples massage available)",
+          "09:00 PM - Candlelight dinner by the lake with live music",
+          "11:00 PM - Stargazing from private balcony"
+        ]
       },
       {
         day: 2,
-        title: "Netarhat Hill Station Day Trip",
-        activities: ["Drive to Netarhat", "Upper Ghaghri Falls", "Koel View Point", "Sunset Point", "Curated picnic lunch"]
+        title: "Netarhat Hill Station Day Trip - Queen of Chotanagpur",
+        activities: [
+          "07:00 AM - Breakfast with lake views",
+          "08:30 AM - Drive to Netarhat (3-hour scenic journey)",
+          "11:30 AM - Arrival at Netarhat Hill Station",
+          "12:00 PM - Upper Ghaghri Falls - photography and nature walk",
+          "01:30 PM - Curated picnic lunch with local delicacies",
+          "03:00 PM - Koel View Point - panoramic valley views",
+          "04:30 PM - Sunset Point - witness spectacular sunset",
+          "06:00 PM - Return journey to Patratu with refreshments",
+          "09:00 PM - Romantic dinner at resort with wine pairing"
+        ]
       },
       {
         day: 3,
-        title: "Ranchi Local Sightseeing & Departure",
-        activities: ["Drive back to Ranchi", "Jagannath Temple", "Handicrafts Emporium", "Airport/Station drop"]
+        title: "Ranchi Local Sightseeing & Departure - Cultural Heritage",
+        activities: [
+          "08:00 AM - Breakfast and checkout",
+          "09:30 AM - Drive back to Ranchi (2-hour journey)",
+          "11:30 AM - Visit Jagannath Temple - spiritual experience",
+          "01:00 PM - Traditional lunch at heritage restaurant",
+          "02:30 PM - Handicrafts Emporium - luxury shopping",
+          "04:00 PM - Final tea at premium café",
+          "05:30 PM - Airport/Station drop with farewell gifts"
+        ]
       }
     ],
     accommodation: [
