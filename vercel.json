@@ -1,0 +1,44 @@
+{
+  "rewrites": [
+    {
+      "source": "/destinations",
+      "destination": "/Destinations"
+    },
+    {
+      "source": "/packages",
+      "destination": "/Packages"
+    },
+    {
+      "source": "/events",
+      "destination": "/Events"
+    },
+    {
+      "source": "/profile",
+      "destination": "/Profile"
+    },
+    {
+      "source": "/seller/:name",
+      "destination": "/SellerProfile"
+    },
+    {
+      "source": "/destinations/:id",
+      "destination": "/DestinationDetail"
+    },
+    {
+      "source": "/packages/:id",
+      "destination": "/PackageDetail"
+    },
+    {
+      "source": "/events/:id",
+      "destination": "/EventRegistration"
+    },
+    {
+      "source": "/stays/:id",
+      "destination": "/StayDetail"
+    },
+    {
+      "source": "/tourguides/:id",
+      "destination": "/TourGuideDetail"
+    }
+  ]
+}
