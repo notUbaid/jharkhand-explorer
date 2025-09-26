@@ -1,26 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/destinations",
-      "destination": "/Destinations"
-    },
-    {
-      "source": "/packages",
-      "destination": "/Packages"
-    },
-    {
-      "source": "/events",
-      "destination": "/Events"
-    },
-    {
-      "source": "/profile",
-      "destination": "/Profile"
-    },
-    {
-      "source": "/seller/:name",
-      "destination": "/SellerProfile"
-    },
-    {
       "source": "/destinations/:id",
       "destination": "/DestinationDetail"
     },
@@ -39,6 +19,10 @@
     {
       "source": "/tourguides/:id",
       "destination": "/TourGuideDetail"
+    },
+    {
+      "source": "/seller/:name",
+      "destination": "/SellerProfile"
     }
   ]
 }
